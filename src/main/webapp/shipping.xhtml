@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <link rel="stylesheet" type="text/css" href="resources/css/myStyles.css"/>
+    </h:head>
+    <h:body>
+        <ui:composition template="WEB-INF/template/master.xhtml">
+            <ui:define name="content">
+               
+                <h:form>
+                    <div class="shipping-info">
+                       
+                        <h:outputText value="We try to provide shipping for as many countries as possible."/><br/>
+                        <h:outputText value="Please check the information below regarding pricing and processing times."/><br/>
+                        <h:outputText value="All orders which are placed before midnight will be shipped the following business day!"/><br/><br/>
+                        <h:outputText value="Due to certain circumstances we are currently only able to ship within the European Union."/><br/><br/><br/>
+                        <h:outputText value="Germany, 5.00€, 1 business day"/><br/>
+                        <h:outputText value="Europe, 7.00€, 1 business day"/><br/>
+                        <h:outputText value="USA/Canada, 12.00€, 1 business day"/><br/><br/><br/>
+                        <h:outputText value="All orders are shipped via DHL."/><br/>
+                    </div>
+                </h:form>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>

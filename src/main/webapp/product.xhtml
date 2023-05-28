@@ -1,0 +1,122 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    
+    <h:head>
+        <link rel="stylesheet" type="text/css" href="resources/css/primeflex.css"/>
+        <link rel="stylesheet" type="text/css" href="resources/css/myStyles.css"/>
+    </h:head>
+    <h:body>
+        <ui:composition template="WEB-INF/template/master.xhtml">
+            <ui:define name="content">
+                <h:form id="form">
+                    <p:growl id="messages" showDetail="true" showSummary="true"/>
+                    <div class="productTable">
+                        <p:dataTable id="prodTable" var="product" value="#{productBean.productDataList}"
+                            styleClass="products-table" editable="true" 
+                            rowKey="#{product.prodID}" paginator="true" rows="5" paginatorPosition="bottom">
+                            <f:facet name="header">
+                                    <span style="font-weight: bold">PRODUCTS</span>
+                            </f:facet>
+
+                            <p:ajax event="rowEdit" listener="#{productBean.onRowEdit}" update="messages"/>
+                            <p:ajax event="rowEditCancel" listener="#{productBean.onRowCancel}" update="messages"/>
+
+                            <p:column rendered="#{loginBean.isAdminRights()}" headerText="ID" width="auto">
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText value="#{product.prodID}" />
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:inputText id="modelInput" value="#{product.prodID}" />
+                                    </f:facet>
+                                </p:cellEditor>
+                            </p:column>
+
+
+                            <p:column headerText="Name" sortBy="#{product.prodName}" filterBy="#{product.prodName}"
+                                      width="auto" style="text-align: center">
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText value="#{product.prodName}" />
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:inputText label="Name" value="#{product.prodName}" />
+                                    </f:facet>
+                                </p:cellEditor>
+                            </p:column>
+
+                            <p:column headerText="Image" exportable="false" width="auto" style="text-align: center">
+                                <p:graphicImage name="#{product.prodPic}" width="100px"/>
+                            </p:column>
+
+
+                            <p:column headerText="Description" width="auto" style="text-align: center">
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText value="#{product.prodDesc}" />
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:inputText label="Name" value="#{product.prodDesc}" />
+                                    </f:facet>
+                                </p:cellEditor>
+                            </p:column>
+
+                            <p:column headerText="Category" sortBy="#{product.prodType}" filterBy="#{product.prodType}"
+                                      width="auto" style="text-align: center">
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText value="#{product.prodType}" />
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:selectOneMenu id="option" value="#{product.prodType}" style="width:auto">
+                                            <f:selectItem itemLabel="Pizza" itemValue="Pizza"/> 
+                                            <f:selectItem itemLabel="Ice Cream" itemValue="Ice Cream"/> 
+                                            <f:selectItem itemLabel="Cake" itemValue="Cake"/> 
+                                            <f:selectItem itemLabel="Fruit" itemValue="Fruit"/> 
+                                        </p:selectOneMenu>
+                                    </f:facet>
+                                </p:cellEditor>
+                            </p:column>
+
+                            <p:column headerText="Price" sortBy="#{product.prodPrice}"
+                                      width="auto" style="text-align: center">
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText value="#{product.prodPrice}" >
+                                            <f:convertNumber type="currency" currencySymbol="€"/>
+                                        </h:outputText>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:inputNumber label="Name" value="#{product.prodPrice}" symbol="€"/>
+                                    </f:facet>
+                                </p:cellEditor>
+                            </p:column>
+
+                            <p:column width="auto">
+                                <p:commandButton value="Add to Cart" update="messages" icon="pi pi-shopping-cart" 
+                                                 action="#{cartBean.addToCart(product)}"/> 
+                            </p:column>
+
+                            <p:column rendered="#{loginBean.isAdminRights()}" width="auto">
+                                <p:rowEditor styleClass="rounded-button ui-button-warning ui-button-outlined" 
+                                             editTitle="Edit Row" cancelTitle="Cancel Edit" saveTitle="Save Row"/>
+                            </p:column>
+
+                            <p:column rendered="#{loginBean.isAdminRights()}" width="auto">        
+                                <p:commandButton value="Delete" icon="pi pi-trash" styleClass="ui-button-danger" 
+                                                 action="#{productBean.deleteProduct(product)}"
+                                                 update="prodTable">
+                                </p:commandButton>
+                            </p:column>
+                        </p:dataTable>
+                    </div>
+                </h:form>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>

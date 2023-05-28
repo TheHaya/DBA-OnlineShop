@@ -1,0 +1,88 @@
+/*
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/CascadeStyleSheet.css to edit this template
+*/
+/* 
+    Created on : 07.05.2023, 17:22:20
+    Author     : Haya
+*/
+
+body
+{
+    background-color: #fcfbf2;
+    font-family: Verdana;
+}
+
+.banner{
+    position:absolute;
+    top:10px;
+    right:10px;
+}
+
+.bannerLogo {
+    position:absolute;
+    left: 50%;
+    right:0%;
+    margin-left:-150px;
+}
+
+.faq-info{
+    position:absolute;
+    top: 225px;
+    left:50%;
+    right:0%;
+    margin-left: -750px;
+    font-family: Verdana, Arial, sans-serif;
+    font-size: larger;
+    color: #32536a;
+    font-weight: bold;
+    text-align: left;
+}
+
+.shipping-info{
+    position:absolute;
+    top: 225px;
+    left:50%;
+    right:0%;
+    margin-left: -750px;
+    font-family: Verdana, Arial, sans-serif;
+    font-size: larger;
+    color: #32536a;
+    font-weight: bold;
+    text-align: center;
+}
+
+.checkout{
+    position:absolute;
+    top: 300px;
+    left:50%;
+    right:0%;
+    margin-left: -750px;
+    font-family: Verdana, Arial, sans-serif;
+    font-size: xx-large;
+    color: #32536a;
+    font-weight: bold;
+    text-align: center;
+}
+
+.checkoutButton{
+    position:absolute;
+    margin-left: 750px;
+}
+
+.productTable{
+    left:10%;
+    right:10%;
+    text-align: center;
+}
+
+.regPanel{
+    left:50%;
+    right:0%;
+    margin-left: 380px;
+}
+
+.growlLower{
+    margin-top: 400px;
+}
+

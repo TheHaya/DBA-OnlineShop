@@ -1,0 +1,70 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        
+    </h:head>
+    <h:body>
+        <ui:composition template="WEB-INF/template/master.xhtml"> 
+            <ui:define name="content">
+                <f:event type="preRenderView" listener="#{loginBean.resetInput()}" />
+                <div>
+                    <h:form id="loginForm" prependId="false">
+                        <p:panelGrid     
+                            id="pgrid1"  
+                            columns="2"  
+                            styleClass="panel-primary"
+                            style="margin: 50px;">
+                            <f:facet name="header">
+                                <span style="font-weight: bold">LOGIN</span>
+                            </f:facet>
+                            
+                            <p:outputLabel 
+                                for="userName" 
+                                value="Username: " 
+                                style="margin: 10px; color: black; width: 150px;"
+                                styleClass="label label-primary"/> 
+                            <p:inputText 
+                                id="userName" 
+                                value="#{loginBean.loginName}" 
+                                p:placeholder="Username..."
+                                style="text-align: left; margin: 10px; margin-left: 10px; width: 200px;"  
+                                styleClass="form-control"/>   
+
+                            <p:outputLabel 
+                                for="password" 
+                                value="Password: " 
+                                style="margin: 10px; color: black; width: 150px;"
+                                styleClass="label label-primary"/> 
+                            <p:password   
+                                id="password" 
+                                value="#{loginBean.loginPass}" 
+                                p:placeholder="Password..."
+                                style="text-align: left; margin: 10px; margin-left: 10px; width: 200px;"  
+                                styleClass="form-control"/>
+                            
+                            <p:commandButton
+                                id="cBtn" 
+                                value="Login"  
+                                action="#{loginBean.login()}"   
+                                style="margin: 10px; margin-left: 10px;"
+                                styleClass="btn btn-success"
+                                ajax="false"/>
+                            <p:message 
+                                id="userDataMessage" 
+                                for="cBtn" 
+                                style="margin-left: 20px;width: 200px;"
+                                styleClass="text-warning"/>
+                        </p:panelGrid>
+                    </h:form>
+                </div>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>
+

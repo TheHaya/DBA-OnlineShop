@@ -1,0 +1,95 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    
+    <h:head>
+        <link rel="stylesheet" type="text/css" href="resources/css/myStyles.css"/>
+        <h:outputStylesheet name="css/myStyles.css"/>
+    </h:head>
+    <h:body>
+        <h:form id="menuBarForm" prependId="false">
+                <p:growl id="messages" showDetail="true" showSummary="true"/>
+            <p:menubar style="height: 110px; background-color: #28343c ">
+                <f:facet name="options">
+                    <div class="bannerLogo">
+                        <p:link outcome="/index.xhtml" style="margin-right: 300px">
+                            <p:graphicImage name="images/logo.png" height="90px"/>
+                        </p:link>
+                    </div>
+                </f:facet>
+            </p:menubar>
+            <p:menubar style="height: 60px; background-color: #dff9ff;">
+                <p:menuitem value="Home" outcome="index.xhtml" style="color: white"/>
+                <p:menuitem value="All Products" outcome="product.xhtml"/>
+
+                <p:submenu label="Info">
+                    <p:menuitem value="Shipping Policy" outcome="shipping.xhtml"/>
+                    <p:menuitem value="Contact Us" outcome="contact.xhtml"/>
+                    <p:menuitem rendered="#{loginBean.isAdminRights()}" value="User Table" outcome="userTable.xhtml"/>
+                </p:submenu>
+               
+                <f:facet name="options">
+                    <f:event type="preRenderView" listener="#{loginBean.resetInput()}" />
+                    <p:commandButton value ="Login" styleClass="ui-button-flat ui-button-plain" 
+                                     rendered="#{!loginBean.getLoginCheck()}" onclick="PF('login').show()"/>
+                    
+                    <p:dialog widgetVar="login" height="auto" width="auto" showEffect="fade" modal="true">
+                        <p:panelGrid     
+                            id="pgrid1"  
+                            columns="2"
+                            styleClass="panel-primary"
+                            style="margin: 50px;">
+                            <f:facet name="header">
+                                <span style="font-weight: bold">LOGIN</span>
+                            </f:facet>
+                            
+                            <p:outputLabel 
+                                for="userName" 
+                                value="Username: " 
+                                style="margin: 10px; color: black; width: 150px;"
+                                styleClass="label label-primary"/> 
+                            <p:inputText 
+                                id="userName" 
+                                value="#{loginBean.loginName}" 
+                                p:placeholder="Username..."
+                                style="text-align: left; margin: 10px; margin-left: 10px; width: 200px;"  
+                                styleClass="form-control"/>   
+
+                            <p:outputLabel 
+                                for="password" 
+                                value="Password: " 
+                                style="margin: 10px; color: black; width: 150px;"
+                                styleClass="label label-primary"/> 
+                            <p:password   
+                                id="password" 
+                                value="#{loginBean.loginPass}" 
+                                p:placeholder="Password..."
+                                style="text-align: left; margin: 10px; margin-left: 10px; width: 200px;"  
+                                styleClass="form-control"/>
+                            <br/>
+                         <p:commandButton
+                                id="cBtn" 
+                                value="Login"  
+                                action="#{loginBean.login2()}"   
+                                style="margin: 10px; margin-left: 138px;"
+                                styleClass="btn btn-success"
+                                update="messages"
+                                ajax="false"/>
+                        </p:panelGrid>
+                    </p:dialog>
+
+                    <p:commandButton value ="Logout" styleClass="ui-button-flat ui-button-plain" 
+                                     rendered="#{loginBean.getLoginCheck()}" action="#{loginBean.logout()}" ajax="false"/>                    
+                    <p:button value ="Register" styleClass="ui-button-flat ui-button-plain" 
+                              rendered="#{!loginBean.getLoginCheck()}" outcome="register.xhtml"/>
+                    <p:button value="Cart" styleClass="ui-button-flat ui-button-plain" outcome="cart.xhtml"/>
+                </f:facet>
+            </p:menubar>
+        </h:form>
+    </h:body>
+</html>
