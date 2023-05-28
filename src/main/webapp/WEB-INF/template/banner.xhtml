@@ -38,50 +38,7 @@
                     <p:commandButton value ="Login" styleClass="ui-button-flat ui-button-plain" 
                                      rendered="#{!loginBean.getLoginCheck()}" onclick="PF('login').show()"/>
                     
-                    <p:dialog widgetVar="login" height="auto" width="auto" showEffect="fade" modal="true">
-                        <p:panelGrid     
-                            id="pgrid1"  
-                            columns="2"
-                            styleClass="panel-primary"
-                            style="margin: 50px;">
-                            <f:facet name="header">
-                                <span style="font-weight: bold">LOGIN</span>
-                            </f:facet>
-                            
-                            <p:outputLabel 
-                                for="userName" 
-                                value="Username: " 
-                                style="margin: 10px; color: black; width: 150px;"
-                                styleClass="label label-primary"/> 
-                            <p:inputText 
-                                id="userName" 
-                                value="#{loginBean.loginName}" 
-                                p:placeholder="Username..."
-                                style="text-align: left; margin: 10px; margin-left: 10px; width: 200px;"  
-                                styleClass="form-control"/>   
-
-                            <p:outputLabel 
-                                for="password" 
-                                value="Password: " 
-                                style="margin: 10px; color: black; width: 150px;"
-                                styleClass="label label-primary"/> 
-                            <p:password   
-                                id="password" 
-                                value="#{loginBean.loginPass}" 
-                                p:placeholder="Password..."
-                                style="text-align: left; margin: 10px; margin-left: 10px; width: 200px;"  
-                                styleClass="form-control"/>
-                            <br/>
-                         <p:commandButton
-                                id="cBtn" 
-                                value="Login"  
-                                action="#{loginBean.login2()}"   
-                                style="margin: 10px; margin-left: 138px;"
-                                styleClass="btn btn-success"
-                                update="messages"
-                                ajax="false"/>
-                        </p:panelGrid>
-                    </p:dialog>
+                    
 
                     <p:commandButton value ="Logout" styleClass="ui-button-flat ui-button-plain" 
                                      rendered="#{loginBean.getLoginCheck()}" action="#{loginBean.logout()}" ajax="false"/>                    
@@ -91,5 +48,51 @@
                 </f:facet>
             </p:menubar>
         </h:form>
+        <p:dialog widgetVar="login" height="auto" width="auto" showEffect="fade" modal="true">
+            <h:form>
+                <p:panelGrid     
+                    id="pgrid1"  
+                    columns="2"
+                    styleClass="panel-primary"
+                    style="margin: 50px;">
+                    <f:facet name="header">
+                        <span style="font-weight: bold">LOGIN</span>
+                    </f:facet>
+
+                    <p:outputLabel 
+                        for="userName" 
+                        value="Username: " 
+                        style="margin: 10px; color: black; width: 150px;"
+                        styleClass="label label-primary"/> 
+                    <p:inputText 
+                        id="userName" 
+                        value="#{loginBean.loginName}" 
+                        p:placeholder="Username..."
+                        style="text-align: left; margin: 10px; margin-left: 10px; width: 200px;"  
+                        styleClass="form-control"/>   
+
+                    <p:outputLabel 
+                        for="password" 
+                        value="Password: " 
+                        style="margin: 10px; color: black; width: 150px;"
+                        styleClass="label label-primary"/> 
+                    <p:password   
+                        id="password" 
+                        value="#{loginBean.loginPass}" 
+                        p:placeholder="Password..."
+                        style="text-align: left; margin: 10px; margin-left: 10px; width: 200px;"  
+                        styleClass="form-control"/>
+                    <br/>
+                 <p:commandButton
+                        id="cBtn" 
+                        value="Login"  
+                        action="#{loginBean.login2()}"   
+                        style="margin: 10px; margin-left: 138px;"
+                        styleClass="btn btn-success"
+                        update="messages"
+                        ajax="false"/>
+                </p:panelGrid>
+            </h:form>
+        </p:dialog>
     </h:body>
 </html>
