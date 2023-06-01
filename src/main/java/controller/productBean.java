@@ -30,6 +30,7 @@ public class productBean implements Serializable {
     
     private List<product> productDataList;
     private dataBean productData;
+    private product currentProduct;
     
     public productBean(){
         productData = new dataBean();
@@ -56,7 +57,9 @@ public class productBean implements Serializable {
         FacesContext.getCurrentInstance().addMessage(null, msg);
     }
     
-    
+    public void saveCurrentProduct() {
+        productData.updateProduct(currentProduct);
+    }
     
     //Getter und Setter
     public List<product> getProductDataList() {

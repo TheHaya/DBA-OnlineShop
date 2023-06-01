@@ -8,7 +8,6 @@
     
     <h:head>
         <link rel="stylesheet" type="text/css" href="resources/css/primeflex.css"/>
-        <h:outputStylesheet name="css/primeflex.css"/>
         <link rel="stylesheet" type="text/css" href="resources/css/myStyles.css"/>
     </h:head>
     <h:body>
@@ -17,59 +16,125 @@
                 <h:form id="form">
                     <p:growl id="messages" showDetail="true" showSummary="true"/>
                     <div class="productTable">
-                        <p:dataView var="product" value="#{productBean.productDataList}" rows="8" paginator="true"
-                    paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
-                    gridIcon="pi pi-th-large" listIcon="pi pi-bars"
-                    layout="grid" gridRowStyleClass="lg:col-6 xl:col-4" flex="true">
+                        <p:dataTable id="prodTable" var="product" value="#{productBean.productDataList}"
+                            styleClass="products-table"
+                            rowKey="#{product.prodID}" paginator="true" rows="5" paginatorPosition="bottom">
+                            <f:facet name="header">
+                                <span style="font-weight: bold">PRODUCTS</span>
+                            </f:facet>
 
-                            <p:dataViewGridItem>
-                                <div style="border: 1px solid #98c8a3; border-radius:5px; box-shadow: 0 0 10px rgba(152,200,163,1); padding: 10px; margin-bottom: 20px;">
-                                    <div style="width: 100%; display: flex; justify-content: space-between; font-style: italic; font-size: 15px; text-align: left;">
-                                        <i class="pi pi-tag product-category-icon"/>
-                                        #{product.prodType}
-                                    </div>
-                                    <div class="product-grid-item-content">
-                                        <p:graphicImage name="#{product.prodPic}" width="100px"/>
-                                        <div class="product-name">
-                                            #{product.prodName}
-                                        </div>
-                                        <div class="product-description">
-                                            #{product.prodDesc}
-                                        </div>
-                                    </div>
-                                    <div class="product-grid-item-bottom">
-                                        <h:outputText value="#{product.prodPrice}" styleClass="product-price">
-                                            <f:convertNumber currencySymbol="€" type="currency"/>
-                                        </h:outputText>
-                                        <p:commandButton value="Add to Cart" update="messages" 
-                                                         icon="pi pi-shopping-cart" 
-                                                         action="#{cartBean.addToCart(product)}"/> 
-                                    </div>
-                                </div>
-                            </p:dataViewGridItem>
 
-                            <p:dataViewListItem>
-                                <div class="product-list-item">
-                                    <p:graphicImage name="#{product.prodPic}" width="100px"/>
-                                    <div class="product-list-detail">
-                                        <div class="product-name">#{product.prodName}</div>
-                                        <div class="product-description">#{product.prodDesc}</div>
-                                        <i class="pi pi-tag product-category-icon"/><span
-                                            class="product-category">#{product.prodType}</span>
-                                    </div>
-                                    <div class="product-list-action">
-                                        <h:outputText value="#{product.prodPrice}" styleClass="product-price">
-                                            <f:convertNumber currencySymbol="€" type="currency"/>
-                                        </h:outputText>
-                                        <p:commandButton value="Add to Cart" update="messages" 
-                                                         icon="pi pi-shopping-cart" 
-                                                         action="#{cartBean.addToCart(product)}"/> 
-                                    </div>
-                                </div>
-                            </p:dataViewListItem>
-                        </p:dataView>
+                            <p:column rendered="#{loginBean.isAdminRights()}" headerText="ID" width="auto">
+                                <h:outputText value="#{product.prodID}" />
+                            </p:column>
+
+
+                            <p:column headerText="Name" sortBy="#{product.prodName}" filterBy="#{product.prodName}"
+                                      width="auto" style="text-align: center">
+                                <h:outputText value="#{product.prodName}" />
+                            </p:column>
+
+                            <p:column headerText="Image" exportable="false" width="auto" style="text-align: center">
+                                <p:graphicImage name="#{product.prodPic}" width="100px"/>
+                            </p:column>
+
+
+                            <p:column headerText="Description" width="auto" style="text-align: center">
+                                <h:outputText value="#{product.prodDesc}" />
+                            </p:column>
+
+                            <p:column headerText="Category" sortBy="#{product.prodType}" filterBy="#{product.prodType}"
+                                      width="auto" style="text-align: center">
+                                <h:outputText value="#{product.prodType}" />
+                            </p:column>
+
+                            <p:column headerText="Price" sortBy="#{product.prodPrice}"
+                                      width="auto" style="text-align: center">
+                                <h:outputText value="#{product.prodPrice}" >
+                                    <f:convertNumber type="currency" currencySymbol="€"/>
+                                </h:outputText>
+                            </p:column>
+
+                            <p:column width="auto">
+                                <p:commandButton value="Add to Cart" update="messages" icon="pi pi-shopping-cart" 
+                                                 action="#{cartBean.addToCart(product)}"/> 
+                            </p:column>
+
+                            <p:column rendered="#{loginBean.isAdminRights()}" width="auto">
+                                <p:commandButton value="Edit" icon="pi pi-pencil" styleClass="ui-button-warning"
+                                                 onclick="PF('productDialog').show()"/>
+                            </p:column>
+
+                            <p:column rendered="#{loginBean.isAdminRights()}" width="auto">        
+                                <p:commandButton value="Delete" icon="pi pi-trash" styleClass="ui-button-danger" 
+                                                 action="#{productBean.deleteProduct(product)}"
+                                                 update="prodTable"/>
+                            </p:column>
+                        </p:dataTable>
                     </div>
                 </h:form>
+                <p:dialog id="productDialog"
+                  widgetVar="productDialog"
+                  header="Produktdetails"
+                  modal="true">
+            
+                    <h:form id="editForm" prependId="false">
+
+                        <p:panelGrid columns="2">
+
+
+                            <p:outputLabel for="productName"
+                                           value="Produktname:" />
+
+                            <p:inputText id="productName" 
+                                         value="#{product.prodName}"
+                                         required="true"/>
+
+
+                            <p:outputLabel for="productType"
+                                           value="Kategorie:" />
+
+                            <p:selectOneMenu id="productType"
+                                             value="#{product.prodType}"
+                                             required="true"
+                                             style="width: 100%;">
+                                <f:selectItems value="#{product.prodType}" />
+                            </p:selectOneMenu>
+
+
+                            <p:outputLabel for="productPrice"
+                                           value="Preis:" />
+
+                            <p:inputText id="productPrice"
+                                         value="#{product.prodPrice}"
+                                         required="true">
+                                <f:convertNumber
+                                    type="number"
+                                    maxFractionDigits="2" />
+                            </p:inputText>
+
+
+                            <p:outputLabel for="productDescription" 
+                                           value="Beschreibung:" />
+
+                            <p:inputTextarea id="productDescription"
+                                             value="#{product.prodDesc}"
+                                             rows="3"
+                                             required="true"
+                                             style="width: 100%;"/>
+
+                        </p:panelGrid>
+
+                        <p:commandButton id="editDialogbtn"
+                                         value="Speichern"
+                                         action="#{productBean.saveCurrentProduct}"
+                                         oncomplete="PF('productDialog').hide()"
+                                         update=":form:prodTable"
+                                         process="@form"
+                                         styleClass="button"
+                                         style="margin-top: 20px"/>
+                    </h:form>
+                </p:dialog>
             </ui:define>
         </ui:composition>
     </h:body>

@@ -84,5 +84,7 @@ public class dataBean implements Serializable {
         return nextUserID;
     }
     
-    
+    public void updateProduct(product updatedProduct) {
+        productList.set((updatedProduct.getProdID() - 1), updatedProduct);
+    }
 }
