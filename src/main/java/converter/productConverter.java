@@ -10,9 +10,7 @@ import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.convert.Converter;
 import jakarta.faces.convert.FacesConverter;
-import java.io.Serializable;
-import model.Product_1;
-import model.Productcategory;
+import model.product;
 
 /**
  *
@@ -44,10 +42,10 @@ public class productConverter implements Converter {
             return null;
         }
         
-        Product_1 product = (Product_1) context.getApplication()
+        product prod = (product) context.getApplication()
                 .getELResolver().getValue(context.getELContext(), null, "Product_1");
         
-        return product.getFkPtype();
+        return prod.getProdType();
 //        return null; // PLACEHOLDER
     }
 
@@ -56,8 +54,8 @@ public class productConverter implements Converter {
         if (object== null) {
             return null;
         }
-        if (object instanceof Productcategory) {
-            Productcategory o = (Productcategory) object;
+        if (object instanceof product) {
+            product o = (product) object;
             return getStringKey(o.getPcatid());
         }
         else {
