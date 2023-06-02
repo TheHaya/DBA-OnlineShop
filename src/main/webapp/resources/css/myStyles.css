@@ -76,6 +76,12 @@ body
     text-align: center;
 }
 
+.adminSortHeader{
+    margin-left: 20px;
+    margin-bottom: 5px;
+    position: absolute;
+}
+
 .regPanel{
     left:50%;
     right:0%;

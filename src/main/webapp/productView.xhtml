@@ -68,7 +68,7 @@
                             <p:column rendered="#{loginBean.isAdminRights()}" width="auto">        
                                 <p:commandButton value="Delete" icon="pi pi-trash" styleClass="ui-button-danger" 
                                                  action="#{productBean.deleteProduct(product)}"
-                                                 update="prodTable"/>
+                                                 update="prodTable, messages"/>
                             </p:column>
                         </p:dataTable>
                     </div>
@@ -83,23 +83,25 @@
                         <p:panelGrid columns="2">
 
 
-                            <p:outputLabel for="productName"
-                                           value="Produktname:" />
+                            <p:outputLabel for="prodName"
+                                           value="Product name:" />
 
-                            <p:inputText id="productName" 
+                            <p:inputText id="prodName" 
                                          value="#{product.prodName}"
                                          required="true"/>
 
 
-                            <p:outputLabel for="productType"
+                            <p:outputLabel for="prodType"
                                            value="Kategorie:" />
 
-                            <p:selectOneMenu id="productType"
-                                             value="#{product.prodType}"
-                                             required="true"
-                                             style="width: 100%;">
+                            <p:selectOneMenu id="prodType" value="#{product.prodType}" required="true" style="width:auto">
+                                            <f:selectItem itemLabel="Pizza" itemValue="Pizza"/> 
+                                            <f:selectItem itemLabel="Ice Cream" itemValue="Ice Cream"/> 
+                                            <f:selectItem itemLabel="Cake" itemValue="Cake"/> 
+                                            <f:selectItem itemLabel="Fruit" itemValue="Fruit"/> 
+                                        </p:selectOneMenu>
                                 <f:selectItems value="#{product.prodType}" />
-                            </p:selectOneMenu>
+                            
 
 
                             <p:outputLabel for="productPrice"
@@ -129,7 +131,7 @@
                                          value="Speichern"
                                          action="#{productBean.saveCurrentProduct}"
                                          oncomplete="PF('productDialog').hide()"
-                                         update=":form:prodTable"
+                                         update=":form:prodTable, messages"
                                          process="@form"
                                          styleClass="button"
                                          style="margin-top: 20px"/>

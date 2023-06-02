@@ -7,26 +7,72 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core">
     
     <h:head>
-        <link rel="stylesheet" type="text/css" href="resources/css/primeflex.css"/>
         <link rel="stylesheet" type="text/css" href="resources/css/myStyles.css"/>
+        <link rel="stylesheet" type="text/css" href="resources/css/primeflex.css"/>
     </h:head>
     <h:body>
         <ui:composition template="WEB-INF/template/master.xhtml">
             <ui:define name="content">
                 <h:form id="form">
-                    <div class="productTable">
-                        <p:growl id="messages" showDetail="true" showSummary="true"/>
-                        <p:dataTable id="prodTable" var="product" value="#{productBean.productDataList}"
+                    <p:growl id="messages" showDetail="true" showSummary="true"/>
+
+                     
+                    
+                    <p:dataTable id="dt-users" widgetVar="userTable" var="user" value="#{dataBean.sortedUserList}"
+                                 reflow="true" styleClass="products-table"
+                                 rowKey="#{user.userID}" paginator="true" rows="8" rowSelectMode="add" paginatorPosition="bottom">
+                        <f:facet name="header">
+                                <span style="font-weight: bold">USERS</span>
+                                <p:selectOneMenu id="sortUsers" value="#{dataBean.sortOrder}" class="adminSortHeader">
+                                    <f:selectItem itemLabel="Sort by User ID (Ascending)" itemValue="idAsc" />
+                                    <f:selectItem itemLabel="Sort by User ID (Descending)" itemValue="idDesc" />
+                                    <p:ajax event="change" update="dt-users" listener="#{dataBean.sortUsers}" />
+                                </p:selectOneMenu>
+                        </f:facet>
+
+                        <p:column headerText="ID" sortBy="#{user.userID}" filterBy="#{user.userID}" 
+                                  width="auto" style="text-align: center">
+                            <h:outputText value="#{user.userID}" />
+                        </p:column>
+                        
+                        <p:column headerText="Name" sortBy="#{user.username}" filterBy="#{user.username}"
+                                  width="auto" style="text-align: center">
+                            <h:outputText value="#{user.username}" />
+                        </p:column>
+                        
+                        <p:column headerText="Password" sortBy="#{user.password}" filterBy="#{user.password}"
+                                  width="auto" style="text-align: center">
+                            <h:outputText value="#{user.password}" />
+                        </p:column>
+                        
+                        <p:column headerText="Email" sortBy="#{user.email}" filterBy="#{user.email}"
+                                  width="auto" style="text-align: center">
+                            <h:outputText value="#{user.email}" />
+                        </p:column>
+                        
+                        <p:column headerText="Rights" sortBy="#{user.rights}" filterBy="#{user.rights}"
+                                  width="auto" style="text-align: center">
+                            <h:outputText value="#{user.rights}" />
+                        </p:column>
+                    </p:dataTable>
+                    
+                    <p:dataTable id="prodTable" var="product" value="#{dataBean.sortedProductList}"
                             styleClass="products-table" editable="true" 
-                            rowKey="#{product.prodID}" paginator="true" rows="5" paginatorPosition="bottom">
+                            rowKey="#{product.prodID}" paginator="true" rows="4" paginatorPosition="bottom">
                             <f:facet name="header">
-                                    <span style="font-weight: bold">PRODUCTS</span>
+                                <span style="font-weight: bold">PRODUCTS</span>
+                                <p:selectOneMenu id="sortProducts" value="#{dataBean.sortOrder}" class="adminSortHeader">
+                                    <f:selectItem itemLabel="Sort by Product ID (Ascending)" itemValue="idAsc" />
+                                    <f:selectItem itemLabel="Sort by Product ID (Descending)" itemValue="idDesc" />
+                                    <p:ajax event="change" update="prodTable" listener="#{dataBean.sortProducts}" />
+                                </p:selectOneMenu>
                             </f:facet>
 
                             <p:ajax event="rowEdit" listener="#{productBean.onRowEdit}" update="messages"/>
                             <p:ajax event="rowEditCancel" listener="#{productBean.onRowCancel}" update="messages"/>
 
-                            <p:column rendered="#{loginBean.isAdminRights()}" headerText="ID" width="auto">
+                            <p:column headerText="ID" width="auto" style="text-align: center" 
+                                      sortBy="#{product.prodID}" filterBy="#{product.prodID}">
                                 <p:cellEditor>
                                     <f:facet name="output">
                                         <h:outputText value="#{product.prodID}" />
@@ -55,7 +101,8 @@
                             </p:column>
 
 
-                            <p:column headerText="Description" width="auto" style="text-align: center">
+                            <p:column headerText="Description" width="auto" style="text-align: center"
+                                      sortBy="#{product.prodDesc}" filterBy="#{product.prodDesc}">
                                 <p:cellEditor>
                                     <f:facet name="output">
                                         <h:outputText value="#{product.prodDesc}" />
@@ -83,7 +130,7 @@
                                 </p:cellEditor>
                             </p:column>
 
-                            <p:column headerText="Price" sortBy="#{product.prodPrice}"
+                            <p:column headerText="Price" sortBy="#{product.prodPrice}" filterBy="#{product.prodPrice}"
                                       width="auto" style="text-align: center">
                                 <p:cellEditor>
                                     <f:facet name="output">
@@ -97,24 +144,18 @@
                                 </p:cellEditor>
                             </p:column>
 
-                            <p:column width="auto" style="text-align: center" >
-                                <p:commandButton value="Add to Cart" update="messages" icon="pi pi-shopping-cart" 
-                                                 action="#{cartBean.addToCart(product)}"/> 
-                            </p:column>
-
-                            <p:column rendered="#{loginBean.isAdminRights()}" width="auto" style="text-align: center">
+                            <p:column width="auto" style="text-align: center">
                                 <p:rowEditor styleClass="rounded-button ui-button-warning ui-button-outlined" 
                                              editTitle="Edit Row" cancelTitle="Cancel Edit" saveTitle="Save Row"/>
                             </p:column>
 
-                            <p:column rendered="#{loginBean.isAdminRights()}" width="auto" style="text-align: center">        
+                            <p:column width="auto" style="text-align: center">        
                                 <p:commandButton value="Delete" icon="pi pi-trash" styleClass="ui-button-danger" 
                                                  action="#{productBean.deleteProduct(product)}"
                                                  update="prodTable">
                                 </p:commandButton>
                             </p:column>
                         </p:dataTable>
-                    </div>
                 </h:form>
             </ui:define>
         </ui:composition>
