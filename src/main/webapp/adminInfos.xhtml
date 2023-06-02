@@ -16,8 +16,6 @@
                 <h:form id="form">
                     <p:growl id="messages" showDetail="true" showSummary="true"/>
 
-                     
-                    
                     <p:dataTable id="dt-users" widgetVar="userTable" var="user" value="#{dataBean.sortedUserList}"
                                  reflow="true" styleClass="products-table"
                                  rowKey="#{user.userID}" paginator="true" rows="8" rowSelectMode="add" paginatorPosition="bottom">
