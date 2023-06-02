@@ -14,7 +14,6 @@ import java.sql.SQLException;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.inject.Named;
 import java.sql.PreparedStatement;
@@ -57,7 +56,7 @@ public class sqlBean implements Serializable {
      *
      * @return List of User objects
      */
-    public List<user> getUserlist() {
+    public List<user> getUserList() {
 
         try {
             String sql = "SELECT C.CFIRSTNAME, C.CFAMNAME, C.CEMAIL, C.CID, A.ACCTYPE, A.ACCPWD "

@@ -29,6 +29,14 @@ public class user implements Serializable{
         this.rights = rights;
     }
     
+    public user(String username, String password, String email, int rights) {
+    this.username = username;
+    this.password = password;
+    this.email = email;
+    //this.dob = dob;
+    this.rights = 2;
+}
+    
     // Getter und Setter
     public String getUsername() {
         return username;
