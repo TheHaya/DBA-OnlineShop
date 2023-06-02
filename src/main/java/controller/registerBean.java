@@ -14,6 +14,7 @@ import java.io.Serializable;
 import java.util.List;
 import model.user;
 import util.dataBean;
+import util.sqlBean;
 
 /**
  *
@@ -35,7 +36,7 @@ public class registerBean implements Serializable {
     private FacesContext context;
     
     @Inject                             //Inject damit sich Registrierung in der dataBean speichert
-    private dataBean registerData;
+    private sqlBean registerData;
     
     @PostConstruct
     public void init(){
@@ -44,7 +45,7 @@ public class registerBean implements Serializable {
     }
     
     public registerBean() {
-        registerData = new dataBean();
+        registerData = new sqlBean();
     }
 
     // Registrierungsfunktion
@@ -54,16 +55,14 @@ public class registerBean implements Serializable {
     public String register(){
         context = FacesContext.getCurrentInstance();
         FacesMessage facesMessage;
-        int id = registerData.getNextUserID();
         String curName = username;
         String curEmail = email;
         String following = "index.xhtml";
         
-        newUser = new user(username, password, email, id, rights);
+        newUser = new user(username, password, email, rights);
         newUser.setUsername(username);
         newUser.setPassword(password);
         newUser.setEmail(email);
-        newUser.setUserID(id);
         newUser.setRights(2);
         
         for(user u : this.userDataList) {
@@ -80,7 +79,7 @@ public class registerBean implements Serializable {
                 return "register.xhtml";
             }
         }
-        registerData.addUser(newUser);
+        registerData.insertUser(newUser);
         facesMessage = new FacesMessage(FacesMessage.SEVERITY_INFO, 
                 "Registration successful","Welcome to our shop!");
         context.addMessage(null, facesMessage);

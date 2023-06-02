@@ -15,6 +15,7 @@ import java.io.Serializable;
 import java.util.List;
 import model.user;
 import util.dataBean;
+import util.sqlBean;
 
 
 /**
@@ -38,7 +39,7 @@ public class loginBean implements Serializable {
     private HttpSession session;
     private boolean adminRights;
     @Inject
-    private dataBean loginData;
+    private sqlBean loginData;
     
 
 
@@ -53,7 +54,7 @@ public class loginBean implements Serializable {
     }
     
     public loginBean() {
-        loginData = new dataBean();
+        loginData = new sqlBean();
     }
     
     /* Aufgrund von neuem Login screen unbenutzt, vorher eine eigene Seite, nun ein Modal Dialog

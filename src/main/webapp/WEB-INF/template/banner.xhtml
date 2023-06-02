@@ -35,7 +35,7 @@
                 </p:submenu>
                
                 <f:facet name="options">
-                    <f:event type="preRenderView" listener="#{loginBean.resetInput()}" />
+                    <!--<f:event type="preRenderView" listener="#{loginBean.resetInput()}" />-->
                     <p:commandButton value ="Login" styleClass="ui-button-flat ui-button-plain" 
                                      rendered="#{!loginBean.getLoginCheck()}" onclick="PF('login').show()"/>
                     
