@@ -13,6 +13,7 @@ import java.util.Comparator;
 import java.util.List;
 import model.user;
 import util.dataBean;
+import util.sqlBean;
 /**
  *
  * @author Haya
@@ -26,7 +27,7 @@ public class userBean implements Serializable {
     private List<user> userDataList;
     private String sortOrder = "idAsc";
     
-    private dataBean userData;
+    private sqlBean userData;
     
     @PostConstruct
     public void init() {
@@ -34,10 +35,18 @@ public class userBean implements Serializable {
     }
     
     public userBean(){
-        userData = new dataBean();
+        userData = new sqlBean();
         userDataList = userData.getUserList();
     }
 
+    public void sortUsers() {
+        if (sortOrder.equals("idAsc")) {
+            userDataList.sort(Comparator.comparing(user::getUserID));
+        } else if (sortOrder.equals("idDesc")) {
+            userDataList.sort(Comparator.comparing(user::getUserID).reversed());
+        }
+    }
+    
     public List<user> getUserDataList() {
         return userDataList;
     }
@@ -52,14 +61,6 @@ public class userBean implements Serializable {
     
     public void setSortOrder(String sortOrder) {
         this.sortOrder = sortOrder;
-    }
-    
-    public void sortUsers() {
-        if (sortOrder.equals("idAsc")) {
-            userDataList.sort(Comparator.comparing(user::getUserID));
-        } else if (sortOrder.equals("idDesc")) {
-            userDataList.sort(Comparator.comparing(user::getUserID).reversed());
-        }
     }
     
 }

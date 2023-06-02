@@ -4,6 +4,7 @@
  */
 package controller;
 
+import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Named;
 import jakarta.enterprise.context.SessionScoped;
@@ -30,14 +31,21 @@ import util.sqlBean;
 public class productBean implements Serializable {
     
     private List<product> productDataList;
-    private sqlBean productData;
+    private String sortOrder = "idAsc";
     private product currentProduct;
+    
+    private sqlBean productData;
+    
+    @PostConstruct
+    public void init() {
+        sortProducts();
+    }
     
     public productBean(){
         productData = new sqlBean();
         productDataList = productData.getProductList();
     }
-    
+
     // Löschen eines Produkts mit einer Growl Bestätigung.
 //    public void deleteProduct(product selectedProduct){
 //	FacesMessage msg = new FacesMessage("Product Removed", selectedProduct.getProdName()+" has been removed");
@@ -64,6 +72,14 @@ public class productBean implements Serializable {
         FacesContext.getCurrentInstance().addMessage(null, msg);
     }
     
+    public void sortProducts() {
+        if (sortOrder.equals("idAsc")) {
+            productDataList.sort(Comparator.comparing(product::getProdID));
+        } else if (sortOrder.equals("idDesc")) {
+            productDataList.sort(Comparator.comparing(product::getProdID).reversed());
+        }
+    }
+    
     //Getter und Setter
     public List<product> getProductDataList() {
         return productDataList;
@@ -73,5 +89,12 @@ public class productBean implements Serializable {
         this.productDataList = productDataList;
     }
 
+    public String getSortOrder() {
+        return sortOrder;
+    }
+    
+    public void setSortOrder(String sortOrder) {
+        this.sortOrder = sortOrder;
+    }
     
 }

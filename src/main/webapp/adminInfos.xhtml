@@ -29,18 +29,23 @@
                         </f:facet>
 
                         <p:column headerText="ID" sortBy="#{user.userID}" filterBy="#{user.userID}" 
-                                  width="auto" style="text-align: center">
+                                  width="50px" style="text-align: center">
                             <h:outputText value="#{user.userID}" />
                         </p:column>
                         
-                        <p:column headerText="Name" sortBy="#{user.username}" filterBy="#{user.username}"
+                        <p:column headerText="First name" sortBy="#{user.firstName}" filterBy="#{user.firstName}"
                                   width="auto" style="text-align: center">
-                            <h:outputText value="#{user.username}" />
+                            <h:outputText value="#{user.firstName}" />
                         </p:column>
                         
-                        <p:column headerText="Password" sortBy="#{user.password}" filterBy="#{user.password}"
+                        <p:column headerText="Last name" sortBy="#{user.famName}" filterBy="#{user.famName}"
                                   width="auto" style="text-align: center">
-                            <h:outputText value="#{user.password}" />
+                            <h:outputText value="#{user.famName}" />
+                        </p:column>
+                        
+                        <p:column headerText="Username" sortBy="#{user.username}" filterBy="#{user.username}"
+                                  width="auto" style="text-align: center">
+                            <h:outputText value="#{user.username}" />
                         </p:column>
                         
                         <p:column headerText="Email" sortBy="#{user.email}" filterBy="#{user.email}"
@@ -49,24 +54,24 @@
                         </p:column>
                         
                         <p:column headerText="Rights" sortBy="#{user.rights}" filterBy="#{user.rights}"
-                                  width="auto" style="text-align: center">
+                                  width="50px" style="text-align: center">
                             <h:outputText value="#{user.rights}" />
                         </p:column>
                     </p:dataTable>
                     
-                    <p:dataTable id="prodTable" var="product" value="#{dataBean.productList}"
+                    <p:dataTable id="prodTable" var="product" value="#{productBean.productDataList}"
                             styleClass="products-table" editable="true" 
                             rowKey="#{product.prodID}" paginator="true" rows="4" paginatorPosition="bottom">
                             <f:facet name="header">
                                 <span style="font-weight: bold">PRODUCTS</span>
-                                <p:selectOneMenu id="sortProducts" value="#{dataBean.sortOrder}" class="adminSortHeader">
+                                <p:selectOneMenu id="sortProducts" value="#{productBean.sortOrder}" class="adminSortHeader">
                                     <f:selectItem itemLabel="Sort by Product ID (Ascending)" itemValue="idAsc" />
                                     <f:selectItem itemLabel="Sort by Product ID (Descending)" itemValue="idDesc" />
-                                    <p:ajax event="change" update="prodTable" listener="#{dataBean.sortProducts}" />
+                                    <p:ajax event="change" update="prodTable" listener="#{productBean.sortProducts}" />
                                 </p:selectOneMenu>
                             </f:facet>
 
-                            <p:ajax event="rowEdit" listener="#{productBean.onRowEdit}" update="messages"/>
+                            <p:ajax event="rowEdit" listener="#{productBean.saveCurrentProduct(product)}" update="messages"/>
                             <p:ajax event="rowEditCancel" listener="#{productBean.onRowCancel}" update="messages"/>
 
                             <p:column headerText="ID" width="auto" style="text-align: center" 

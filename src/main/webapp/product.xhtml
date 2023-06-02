@@ -23,7 +23,7 @@
                                     <span style="font-weight: bold">PRODUCTS</span>
                             </f:facet>
 
-                            <p:ajax event="rowEdit" listener="#{productBean.onRowEdit}" update="messages"/>
+                            <p:ajax event="rowEdit" listener="#{productBean.saveCurrentProduct(product)}" update="messages"/>
                             <p:ajax event="rowEditCancel" listener="#{productBean.onRowCancel}" update="messages"/>
 
                             <p:column rendered="#{loginBean.isAdminRights()}" headerText="ID" width="auto">
