@@ -24,9 +24,9 @@
                             </f:facet>
 
 
-                            <p:column rendered="#{loginBean.isAdminRights()}" headerText="ID" width="auto">
+<!--                            <p:column rendered="#{loginBean.isAdminRights()}" headerText="ID" width="auto">
                                 <h:outputText value="#{product.prodID}" />
-                            </p:column>
+                            </p:column>-->
 
 
                             <p:column headerText="Name" sortBy="#{product.prodName}" filterBy="#{product.prodName}"
@@ -60,16 +60,16 @@
                                                  action="#{cartBean.addToCart(product)}"/> 
                             </p:column>
 
-                            <p:column rendered="#{loginBean.isAdminRights()}" width="auto">
+                            <p:column rendered="#{loginBean.adminRights()}" width="auto">
                                 <p:commandButton value="Edit" icon="pi pi-pencil" styleClass="ui-button-warning"
                                                  onclick="PF('productDialog').show()"/>
                             </p:column>
 
-                            <p:column rendered="#{loginBean.isAdminRights()}" width="auto">        
+<!--                            <p:column rendered="#{loginBean.adminRights()}" width="auto">        
                                 <p:commandButton value="Delete" icon="pi pi-trash" styleClass="ui-button-danger" 
                                                  action="#{productBean.deleteProduct(product)}"
                                                  update="prodTable, messages"/>
-                            </p:column>
+                            </p:column>-->
                         </p:dataTable>
                     </div>
                 </h:form>

@@ -95,5 +95,9 @@ public class product implements Serializable{
         this.prodPic = prodPic;
     }
     
+    @Override
+    public String toString() {
+        return this.getProdName();
+    }
     
 }

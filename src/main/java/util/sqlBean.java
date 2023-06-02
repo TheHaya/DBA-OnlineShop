@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import model.product;
 import model.user;
+import model.Customer;
 
 /**
  * SqlBean handles the database operations using SQL queries and statements. It
@@ -84,61 +85,63 @@ public class sqlBean implements Serializable {
         return userList;
     }
 
-    /**
-     * Inserts a new user into the database.
-     *
-     * @param user User object with the user's information
-     */
-    public void insertUser(user user) {
-        try {
-            // Insert in Account table
-            String accountSql = "INSERT INTO Account (ACCTYPE, ACCPWD, ACCNAME) VALUES (?, ?, ?)";
-            PreparedStatement accountStatement = conn.prepareStatement(accountSql);
-            accountStatement.setInt(1, 0); // Default value for ACCTYPE
-            accountStatement.setString(2, user.getPassword());
-            accountStatement.setString(3, user.getUsername());
-            accountStatement.executeUpdate();
+public void insertCustomer(Customer customer) {
+    try {
+        // Insert in Account table
+        String accountSql = "INSERT INTO Account (ACCPWD, ACCNAME) VALUES (?, ?)";
+        PreparedStatement accountStatement = conn.prepareStatement(accountSql);
+        accountStatement.setString(1, customer.getpassword());
+        accountStatement.setString(2, customer.getusername());
+        accountStatement.executeUpdate();
 
-            // Get the generated account ID
-            int accountID;
-            String accountIDSql = "SELECT LAST_INSERT_ID()";
-            PreparedStatement accountIDStatement = conn.prepareStatement(accountIDSql);
-            try (ResultSet accountIDResultSet = accountIDStatement.executeQuery()) {
-                if (accountIDResultSet.next()) {
-                    accountID = accountIDResultSet.getInt(1);
-                } else {
-                    throw new SQLException("Failed to retrieve generated account ID.");
-                }
+        // Get the generated account ID
+        int accountID;
+        String accountIDSql = "SELECT LAST_INSERT_ID()";
+        PreparedStatement accountIDStatement = conn.prepareStatement(accountIDSql);
+        try (ResultSet accountIDResultSet = accountIDStatement.executeQuery()) {
+            if (accountIDResultSet.next()) {
+                accountID = accountIDResultSet.getInt(1);
+            } else {
+                throw new SQLException("Failed to retrieve generated account ID.");
             }
-
-            // Insert in Customer table
-            String customerSql = "INSERT INTO Customer (FK_ACCID, CEMAIL) VALUES (?, ?)";
-            PreparedStatement customerStatement = conn.prepareStatement(customerSql);
-            customerStatement.setInt(1, accountID);
-            customerStatement.setString(2, user.getEmail());
-            customerStatement.executeUpdate();
-
-            // Get the generated customer ID (CID)
-            int customerID;
-            String customerIDSql = "SELECT LAST_INSERT_ID()";
-            PreparedStatement customerIDStatement = conn.prepareStatement(customerIDSql);
-            try (ResultSet customerIDResultSet = customerIDStatement.executeQuery()) {
-                if (customerIDResultSet.next()) {
-                    customerID = customerIDResultSet.getInt(1);
-                } else {
-                    throw new SQLException("Failed to retrieve generated customer ID.");
-                }
-            }
-
-            // Insert in Address table
-            String addressSql = "INSERT INTO Address (FK_CID) VALUES (?)";
-            PreparedStatement addressStatement = conn.prepareStatement(addressSql);
-            addressStatement.setInt(1, customerID); // Use accountID as FK_CID
-            addressStatement.executeUpdate();
-        } catch (SQLException ex) {
-            ex.printStackTrace();
         }
+
+        // Insert in Customer table
+        String customerSql = "INSERT INTO Customer (FK_ACCID, CEMAIL, CFIRSTNAME, CFAMNAME, CSALUTATION, CBIRTHDATE) VALUES (?, ?, ?, ?, ?, ?)";
+        PreparedStatement customerStatement = conn.prepareStatement(customerSql);
+        customerStatement.setInt(1, accountID);
+        customerStatement.setString(2, customer.getemail());
+        customerStatement.setString(3, customer.getfirstname());
+        customerStatement.setString(4, customer.getlastname());
+        customerStatement.setString(5, customer.getsalutation());
+        customerStatement.setDate(6, customer.getbirthdate());
+        customerStatement.executeUpdate();
+
+        // Get the generated customer ID (CID)
+        int customerID;
+        String customerIDSql = "SELECT LAST_INSERT_ID()";
+        PreparedStatement customerIDStatement = conn.prepareStatement(customerIDSql);
+        try (ResultSet customerIDResultSet = customerIDStatement.executeQuery()) {
+            if (customerIDResultSet.next()) {
+                customerID = customerIDResultSet.getInt(1);
+            } else {
+                throw new SQLException("Failed to retrieve generated customer ID.");
+            }
+        }
+
+        // Insert in Address table
+        String addressSql = "INSERT INTO Address (FK_CID, ASTREET, AFEDSTATE, ACITYCODE, ACOUNTRY) VALUES (?, ?, ?, ?, ?)";
+        PreparedStatement addressStatement = conn.prepareStatement(addressSql);
+        addressStatement.setInt(1, customerID); // Use customerID as FK_CID
+        addressStatement.setString(2, customer.getaddress().getStreet());
+        addressStatement.setString(3, customer.getaddress().getFedState());
+        addressStatement.setString(4, customer.getaddress().getCityCode());
+        addressStatement.setString(5, customer.getaddress().getCountry());
+        addressStatement.executeUpdate();
+    } catch (SQLException ex) {
+        ex.printStackTrace();
     }
+}
 
     public List<product> getProductList() {
 

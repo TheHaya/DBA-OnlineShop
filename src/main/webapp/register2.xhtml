@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+    <h:head>
+        <link rel="stylesheet" type="text/css" href="resources/css/myStyles.css"/>
+    </h:head>
+
+    <h:body>
+        <ui:composition template="WEB-INF/template/master.xhtml"> 
+            <ui:define name="content">
+
+                <div>
+                    <h:form>
+                        <p:growl id="messages" showDetail="true" showSummary="true"/>
+                        <div class="regPanel">
+                            <p:panelGrid id="pgrid1" columns="3" style="margin: 50px;">
+                                <f:facet name="header">
+                                    <span style="font-weight: bold">REGISTRATION</span>
+                                </f:facet>
+                                <p:outputLabel for="firstName" value="First Name:" style="margin: 10px; color: black; width: 150px;" styleClass="label label-primary"/> 
+                                <p:inputText id="firstName" value="#{registerBean.firstname}" required="true" requiredMessage="Required field"
+                                             placeholder="First Name..." style="text-align: left; margin: 10px; margin-left: 10px; width: 200px;"  
+                                             styleClass="form-control">
+                                    <p:ajax event="keyup" update="firstNameMessage"/>           
+                                </p:inputText>
+                                <p:message id="firstNameMessage" for="firstName" style="margin-left: 20px;width: 200px;" styleClass="text-warning"/>
+
+                                <p:outputLabel for="lastName" value="Last Name:" style="margin: 10px; color: black; width: 150px;" styleClass="label label-primary"/> 
+                                <p:inputText id="lastName" value="#{registerBean.lastname}" required="true" requiredMessage="Required field"
+                                             placeholder="Last Name..." style="text-align: left; margin: 10px; margin-left: 10px; width: 200px;"  
+                                             styleClass="form-control">
+                                    <p:ajax event="keyup" update="lastNameMessage"/>           
+                                </p:inputText>
+                                <p:message id="lastNameMessage" for="lastName" style="margin-left: 20px;width: 200px;" styleClass="text-warning"/>
+
+                                <p:outputLabel for="email" value="Email:" style="margin: 10px; color: black; width: 150px;" styleClass="label label-primary"/> 
+                                <p:inputText id="email" value="#{registerBean.email}" required="true" requiredMessage="Required field"
+                                             validator="emailValidator" placeholder="Email..."
+                                             style="text-align: left; margin: 10px; margin-left: 10px; width: 200px;"  styleClass="form-control">
+                                    <p:ajax event="keyup" update="emailMessage growl"/>           
+                                </p:inputText>
+                                <p:message id="emailMessage" for="email" style="margin-left: 20px;width: 200px;" styleClass="text-warning"/>
+
+                                <br/>
+                                <p:commandButton id="createCustomerBtn" value="Create Customer" action="#{registerBean.createCustomer()}"
+                                                 style="margin: 10px; margin-left: 10px;" styleClass="btn btn-success" ajax="false"
+                                                 update="messages" oncomplete="window.location.href='register3.xhtml'" />
+
+                                <p:message id="customerDataMessage" for="createCustomerBtn" style="margin-left: 20px;" styleClass="text-warning"/>
+                            </p:panelGrid>
+                        </div>
+                    </h:form>
+                </div>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>

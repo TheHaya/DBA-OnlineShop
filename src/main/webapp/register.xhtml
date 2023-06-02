@@ -12,6 +12,61 @@
     <h:body>
         <ui:composition template="WEB-INF/template/master.xhtml"> 
             <ui:define name="content">
+
+                <div>
+                    <h:form>
+                        <p:growl id="messages" showDetail="true" showSummary="true"/>
+                        <div class="regPanel">
+                            <p:panelGrid id="pgrid1" columns="3" style="margin: 50px;">
+                                <f:facet name="header">
+                                    <span style="font-weight: bold">REGISTRATION</span>
+                                </f:facet>
+                                <p:outputLabel for="accName" value="Account Name:" style="margin: 10px; color: black; width: 150px;" styleClass="label label-primary"/> 
+                                <p:inputText id="accName" value="#{registerBean.accountname}" required="true" requiredMessage="Required field"
+                                             placeholder="Account Name..." style="text-align: left; margin: 10px; margin-left: 10px; width: 200px;"  
+                                             styleClass="form-control">
+                                    <p:ajax event="keyup" update="accNameMessage"/>           
+                                </p:inputText>
+                                <p:message id="accNameMessage" for="accName" style="margin-left: 20px;width: 200px;" styleClass="text-warning"/>
+
+                                <p:outputLabel for="password" value="Password:" style="margin: 10px; color: black; width: 150px;" styleClass="label label-primary"/> 
+                                <p:password id="password" value="#{registerBean.password}" required="true" requiredMessage="Required field"
+                                            placeholder="Password..." validator="passValidator" 
+                                            style="text-align: left; margin: 10px; margin-left: 10px; width: 200px;"  
+                                            styleClass="form-control">
+                                    <p:ajax event="keyup" update="passwordMessage growl"/>           
+                                </p:password>
+                                <p:message id="passwordMessage" for="password" style="margin-left: 20px;width: 200px;" styleClass="text-warning"/>
+
+                                <br/>
+                                <p:commandButton id="cBtn" value="Register" action="#{registerBean.createAccount()}"
+                                                 style="margin: 10px; margin-left: 10px;" styleClass="btn btn-success" ajax="false" />
+
+                                <p:message id="userDataMessage" for="cBtn" style="margin-left: 20px;" styleClass="text-warning"/>
+                            </p:panelGrid>
+                        </div>
+                    </h:form>
+                </div>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>
+
+
+<!--<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+    <h:head>
+        <link rel="stylesheet" type="text/css" href="resources/css/myStyles.css"/>
+    </h:head>
+
+    <h:body>
+        <ui:composition template="WEB-INF/template/master.xhtml"> 
+            <ui:define name="content">
                
                 <div>
                     <h:form>
@@ -79,4 +134,4 @@
             </ui:define>
         </ui:composition>
     </h:body>
-</html>
+</html>-->

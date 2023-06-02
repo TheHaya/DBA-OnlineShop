@@ -29,6 +29,8 @@ import util.sqlBean;
 @Named(value = "loginBean")
 @SessionScoped
 public class loginBean implements Serializable {
+    //object of user currently logged in
+    private user loggedInUser;
     
     private boolean loginCheck = false;
     private String loginName;
@@ -121,6 +123,7 @@ public class loginBean implements Serializable {
                 if(u.getRights() <= 1){
                     adminRights = true;
                 }
+                loggedInUser = u;
                 break;
             }
         }

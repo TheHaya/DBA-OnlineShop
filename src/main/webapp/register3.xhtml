@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+    <h:head>
+        <link rel="stylesheet" type="text/css" href="resources/css/myStyles.css"/>
+    </h:head>
+
+    <h:body>
+        <ui:composition template="WEB-INF/template/master.xhtml"> 
+            <ui:define name="content">
+
+                <div>
+                    <h:form>
+                        <p:growl id="messages" showDetail="true" showSummary="true"/>
+                        <div class="regPanel">
+                            <p:panelGrid id="pgrid1" columns="3" style="margin: 50px;">
+                                <f:facet name="header">
+                                    <span style="font-weight: bold">REGISTRATION</span>
+                                </f:facet>
+                                <p:outputLabel for="street" value="Street:" style="margin: 10px; color: black; width: 150px;" styleClass="label label-primary"/> 
+                                <p:inputText id="street" value="#{registerBean.street}" required="true" requiredMessage="Required field"
+                                             placeholder="Street..." style="text-align: left; margin: 10px; margin-left: 10px; width: 200px;"  
+                                             styleClass="form-control">
+                                    <p:ajax event="keyup" update="streetMessage"/>           
+                                </p:inputText>
+                                <p:message id="streetMessage" for="street" style="margin-left: 20px;width: 200px;" styleClass="text-warning"/>
+
+                                <p:outputLabel for="fedState" value="Federal State:" style="margin: 10px; color: black; width: 150px;" styleClass="label label-primary"/> 
+                                <p:inputText id="fedState" value="#{registerBean.fedstate}" required="true" requiredMessage="Required field"
+                                             placeholder="Federal State..." style="text-align: left; margin: 10px; margin-left: 10px; width: 200px;"  
+                                             styleClass="form-control">
+                                    <p:ajax event="keyup" update="fedStateMessage"/>           
+                                </p:inputText>
+                                <p:message id="fedStateMessage" for="fedState" style="margin-left: 20px;width: 200px;" styleClass="text-warning"/>
+
+                                <p:outputLabel for="cityCode" value="City Code:" style="margin: 10px; color: black; width: 150px;" styleClass="label label-primary"/> 
+                                <p:inputText id="cityCode" value="#{registerBean.citycode}" required="true" requiredMessage="Required field"
+                                             placeholder="City Code..." style="text-align: left; margin: 10px; margin-left: 10px; width: 200px;"  
+                                             styleClass="form-control">
+                                    <p:ajax event="keyup" update="cityCodeMessage growl"/>           
+                                </p:inputText>
+                                <p:message id="cityCodeMessage" for="cityCode" style="margin-left: 20px;width: 200px;" styleClass="text-warning"/>
+
+                                <p:outputLabel for="country" value="Country:" style="margin: 10px; color: black; width: 150px;" styleClass="label label-primary"/> 
+                                <p:inputText id="country" value="#{registerBean.country}" required="true" requiredMessage="Required field"
+                                             placeholder="Country..." style="text-align: left; margin: 10px; margin-left: 10px; width: 200px;"  
+                                             styleClass="form-control">
+                                    <p:ajax event="keyup" update="countryMessage growl"/>           
+                                </p:inputText>
+                                <p:message id="countryMessage" for="country" style="margin-left: 20px;width: 200px;" styleClass="text-warning"/>
+
+                                <br/>
+                                <p:commandButton id="completeRegistrationBtn" value="Complete Registration" action="#{registerBean.completeRegistration()}"
+                                                 style="margin: 10px; margin-left: 10px;" styleClass="btn btn-success" ajax="false"
+                                                 update="messages" oncomplete="window.location.href='index.xhtml'" />
+
+                                <p:message id="registrationMessage" for="completeRegistrationBtn" style="margin-left: 20px;" styleClass="text-warning"/>
+                            </p:panelGrid>
+                        </div>
+                    </h:form>
+                </div>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>
