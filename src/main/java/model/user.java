@@ -16,27 +16,39 @@ public class user implements Serializable{
     private String username; // Account Username
     private String password; // Account Password
     private String email;    // User Email
+    private String firstName;
+    private String famName;
     //private Date dob;        // User date of birth
     private int userID;      // User ID
     private int rights;      // Rights, 0 = admin, 1 = nobody
     
-    public user (String username, String password, String email, int userID, int rights){
+    public user (String username, 
+                 String password, 
+                 String email,
+                 String firstName,
+                 String famName,
+                 int userID, 
+                 int rights){
         this.username = username;
         this.password = password;
         this.email = email;
+        this.firstName = firstName;
+        this.famName = famName;
         //this.dob = dob;
         this.userID = userID;
         this.rights = rights;
     }
     
-    public user(String username, String password, String email, int rights) {
-    this.username = username;
-    this.password = password;
-    this.email = email;
-    //this.dob = dob;
-    this.rights = 2;
-}
-    
+    public user (String username, 
+                 String password, 
+                 String email, 
+                 int rights){
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.rights = rights;
+    }
+        
     // Getter und Setter
     public String getUsername() {
         return username;
@@ -84,6 +96,22 @@ public class user implements Serializable{
 
     public void setRights(int rights) {
         this.rights = rights;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getFamName() {
+        return famName;
+    }
+
+    public void setFamName(String famName) {
+        this.famName = famName;
     }
     
     

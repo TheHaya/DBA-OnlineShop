@@ -41,7 +41,7 @@
                                         <h:outputText value="Would you like to checkout?" rendered="#{!cartBean.cart.isEmpty()}"/>
                                         <h:outputText value="Your cart is empty!" rendered="#{cartBean.cart.isEmpty()}"/>
                                         <f:facet name="footer">
-                                            <p:commandButton value="Checkout" action="#{cartBean.checkout()}" disabled="#{cartBean.cart.isEmpty()}"/>
+                                            <p:commandButton value="Checkout" action="#{cartBean.checkout(user.userID)}" disabled="#{cartBean.cart.isEmpty()}"/>
                                         </f:facet>
                                     </p:dialog>
                                     <h:outputText value="Please login to checkout." rendered="#{!loginBean.getLoginCheck()}"

@@ -27,8 +27,6 @@ public class dataBean implements Serializable {
         private List<user> userList;
         private int nextUserID;
         private String sortOrder = "idAsc";
-        private List<user> sortedUserList;
-        private List<product> sortedProductList;
         
     //Hard coded product and user lists without DB
     public dataBean() {
@@ -62,18 +60,14 @@ public class dataBean implements Serializable {
                 "images/berry-mix.png",3.75, 13,1));
         
         userList = new ArrayList<>();
-        userList.add(new user("admin","admin","admin@shop.de",1, 0));
-        userList.add(new user("mod111","mod111","mod111@shop.de",2, 1));
-        userList.add(new user("aaa111","aaa111","aaa111@shop.de",3, 2));
-        userList.add(new user("bbb222","bbb222","bbb222@shop.de",4, 2));
+        userList.add(new user("admin","admin","admin@shop.de", 0));
+        userList.add(new user("mod111","mod111","mod111@shop.de", 1));
+        userList.add(new user("aaa111","aaa111","aaa111@shop.de", 2));
+        userList.add(new user("bbb222","bbb222","bbb222@shop.de", 2));
         nextUserID = 5;
     }
     
-    @PostConstruct
-    public void init() {
-        sortUsers();
-        sortProducts();
-    }
+    
     // Funktion um einen neuen Benutzer hinzuzufügen (Registrierung)
     public void addUser(user newUser){
         userList.add(newUser);
@@ -100,39 +94,6 @@ public class dataBean implements Serializable {
                 productList.set(i, updatedProduct);
                 break;
             }
-        }
-    }
-    public String getSortOrder() {
-        return sortOrder;
-    }
-    
-    public void setSortOrder(String sortOrder) {
-        this.sortOrder = sortOrder;
-    }
-
-    public List<user> getSortedUserList() {
-        return sortedUserList;
-    }
-    
-    public List<product> getSortedProductList() {
-        return sortedProductList;
-    }
-    
-    public void sortUsers() {
-        sortedUserList = new ArrayList<>(userList);
-        if (sortOrder.equals("idAsc")) {
-            sortedUserList.sort(Comparator.comparing(user::getUserID));
-        } else if (sortOrder.equals("idDesc")) {
-            sortedUserList.sort(Comparator.comparing(user::getUserID).reversed());
-        }
-    }
-    
-    public void sortProducts() {
-        sortedProductList = new ArrayList<>(productList);
-        if (sortOrder.equals("idAsc")) {
-            sortedProductList.sort(Comparator.comparing(product::getProdID));
-        } else if (sortOrder.equals("idDesc")) {
-            sortedProductList.sort(Comparator.comparing(product::getProdID).reversed());
         }
     }
     

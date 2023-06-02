@@ -59,20 +59,22 @@ public class sqlBean implements Serializable {
     public List<user> getUserList() {
 
         try {
-            String sql = "SELECT C.CFIRSTNAME, C.CFAMNAME, C.CEMAIL, C.CID, A.ACCTYPE, A.ACCPWD "
+            String sql = "SELECT C.CFIRSTNAME, C.CFAMNAME, C.CEMAIL, C.CID, A.ACCTYPE, A.ACCPWD, A.ACCNAME "
                     + "FROM Customer C "
                     + "JOIN Account A ON C.FK_ACCID = A.ACCID";
             PreparedStatement statement = conn.prepareStatement(sql);
             ResultSet resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
-                String username = resultSet.getString("CFIRSTNAME");
+                String username = resultSet.getString("ACCNAME");
                 String password = resultSet.getString("ACCPWD");
                 String email = resultSet.getString("CEMAIL");
+                String firstName = resultSet.getString("CFIRSTNAME");
+                String famName = resultSet.getString("CFAMNAME");
                 int userID = resultSet.getInt("CID");
                 int rights = resultSet.getInt("ACCTYPE");
 
-                user user = new user(username, password, email, userID, rights);
+                user user = new user(username, password, email, firstName, famName, userID, rights);
                 userList.add(user);
             }
         } catch (SQLException ex) {
@@ -177,4 +179,7 @@ public class sqlBean implements Serializable {
         }
     }
 
+    public Connection getConn() {
+        return conn;
+    }
 }
