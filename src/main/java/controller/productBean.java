@@ -39,11 +39,11 @@ public class productBean implements Serializable {
     }
     
     // Löschen eines Produkts mit einer Growl Bestätigung.
-    public void deleteProduct(product selectedProduct){
-	FacesMessage msg = new FacesMessage("Product Removed", selectedProduct.getProdName()+" has been removed");
-        FacesContext.getCurrentInstance().addMessage(null, msg);
-        productDataList.remove(selectedProduct);
-    }
+//    public void deleteProduct(product selectedProduct){
+//	FacesMessage msg = new FacesMessage("Product Removed", selectedProduct.getProdName()+" has been removed");
+//        FacesContext.getCurrentInstance().addMessage(null, msg);
+//        productDataList.remove(selectedProduct);
+//    }
     
     // Gibt eine Growl Bestätigung wenn der Benutzer mit Adminrechten ein Produkt geändert hat
     public void onRowEdit(RowEditEvent<product> event){

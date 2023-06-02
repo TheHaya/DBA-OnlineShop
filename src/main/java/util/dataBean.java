@@ -27,8 +27,6 @@ public class dataBean implements Serializable {
         private List<user> userList;
         private int nextUserID;
         private String sortOrder = "idAsc";
-        private List<user> sortedUserList;
-        private List<product> sortedProductList;
         
     //Hard coded product and user lists without DB
     public dataBean() {
@@ -71,7 +69,6 @@ public class dataBean implements Serializable {
     
     @PostConstruct
     public void init() {
-        sortUsers();
         sortProducts();
     }
     // Funktion um einen neuen Benutzer hinzuzufügen (Registrierung)
@@ -109,30 +106,14 @@ public class dataBean implements Serializable {
     public void setSortOrder(String sortOrder) {
         this.sortOrder = sortOrder;
     }
-
-    public List<user> getSortedUserList() {
-        return sortedUserList;
-    }
     
-    public List<product> getSortedProductList() {
-        return sortedProductList;
-    }
     
-    public void sortUsers() {
-        sortedUserList = new ArrayList<>(userList);
-        if (sortOrder.equals("idAsc")) {
-            sortedUserList.sort(Comparator.comparing(user::getUserID));
-        } else if (sortOrder.equals("idDesc")) {
-            sortedUserList.sort(Comparator.comparing(user::getUserID).reversed());
-        }
-    }
     
     public void sortProducts() {
-        sortedProductList = new ArrayList<>(productList);
         if (sortOrder.equals("idAsc")) {
-            sortedProductList.sort(Comparator.comparing(product::getProdID));
+            productList.sort(Comparator.comparing(product::getProdID));
         } else if (sortOrder.equals("idDesc")) {
-            sortedProductList.sort(Comparator.comparing(product::getProdID).reversed());
+            productList.sort(Comparator.comparing(product::getProdID).reversed());
         }
     }
     

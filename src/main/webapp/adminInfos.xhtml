@@ -16,15 +16,15 @@
                 <h:form id="form">
                     <p:growl id="messages" showDetail="true" showSummary="true"/>
 
-                    <p:dataTable id="dt-users" widgetVar="userTable" var="user" value="#{dataBean.sortedUserList}"
+                    <p:dataTable id="dt-users" widgetVar="userTable" var="user" value="#{userBean.userDataList}"
                                  reflow="true" styleClass="products-table"
                                  rowKey="#{user.userID}" paginator="true" rows="8" rowSelectMode="add" paginatorPosition="bottom">
                         <f:facet name="header">
                                 <span style="font-weight: bold">USERS</span>
-                                <p:selectOneMenu id="sortUsers" value="#{dataBean.sortOrder}" class="adminSortHeader">
+                                <p:selectOneMenu id="sortUsers" value="#{userBean.sortOrder}" class="adminSortHeader">
                                     <f:selectItem itemLabel="Sort by User ID (Ascending)" itemValue="idAsc" />
                                     <f:selectItem itemLabel="Sort by User ID (Descending)" itemValue="idDesc" />
-                                    <p:ajax event="change" update="dt-users" listener="#{dataBean.sortUsers}" />
+                                    <p:ajax event="change" update="dt-users" listener="#{userBean.sortUsers}" />
                                 </p:selectOneMenu>
                         </f:facet>
 
@@ -54,7 +54,7 @@
                         </p:column>
                     </p:dataTable>
                     
-                    <p:dataTable id="prodTable" var="product" value="#{dataBean.sortedProductList}"
+                    <p:dataTable id="prodTable" var="product" value="#{dataBean.productList}"
                             styleClass="products-table" editable="true" 
                             rowKey="#{product.prodID}" paginator="true" rows="4" paginatorPosition="bottom">
                             <f:facet name="header">
@@ -147,12 +147,12 @@
                                              editTitle="Edit Row" cancelTitle="Cancel Edit" saveTitle="Save Row"/>
                             </p:column>
 
-                            <p:column width="auto" style="text-align: center">        
+<!--                            <p:column width="auto" style="text-align: center">        
                                 <p:commandButton value="Delete" icon="pi pi-trash" styleClass="ui-button-danger" 
                                                  action="#{productBean.deleteProduct(product)}"
                                                  update="prodTable">
                                 </p:commandButton>
-                            </p:column>
+                            </p:column>-->
                         </p:dataTable>
                 </h:form>
             </ui:define>

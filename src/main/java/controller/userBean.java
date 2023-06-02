@@ -4,10 +4,12 @@
  */
 package controller;
 
+import jakarta.annotation.PostConstruct;
 import jakarta.inject.Named;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.inject.Inject;
 import java.io.Serializable;
+import java.util.Comparator;
 import java.util.List;
 import model.user;
 import util.dataBean;
@@ -22,11 +24,17 @@ import util.dataBean;
 public class userBean implements Serializable {
     
     private List<user> userDataList;
+    private String sortOrder = "idAsc";
     
-    @Inject
     private dataBean userData;
     
-    public userBean(){ 
+    @PostConstruct
+    public void init() {
+        sortUsers();
+    }
+    
+    public userBean(){
+        userData = new dataBean();
         userDataList = userData.getUserList();
     }
 
@@ -38,6 +46,20 @@ public class userBean implements Serializable {
         this.userDataList = userDataList;
     }
     
+    public String getSortOrder() {
+        return sortOrder;
+    }
     
+    public void setSortOrder(String sortOrder) {
+        this.sortOrder = sortOrder;
+    }
+    
+    public void sortUsers() {
+        if (sortOrder.equals("idAsc")) {
+            userDataList.sort(Comparator.comparing(user::getUserID));
+        } else if (sortOrder.equals("idDesc")) {
+            userDataList.sort(Comparator.comparing(user::getUserID).reversed());
+        }
+    }
     
 }
