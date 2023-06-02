@@ -16,6 +16,7 @@ import java.util.Comparator;
 import java.util.List;
 import model.product;
 import org.primefaces.event.RowEditEvent;
+import util.SqlBean;
 import util.dataBean;
 /**
  *
@@ -29,11 +30,11 @@ import util.dataBean;
 public class productBean implements Serializable {
     
     private List<product> productDataList;
-    private dataBean productData;
+    private SqlBean productData;
     private product currentProduct;
     
     public productBean(){
-        productData = new dataBean();
+        productData = new SqlBean();
         productDataList = productData.getProductList();
     }
     
