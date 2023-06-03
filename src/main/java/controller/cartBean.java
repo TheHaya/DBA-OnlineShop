@@ -99,7 +99,7 @@ public class cartBean implements Serializable {         // Serialisierbar ermög
     }
 
     public String checkout(){
-        cartData.insertCheckout(curUser.getUserID(), this);
+        cartData.insertCheckout(this);
         cart = new ArrayList<>();
         return "checkout.xhtml";
     }

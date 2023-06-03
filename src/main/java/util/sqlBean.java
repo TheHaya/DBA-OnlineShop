@@ -148,13 +148,13 @@ public class sqlBean implements Serializable {
         }
     }
 
-    public void insertCheckout(int userID, cartBean cart) {
+    public void insertCheckout(cartBean cart) {
         try {
 
             // Insert into orders table
-            String ordersSql = "INSERT INTO orders (FK_CID) VALUES (?)";
+            String ordersSql = "INSERT INTO Orders (FK_CID) VALUES (?)";
             PreparedStatement ordersStatement = conn.prepareStatement(ordersSql);
-            ordersStatement.setInt(1, userID);
+            ordersStatement.setInt(1, 99);
             ordersStatement.executeUpdate();
 
             // Get the generated order ID
@@ -171,14 +171,14 @@ public class sqlBean implements Serializable {
 
             // Insert into orderdetail table
             
-            for (product p : cart.getCart()) {
-                String orderDetailsSql = "INSERT INTO orderdetail (FK_OID, FK_PRID, ODAMOUNT) VALUES (?, ?, ?)";
-                PreparedStatement orderDetailsStatement = conn.prepareStatement(orderDetailsSql);
-                orderDetailsStatement.setInt(1, orderID);
-                orderDetailsStatement.setInt(2, p.getProdID());
-                orderDetailsStatement.setInt(3, p.getProdQuant());
-                orderDetailsStatement.executeUpdate();
-            }
+//            for (product p : cart.getCart()) {
+//                String orderDetailsSql = "INSERT INTO Orderdetail (FK_OID, FK_PRID, ODAMOUNT) VALUES (?, ?, ?)";
+//                PreparedStatement orderDetailsStatement = conn.prepareStatement(orderDetailsSql);
+//                orderDetailsStatement.setInt(1, orderID);
+//                orderDetailsStatement.setInt(2, p.getProdID());
+//                orderDetailsStatement.setInt(3, p.getProdQuant());
+//                orderDetailsStatement.executeUpdate();
+//            }
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
