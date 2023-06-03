@@ -21,6 +21,15 @@
                                 <f:facet name="header">
                                     <span style="font-weight: bold">REGISTRATION</span>
                                 </f:facet>
+                                
+                                <p:outputLabel for="salutation" value="Salutation:" style="margin: 10px; color: black; width: 150px;" styleClass="label label-primary"/> 
+                                <p:selectOneMenu id="salutation" value="#{registerBean.salutation}" style="text-align: left; margin: 10px; margin-left: 10px; width: 200px;">
+                                    <f:selectItem itemLabel="Mr" itemValue="Mr" />
+                                    <f:selectItem itemLabel="Mrs" itemValue="Mrs" />
+                                    <f:selectItem itemLabel="Mx" itemValue="Mx"/>
+                                </p:selectOneMenu>
+                                <h:panelGroup/>
+                                
                                 <p:outputLabel for="firstName" value="First Name:" style="margin: 10px; color: black; width: 150px;" styleClass="label label-primary"/> 
                                 <p:inputText id="firstName" value="#{registerBean.firstname}" required="true" requiredMessage="Required field"
                                              placeholder="First Name..." style="text-align: left; margin: 10px; margin-left: 10px; width: 200px;"  
@@ -47,7 +56,7 @@
 
                                 <p:outputLabel for="phoneNumber" value="Phone Number:" style="margin: 10px; color: black; width: 150px;" styleClass="label label-primary"/> 
                                 <p:inputText id="phoneNumber" value="#{registerBean.phone}" required="true" requiredMessage="Required field"
-                                             placeholder="Phone Number..." style="text-align: left; margin: 10px; margin-left: 10px; width: 200px;"  
+                                             placeholder="Phone Number..." validator="phoneValidator" style="text-align: left; margin: 10px; margin-left: 10px; width: 200px;"  
                                              styleClass="form-control">
                                     <p:ajax event="keyup" update="phoneNumberMessage"/>           
                                 </p:inputText>
@@ -61,15 +70,8 @@
 
                                 <p:message id="birthdateMessage" for="birthdate" style="margin-left: 20px;width: 200px;" styleClass="text-warning"/>
 
-
-                                <p:outputLabel for="salutation" value="Salutation:" style="margin: 10px; color: black; width: 150px;" styleClass="label label-primary"/> 
-                                <p:selectOneMenu id="salutation" value="#{registerBean.salutation}" style="width: 200px;">
-                                    <f:selectItem itemLabel="Mr" itemValue="Mr" />
-                                    <f:selectItem itemLabel="Ms" itemValue="Ms" />
-                                </p:selectOneMenu>
-
                                 <br/>
-                                <p:commandButton id="createCustomerBtn" value="Create Customer" action="#{registerBean.createCustomer()}"
+                                <p:commandButton id="createCustomerBtn" value="Next Page" action="#{registerBean.createCustomer()}"
                                                  style="margin: 10px; margin-left: 10px;" styleClass="btn btn-success" ajax="false"
                                                  update="messages" oncomplete="window.location.href='register3.xhtml'" />
 

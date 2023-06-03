@@ -4,6 +4,7 @@
  */
 package util;
 
+import controller.cartBean;
 import java.io.Serializable;
 
 import java.sql.Connection;
@@ -15,6 +16,7 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jakarta.enterprise.context.SessionScoped;
+import jakarta.faces.context.FacesContext;
 import jakarta.inject.Named;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -146,6 +148,43 @@ public class sqlBean implements Serializable {
         }
     }
 
+    public void insertCheckout(int userID, cartBean cart) {
+        try {
+
+            // Insert into orders table
+            String ordersSql = "INSERT INTO orders (FK_CID) VALUES (?)";
+            PreparedStatement ordersStatement = conn.prepareStatement(ordersSql);
+            ordersStatement.setInt(1, userID);
+            ordersStatement.executeUpdate();
+
+            // Get the generated order ID
+            int orderID;
+            String orderIDSql = "SELECT LAST_INSERT_ID()";
+            PreparedStatement orderIDStatement = conn.prepareStatement(orderIDSql);
+            try (ResultSet orderIDResultSet = orderIDStatement.executeQuery()) {
+                if (orderIDResultSet.next()) {
+                    orderID = orderIDResultSet.getInt(1);
+                } else {
+                    throw new SQLException("Failed to retrieve generated order ID.");
+                }
+            }
+
+            // Insert into orderdetail table
+            
+            for (product p : cart.getCart()) {
+                String orderDetailsSql = "INSERT INTO orderdetail (FK_OID, FK_PRID, ODAMOUNT) VALUES (?, ?, ?)";
+                PreparedStatement orderDetailsStatement = conn.prepareStatement(orderDetailsSql);
+                orderDetailsStatement.setInt(1, orderID);
+                orderDetailsStatement.setInt(2, p.getProdID());
+                orderDetailsStatement.setInt(3, p.getProdQuant());
+                orderDetailsStatement.executeUpdate();
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+    
+    
     public List<product> getProductList() {
 
         try {
@@ -218,7 +257,24 @@ public class sqlBean implements Serializable {
         }
         return false;
     }
-
+    
+    public boolean findPhone(String phone) {
+        try {
+            String sql = "SELECT COUNT(*) FROM Customer WHERE CEMAIL = ?";
+            PreparedStatement statement = conn.prepareStatement(sql);
+            statement.setString(1, phone);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    int count = resultSet.getInt(1);
+                    return count > 0;
+                }
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return false;
+    }
+    
     public Customer getCustomer(String username, String password) {
         try {
             String sql = "SELECT * FROM Customer C JOIN Account A ON C.FK_ACCID = A.ACCID WHERE A.ACCNAME = ? AND A.ACCPWD = ?";

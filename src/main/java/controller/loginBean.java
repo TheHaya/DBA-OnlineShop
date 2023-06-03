@@ -56,55 +56,6 @@ public class loginBean implements Serializable {
     }
     
     
-    
-    /* Aufgrund von neuem Login screen unbenutzt, vorher eine eigene Seite, nun ein Modal Dialog
-     
-    // Login Funktion, wird beim Login button aufgerufen
-    // Schaut ob die eingegebenen Daten (Benutzername und Passwort) im Userinput mit einem Eintrag
-    // in der (hier hard-coded) Datenbank  übereinstimmt
-    public String login() {
-        FacesMessage facesMessage;
-        context = FacesContext.getCurrentInstance();
-        check = false;
-        String following = "index.xhtml";
-        userDataList = loginData.getUserList();
-        
-        for(user u : userDataList) {
-            if(u.getUsername().equals(loginName)
-                    &&u.getPassword().equals(loginPass)){
-                check = true;
-                if(u.getRights() <= 1){         // Checkt ob der eingeloggte Benutzer Admin Rechte besitzt.    
-                    adminRights = true;            
-                }
-                break;
-            }
-        }
-        if(check == true){
-            loginCheck = true;
-            
-            getSession().setAttribute("username", loginName);
-            //Nachricht an Inputkomponente für richtiges Passwort
-            //Validierungsmessage
-            facesMessage = new FacesMessage(FacesMessage.SEVERITY_INFO,
-                    "Login Successful", "Welcome " + loginName + "!");
-            //FacesMessage an bestimmte Client Identifier wenn nicht null
-            context.addMessage(null,facesMessage);
-        }
-        else {
-            //Nachricht an Inputkomponente für falsche Anmeldeinformationen
-            //Validierungsmessage
-            facesMessage = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-            "Invalid", "Username or Password invalid");
-            //FacesMessage an bestimmte Client Identifier wenn nicht null
-            context.addMessage(null, facesMessage);
-            following = null;
-        }
-        return following;
-    }
-    */
-     
-    
-    
     // Login Funktion, wird beim Login button in einem Modal Dialogfenster aufgerufen
     // Schaut ob die eingegebenen Daten (Benutzername und Passwort) im Userinput mit einem Eintrag
     // in der (hier hard-coded) Datenbank  übereinstimmt

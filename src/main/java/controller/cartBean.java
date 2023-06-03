@@ -9,13 +9,16 @@ import jakarta.enterprise.context.SessionScoped;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.AjaxBehaviorEvent;
+import jakarta.inject.Inject;
 import java.io.Serializable;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import model.Customer;
 import model.product;
+import model.user;
 import util.sqlBean;
 /**
  *
@@ -32,8 +35,13 @@ import util.sqlBean;
 public class cartBean implements Serializable {         // Serialisierbar ermöglicht die Objektspeicherung und Verkehr im Netzwerk
 
     private List<product> cart;
-
+    private user curUser;
+    
+    @Inject
+    private sqlBean cartData;
+    
     public cartBean() {
+        cartData = new sqlBean();
         cart = new ArrayList<>();
     }
     
@@ -90,42 +98,8 @@ public class cartBean implements Serializable {         // Serialisierbar ermög
         }
     }
 
-    public String checkout(int userID) {
-        try {
-            // Get the sqlBean instance
-            FacesContext context = FacesContext.getCurrentInstance();
-            sqlBean sqlBean = context.getApplication().evaluateExpressionGet(context, "#{sqlBean}", sqlBean.class);
-
-            // Insert into orders table
-            String ordersSql = "INSERT INTO orders (FK_CID) VALUES (?)";
-            PreparedStatement ordersStatement = sqlBean.getConn().prepareStatement(ordersSql);
-            ordersStatement.setInt(1, userID);
-            ordersStatement.executeUpdate();
-
-            // Get the generated order ID
-            int orderID;
-            String orderIDSql = "SELECT LAST_INSERT_ID()";
-            PreparedStatement orderIDStatement = sqlBean.getConn().prepareStatement(orderIDSql);
-            try (ResultSet orderIDResultSet = orderIDStatement.executeQuery()) {
-                if (orderIDResultSet.next()) {
-                    orderID = orderIDResultSet.getInt(1);
-                } else {
-                    throw new SQLException("Failed to retrieve generated order ID.");
-                }
-            }
-
-            // Insert into orderdetail table
-            for (product p : cart) {
-                String orderDetailsSql = "INSERT INTO orderdetail (FK_OID, FK_PRID, ODAMOUNT) VALUES (?, ?, ?)";
-                PreparedStatement orderDetailsStatement = sqlBean.getConn().prepareStatement(orderDetailsSql);
-                orderDetailsStatement.setInt(1, orderID);
-                orderDetailsStatement.setInt(2, p.getProdID());
-                orderDetailsStatement.setInt(3, p.getProdQuant());
-                orderDetailsStatement.executeUpdate();
-            }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
+    public String checkout(){
+        cartData.insertCheckout(curUser.getUserID(), this);
         cart = new ArrayList<>();
         return "checkout.xhtml";
     }

@@ -33,27 +33,27 @@
                             <h:outputText value="#{user.userID}" />
                         </p:column>
                         
-                        <p:column headerText="First name" sortBy="#{user.firstName}" filterBy="#{user.firstName}"
+                        <p:column headerText="First name" filterBy="#{user.firstName}"
                                   width="auto" style="text-align: center">
                             <h:outputText value="#{user.firstName}" />
                         </p:column>
                         
-                        <p:column headerText="Last name" sortBy="#{user.famName}" filterBy="#{user.famName}"
+                        <p:column headerText="Last name" filterBy="#{user.famName}"
                                   width="auto" style="text-align: center">
                             <h:outputText value="#{user.famName}" />
                         </p:column>
                         
-                        <p:column headerText="Username" sortBy="#{user.username}" filterBy="#{user.username}"
+                        <p:column headerText="Username" filterBy="#{user.username}"
                                   width="auto" style="text-align: center">
                             <h:outputText value="#{user.username}" />
                         </p:column>
                         
-                        <p:column headerText="Email" sortBy="#{user.email}" filterBy="#{user.email}"
+                        <p:column headerText="Email" filterBy="#{user.email}"
                                   width="auto" style="text-align: center">
                             <h:outputText value="#{user.email}" />
                         </p:column>
                         
-                        <p:column headerText="Rights" sortBy="#{user.rights}" filterBy="#{user.rights}"
+                        <p:column headerText="Rights" filterBy="#{user.rights}"
                                   width="50px" style="text-align: center">
                             <h:outputText value="#{user.rights}" />
                         </p:column>
@@ -75,19 +75,12 @@
                             <p:ajax event="rowEditCancel" listener="#{productBean.onRowCancel}" update="messages"/>
 
                             <p:column headerText="ID" width="auto" style="text-align: center" 
-                                      sortBy="#{product.prodID}" filterBy="#{product.prodID}">
-                                <p:cellEditor>
-                                    <f:facet name="output">
+                                      filterBy="#{product.prodID}">
                                         <h:outputText value="#{product.prodID}" />
-                                    </f:facet>
-                                    <f:facet name="input">
-                                        <p:inputText id="modelInput" value="#{product.prodID}" />
-                                    </f:facet>
-                                </p:cellEditor>
                             </p:column>
 
 
-                            <p:column headerText="Name" sortBy="#{product.prodName}" filterBy="#{product.prodName}"
+                            <p:column headerText="Name" filterBy="#{product.prodName}"
                                       width="auto" style="text-align: center">
                                 <p:cellEditor>
                                     <f:facet name="output">
@@ -105,7 +98,7 @@
 
 
                             <p:column headerText="Description" width="auto" style="text-align: center"
-                                      sortBy="#{product.prodDesc}" filterBy="#{product.prodDesc}">
+                                      filterBy="#{product.prodDesc}">
                                 <p:cellEditor>
                                     <f:facet name="output">
                                         <h:outputText value="#{product.prodDesc}" />
@@ -133,7 +126,7 @@
                                 </p:cellEditor>
                             </p:column>
 
-                            <p:column headerText="Price" sortBy="#{product.prodPrice}" filterBy="#{product.prodPrice}"
+                            <p:column headerText="Price" filterBy="#{product.prodPrice}"
                                       width="auto" style="text-align: center">
                                 <p:cellEditor>
                                     <f:facet name="output">

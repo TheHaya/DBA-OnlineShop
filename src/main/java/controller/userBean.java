@@ -10,6 +10,7 @@ import jakarta.enterprise.context.SessionScoped;
 import java.io.Serializable;
 import java.util.Comparator;
 import java.util.List;
+import model.Customer;
 import model.user;
 import util.sqlBean;
 /**
