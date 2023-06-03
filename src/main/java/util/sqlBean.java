@@ -16,14 +16,18 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.inject.Named;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import model.Account;
 import model.product;
 import model.user;
 import model.Customer;
+import model.ProductInfo;
+import model.UserInfo;
 
 /**
  * SqlBean handles the database operations using SQL queries and statements. It
@@ -248,6 +252,128 @@ public class sqlBean implements Serializable {
         }
 
         return null;
+    }
+
+    public List<ProductInfo> getBestsellers() {
+        List<ProductInfo> bestsellers = new ArrayList<>();
+
+        try {
+            String sql = "SELECT p.PRNAME AS ProductName, SUM(od.ODAMOUNT) AS TotalAmount, p.PCATENUM AS Category "
+                    + "FROM Product p "
+                    + "JOIN OrderDetail od ON od.FK_PRID = p.PRID "
+                    + "JOIN Orders o ON o.OID = od.FK_OID "
+                    + "GROUP BY p.PRNAME, p.PCATENUM "
+                    + "HAVING TotalAmount > 0 " // Filter für Artikel mit mindestens einem Verkauf
+                    + "ORDER BY TotalAmount DESC "
+                    + "LIMIT 5";
+            PreparedStatement statement = conn.prepareStatement(sql);
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                String productName = resultSet.getString("ProductName");
+                int totalAmount = resultSet.getInt("TotalAmount");
+                String category = resultSet.getString("Category");
+
+                ProductInfo bestseller = new ProductInfo(productName, totalAmount, category);
+                bestsellers.add(bestseller);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return bestsellers;
+    }
+
+    public List<ProductInfo> getLeastSoldProducts() {
+        List<ProductInfo> leastSoldProducts = new ArrayList<>();
+
+        try {
+            String sql = "SELECT p.PRNAME AS ProductName, SUM(od.ODAMOUNT) AS TotalAmount, p.PCATENUM AS Category "
+                    + "FROM Product p "
+                    + "LEFT JOIN OrderDetail od ON od.FK_PRID = p.PRID "
+                    + "GROUP BY p.PRNAME, p.PCATENUM "
+                    + "HAVING TotalAmount > 0 " // Filter für Artikel mit mindestens einem Verkauf
+                    + "ORDER BY TotalAmount ASC "
+                    + "LIMIT 5";
+            PreparedStatement statement = conn.prepareStatement(sql);
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                String productName = resultSet.getString("ProductName");
+                int totalAmount = resultSet.getInt("TotalAmount");
+                String category = resultSet.getString("Category");
+
+                ProductInfo product = new ProductInfo(productName, totalAmount, category);
+                leastSoldProducts.add(product);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return leastSoldProducts;
+    }
+
+    public List<UserInfo> getUserInfoList() {
+        List<UserInfo> userInfoList = new ArrayList<>();
+
+        try {
+            String sql = "SELECT c.CFAMNAME AS LastName, c.CFIRSTNAME AS FirstName, COUNT(o.OID) AS OrdersAmount, "
+                    + "SUM(p.PRPRICENETTO * od.ODAMOUNT) AS Totalprice "
+                    + "FROM Customer c "
+                    + "LEFT JOIN Orders o ON o.FK_CID = c.CID "
+                    + "LEFT JOIN OrderDetail od ON od.FK_OID = o.OID "
+                    + "LEFT JOIN Product p ON p.PRID = od.FK_PRID "
+                    + "WHERE YEAR(o.ODELDATE) = YEAR(CURRENT_DATE()) "
+                    + "GROUP BY c.CID "
+                    + "HAVING OrdersAmount > 1 "
+                    + "ORDER BY OrdersAmount DESC";
+            PreparedStatement statement = conn.prepareStatement(sql);
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                String lastName = resultSet.getString("LastName");
+                String firstName = resultSet.getString("FirstName");
+                int ordersAmount = resultSet.getInt("OrdersAmount");
+                double totalRevenue = resultSet.getDouble("Totalprice");
+
+                UserInfo userInfo = new UserInfo(firstName + " " + lastName, ordersAmount, totalRevenue);
+                userInfoList.add(userInfo);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return userInfoList;
+    }
+
+    public List<UserInfo> getInactiveCustomers() {
+        List<UserInfo> inactiveCustomers = new ArrayList<>();
+
+        try {
+            String sql = "SELECT CONCAT(c.CFIRSTNAME, ' ', c.CFAMNAME) AS AccName, COUNT(o.OID) AS OrdersAmount, "
+                    + "SUM(od.ODAMOUNT * p.PRPRICENETTO) AS Totalprice "
+                    + "FROM Customer c "
+                    + "LEFT JOIN Orders o ON o.FK_CID = c.CID "
+                    + "LEFT JOIN OrderDetail od ON od.FK_OID = o.OID "
+                    + "LEFT JOIN Product p ON p.PRID = od.FK_PRID "
+                    + "WHERE YEAR(o.ODELDATE) <> YEAR(CURRENT_DATE()) OR o.ODELDATE IS NULL "
+                    + "GROUP BY AccName";
+            PreparedStatement statement = conn.prepareStatement(sql);
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                String accName = resultSet.getString("AccName");
+                int ordersAmount = resultSet.getInt("OrdersAmount");
+                double totalRevenue = resultSet.getDouble("Totalprice");
+
+                UserInfo userInfo = new UserInfo(accName, ordersAmount, totalRevenue);
+                inactiveCustomers.add(userInfo);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return inactiveCustomers;
     }
 
     public Connection getConn() {
