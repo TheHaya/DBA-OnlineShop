@@ -5,7 +5,7 @@
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
-    
+
     <h:head>
         <link rel="stylesheet" type="text/css" href="resources/css/myStyles.css"/>
         <link rel="stylesheet" type="text/css" href="resources/css/primeflex.css"/>
@@ -16,142 +16,64 @@
                 <h:form id="form">
                     <p:growl id="messages" showDetail="true" showSummary="true"/>
 
-                    <p:dataTable id="dt-users" widgetVar="userTable" var="user" value="#{userBean.userDataList}"
-                                 reflow="true" styleClass="products-table"
-                                 rowKey="#{user.userID}" paginator="true" rows="8" rowSelectMode="add" paginatorPosition="bottom">
-                        <f:facet name="header">
-                                <span style="font-weight: bold">USERS</span>
-                                <p:selectOneMenu id="sortUsers" value="#{userBean.sortOrder}" class="adminSortHeader">
-                                    <f:selectItem itemLabel="Sort by User ID (Ascending)" itemValue="idAsc" />
-                                    <f:selectItem itemLabel="Sort by User ID (Descending)" itemValue="idDesc" />
-                                    <p:ajax event="change" update="dt-users" listener="#{userBean.sortUsers}" />
-                                </p:selectOneMenu>
-                        </f:facet>
 
-                        <p:column headerText="ID" sortBy="#{user.userID}" filterBy="#{user.userID}" 
-                                  width="50px" style="text-align: center">
-                            <h:outputText value="#{user.userID}" />
-                        </p:column>
-                        
-                        <p:column headerText="First name" filterBy="#{user.firstName}"
+                    <p:selectOneMenu id="dataTypeMenu" value="#{adminInfo.selectedDataType}">
+                        <f:selectItem itemLabel="Product Info" itemDisabled="true" />
+                        <f:selectItem itemLabel="Bestseller" itemValue="bestseller" />
+                        <f:selectItem itemLabel="Low Selling Products" itemValue="lowSelling" />
+                        <p:ajax event="valueChange" listener="#{adminInfo.loadProductInfo}" update="dt-products" />
+                    </p:selectOneMenu>
+
+                    <!-- DataTable for Top Sellers / Least Sold Products -->
+                    <p:dataTable id="dt-products" var="product" value="#{adminInfo.productInfo}"
+                                 reflow="true" styleClass="products-table"
+                                 rowKey="#{product.productName}" paginator="true" rows="8" paginatorPosition="bottom">
+                        <p:column headerText="Product Name" sortBy="#{product.productName}" filterBy="#{product.productName}"
                                   width="auto" style="text-align: center">
-                            <h:outputText value="#{user.firstName}" />
+                            <h:outputText value="#{product.productName}" />
                         </p:column>
-                        
-                        <p:column headerText="Last name" filterBy="#{user.famName}"
+
+                        <p:column headerText="Total Amount" sortBy="#{product.totalAmount}" filterBy="#{product.totalAmount}"
                                   width="auto" style="text-align: center">
-                            <h:outputText value="#{user.famName}" />
+                            <h:outputText value="#{product.totalAmount}" />
                         </p:column>
-                        
-                        <p:column headerText="Username" filterBy="#{user.username}"
+
+                        <p:column headerText="Category" sortBy="#{product.category}" filterBy="#{product.category}"
                                   width="auto" style="text-align: center">
-                            <h:outputText value="#{user.username}" />
-                        </p:column>
-                        
-                        <p:column headerText="Email" filterBy="#{user.email}"
-                                  width="auto" style="text-align: center">
-                            <h:outputText value="#{user.email}" />
-                        </p:column>
-                        
-                        <p:column headerText="Rights" filterBy="#{user.rights}"
-                                  width="50px" style="text-align: center">
-                            <h:outputText value="#{user.rights}" />
+                            <h:outputText value="#{product.category}" />
                         </p:column>
                     </p:dataTable>
-                    
-                    <p:dataTable id="prodTable" var="product" value="#{productBean.productDataList}"
-                            styleClass="products-table" editable="true" 
-                            rowKey="#{product.prodID}" paginator="true" rows="4" paginatorPosition="bottom">
-                            <f:facet name="header">
-                                <span style="font-weight: bold">PRODUCTS</span>
-                                <p:selectOneMenu id="sortProducts" value="#{productBean.sortOrder}" class="adminSortHeader">
-                                    <f:selectItem itemLabel="Sort by Product ID (Ascending)" itemValue="idAsc" />
-                                    <f:selectItem itemLabel="Sort by Product ID (Descending)" itemValue="idDesc" />
-                                    <p:ajax event="change" update="prodTable" listener="#{productBean.sortProducts}" />
-                                </p:selectOneMenu>
-                            </f:facet>
-
-                            <p:ajax event="rowEdit" listener="#{productBean.saveCurrentProduct(product)}" update="messages"/>
-                            <p:ajax event="rowEditCancel" listener="#{productBean.onRowCancel}" update="messages"/>
-
-                            <p:column headerText="ID" width="auto" style="text-align: center" 
-                                      filterBy="#{product.prodID}">
-                                        <h:outputText value="#{product.prodID}" />
-                            </p:column>
+                    <p:selectOneMenu id="UserInfoTypeMenu" value="#{adminInfo.selectedUserInfoType}">
+                        <f:selectItem itemLabel="User Info" itemDisabled="true" />
+                        <f:selectItem itemLabel="Best Customers" itemValue="bestCustomers" />
+                        <f:selectItem itemLabel="Worst Customers" itemValue="worstCustomers" />
+                        <p:ajax event="valueChange" listener="#{adminInfo.loadUserInfo}" update="dt-customers" />
+                    </p:selectOneMenu>
 
 
-                            <p:column headerText="Name" filterBy="#{product.prodName}"
-                                      width="auto" style="text-align: center">
-                                <p:cellEditor>
-                                    <f:facet name="output">
-                                        <h:outputText value="#{product.prodName}" />
-                                    </f:facet>
-                                    <f:facet name="input">
-                                        <p:inputText label="Name" value="#{product.prodName}" />
-                                    </f:facet>
-                                </p:cellEditor>
-                            </p:column>
-
-                            <p:column headerText="Image" exportable="false" width="auto" style="text-align: center">
-                                <p:graphicImage name="#{product.prodPic}" width="100px"/>
-                            </p:column>
 
 
-                            <p:column headerText="Description" width="auto" style="text-align: center"
-                                      filterBy="#{product.prodDesc}">
-                                <p:cellEditor>
-                                    <f:facet name="output">
-                                        <h:outputText value="#{product.prodDesc}" />
-                                    </f:facet>
-                                    <f:facet name="input">
-                                        <p:inputText label="Name" value="#{product.prodDesc}" />
-                                    </f:facet>
-                                </p:cellEditor>
-                            </p:column>
+                    <!-- DataTable for Best Customers / Worst Customers -->
+                    <p:dataTable id="dt-customers" var="customer" value="#{adminInfo.userInfo}"
+                                 reflow="true" styleClass="products-table"
+                                 rowKey="#{customer.accName}" paginator="true" rows="8" paginatorPosition="bottom">
 
-                            <p:column headerText="Category" sortBy="#{product.prodType}" filterBy="#{product.prodType}"
-                                      width="auto" style="text-align: center">
-                                <p:cellEditor>
-                                    <f:facet name="output">
-                                        <h:outputText value="#{product.prodType}" />
-                                    </f:facet>
-                                    <f:facet name="input">
-                                        <p:selectOneMenu id="option" value="#{product.prodType}" style="width:auto">
-                                            <f:selectItem itemLabel="Pizza" itemValue="Pizza"/> 
-                                            <f:selectItem itemLabel="Ice Cream" itemValue="Ice Cream"/> 
-                                            <f:selectItem itemLabel="Cake" itemValue="Cake"/> 
-                                            <f:selectItem itemLabel="Fruit" itemValue="Fruit"/> 
-                                        </p:selectOneMenu>
-                                    </f:facet>
-                                </p:cellEditor>
-                            </p:column>
+                        <p:column headerText="Customer Name" sortBy="#{customer.accName}" filterBy="#{customer.accName}"
+                                  width="auto" style="text-align: center">
+                            <h:outputText value="#{customer.accName}" />
+                        </p:column>
 
-                            <p:column headerText="Price" filterBy="#{product.prodPrice}"
-                                      width="auto" style="text-align: center">
-                                <p:cellEditor>
-                                    <f:facet name="output">
-                                        <h:outputText value="#{product.prodPrice}" >
-                                            <f:convertNumber type="currency" currencySymbol="€"/>
-                                        </h:outputText>
-                                    </f:facet>
-                                    <f:facet name="input">
-                                        <p:inputNumber label="Name" value="#{product.prodPrice}" symbol="€"/>
-                                    </f:facet>
-                                </p:cellEditor>
-                            </p:column>
+                        <p:column headerText="Total Orders" sortBy="#{customer.ordersAmount}" filterBy="#{customer.ordersAmount}"
+                                  width="auto" style="text-align: center">
+                            <h:outputText value="#{customer.ordersAmount}" />
+                        </p:column>
 
-                            <p:column width="auto" style="text-align: center">
-                                <p:rowEditor styleClass="rounded-button ui-button-warning ui-button-outlined" 
-                                             editTitle="Edit Row" cancelTitle="Cancel Edit" saveTitle="Save Row"/>
-                            </p:column>
+                        <p:column headerText="Total Revenue" sortBy="#{customer.totalRevenue}" filterBy="#{customer.totalRevenue}"
+                                  width="auto" style="text-align: center">
+                            <h:outputText value="#{customer.totalRevenue}" />
+                        </p:column>
+                    </p:dataTable>
 
-<!--                            <p:column width="auto" style="text-align: center">        
-                                <p:commandButton value="Delete" icon="pi pi-trash" styleClass="ui-button-danger" 
-                                                 action="#{productBean.deleteProduct(product)}"
-                                                 update="prodTable">
-                                </p:commandButton>
-                            </p:column>-->
-                        </p:dataTable>
                 </h:form>
             </ui:define>
         </ui:composition>
