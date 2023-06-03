@@ -158,6 +158,10 @@ public class loginBean implements Serializable {
     public void setAdminRights(boolean adminRights) {
         this.adminRights = adminRights;
     }
+
+    public Customer getLoggedInCustomer() {
+        return loggedInCustomer;
+    }
     
     
 }

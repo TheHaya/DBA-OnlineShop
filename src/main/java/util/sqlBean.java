@@ -28,6 +28,7 @@ import model.Account;
 import model.product;
 import model.user;
 import model.Customer;
+import model.OrderDetail;
 import model.ProductInfo;
 import model.UserInfo;
 
@@ -152,13 +153,15 @@ public class sqlBean implements Serializable {
         }
     }
 
-    public void insertCheckout(int userID, cartBean cart) {
+    public void insertCheckout(OrderDetail orderDetail, Customer customer, cartBean cart) {
         try {
 
             // Insert into orders table
-            String ordersSql = "INSERT INTO orders (FK_CID) VALUES (?)";
+            String ordersSql = "INSERT INTO orders (FK_CID, ODELDATE, OSTATUS) VALUES (?, ?, ?)";
             PreparedStatement ordersStatement = conn.prepareStatement(ordersSql);
-            ordersStatement.setInt(1, userID);
+            ordersStatement.setInt(1, customer.getCid());
+            ordersStatement.setDate(2, orderDetail.getOrder().getDelDate());
+            ordersStatement.setString(3, orderDetail.getOrder().getStatus());
             ordersStatement.executeUpdate();
 
             // Get the generated order ID

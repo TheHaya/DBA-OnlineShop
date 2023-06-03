@@ -15,8 +15,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.List;
 import model.Customer;
+import model.OrderDetail;
+import model.Orders;
 import model.product;
 import model.user;
 import util.sqlBean;
@@ -36,12 +40,26 @@ public class cartBean implements Serializable {         // Serialisierbar ermög
 
     private List<product> cart;
     private user curUser;
+    private FacesContext context;
+    private Date delDate;
+    private enum status {Pending, Completed, Denied};
+    private Customer customer;
+    private String comment;
+    private Timestamp orderDate;
+    private Timestamp ODDate;
+    private int amount;
+    private product product;
+    private Orders order;
+    private OrderDetail orderDetail;
+    
+    private loginBean cartLogin;
     
     @Inject
     private sqlBean cartData;
     
     public cartBean() {
         cartData = new sqlBean();
+        cartLogin = new loginBean();
         cart = new ArrayList<>();
     }
     
@@ -99,7 +117,10 @@ public class cartBean implements Serializable {         // Serialisierbar ermög
     }
 
     public String checkout(){
-        cartData.insertCheckout(curUser.getUserID(), this);
+        Orders newOrder = new Orders(delDate, customer, comment, orderDate);
+        Customer curCustomer = cartLogin.getLoggedInCustomer();
+        orderDetail.setOrder(newOrder);
+        cartData.insertCheckout(orderDetail, curCustomer, this);
         cart = new ArrayList<>();
         return "checkout.xhtml";
     }
