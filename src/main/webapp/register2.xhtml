@@ -41,9 +41,32 @@
                                 <p:inputText id="email" value="#{registerBean.email}" required="true" requiredMessage="Required field"
                                              validator="emailValidator" placeholder="Email..."
                                              style="text-align: left; margin: 10px; margin-left: 10px; width: 200px;"  styleClass="form-control">
-                                    <p:ajax event="keyup" update="emailMessage growl"/>           
+                                    <p:ajax event="blur" update="emailMessage growl"/>           
                                 </p:inputText>
                                 <p:message id="emailMessage" for="email" style="margin-left: 20px;width: 200px;" styleClass="text-warning"/>
+
+                                <p:outputLabel for="phoneNumber" value="Phone Number:" style="margin: 10px; color: black; width: 150px;" styleClass="label label-primary"/> 
+                                <p:inputText id="phoneNumber" value="#{registerBean.phone}" required="true" requiredMessage="Required field"
+                                             placeholder="Phone Number..." style="text-align: left; margin: 10px; margin-left: 10px; width: 200px;"  
+                                             styleClass="form-control">
+                                    <p:ajax event="keyup" update="phoneNumberMessage"/>           
+                                </p:inputText>
+                                <p:message id="phoneNumberMessage" for="phoneNumber" style="margin-left: 20px;width: 200px;" styleClass="text-warning"/>
+
+                                <p:outputLabel for="birthdate" value="Birthdate:" style="margin: 10px; color: black; width: 150px;" styleClass="label label-primary"/> 
+                                <p:datePicker id="birthdate" value="#{registerBean.birthdate}" required="true" requiredMessage="Required field"
+                                              pattern="yyyy-MM-dd" placeholder="Birthdate..." 
+                                              style="text-align: left; margin: 10px; margin-left: 10px; width: 200px;" styleClass="form-control"
+                                              yearNavigator="true" monthNavigator="true" yearRange="1900:2023" />
+
+                                <p:message id="birthdateMessage" for="birthdate" style="margin-left: 20px;width: 200px;" styleClass="text-warning"/>
+
+
+                                <p:outputLabel for="salutation" value="Salutation:" style="margin: 10px; color: black; width: 150px;" styleClass="label label-primary"/> 
+                                <p:selectOneMenu id="salutation" value="#{registerBean.salutation}" style="width: 200px;">
+                                    <f:selectItem itemLabel="Mr" itemValue="Mr" />
+                                    <f:selectItem itemLabel="Ms" itemValue="Ms" />
+                                </p:selectOneMenu>
 
                                 <br/>
                                 <p:commandButton id="createCustomerBtn" value="Create Customer" action="#{registerBean.createCustomer()}"

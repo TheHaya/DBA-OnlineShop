@@ -11,6 +11,9 @@ package model;
 public class Account {
     private String password;
     private String accountname;
+    private int rights;
+    
+        public Account(){}
     
         public Account(String password, String accountname) {
         this.password = password;
@@ -31,6 +34,14 @@ public class Account {
 
     public void setAccountname(String accountname) {
         this.accountname = accountname;
+    }
+    
+    public int getRights() {
+        return rights;
+    }
+
+    public void setRights(int rights) {
+        this.rights = rights;
     }
 }
 

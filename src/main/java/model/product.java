@@ -4,8 +4,6 @@
  */
 package model;
 
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.context.SessionScoped;
 import java.io.Serializable;
 /**
  *

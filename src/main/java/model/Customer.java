@@ -1,6 +1,6 @@
 package model;
 
-import java.sql.Date;
+import java.util.Date;
 
 public class Customer {
 
@@ -14,6 +14,8 @@ public class Customer {
     private Date birthdate;
     private Address address;
     private Account account;
+    
+    public Customer(){};
 
     public Customer(String username, String password, String email, String firstname, String lastname, String salutation, String phone, Date birthdate, Address address, Account account) {
         this.username = username;

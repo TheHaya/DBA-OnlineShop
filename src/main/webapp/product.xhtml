@@ -5,7 +5,7 @@
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
-    
+
     <h:head>
         <link rel="stylesheet" type="text/css" href="resources/css/primeflex.css"/>
         <link rel="stylesheet" type="text/css" href="resources/css/myStyles.css"/>
@@ -17,24 +17,17 @@
                     <div class="productTable">
                         <p:growl id="messages" showDetail="true" showSummary="true"/>
                         <p:dataTable id="prodTable" var="product" value="#{productBean.productDataList}"
-                            styleClass="products-table" editable="true" 
-                            rowKey="#{product.prodID}" paginator="true" rows="5" paginatorPosition="bottom">
+                                     styleClass="products-table" editable="true" 
+                                     rowKey="#{product.prodID}" paginator="true" rows="5" paginatorPosition="bottom">
                             <f:facet name="header">
-                                    <span style="font-weight: bold">PRODUCTS</span>
+                                <span style="font-weight: bold">PRODUCTS</span>
                             </f:facet>
 
                             <p:ajax event="rowEdit" listener="#{productBean.saveCurrentProduct(product)}" update="messages"/>
                             <p:ajax event="rowEditCancel" listener="#{productBean.onRowCancel}" update="messages"/>
 
                             <p:column rendered="#{loginBean.isAdminRights()}" headerText="ID" width="auto">
-                                <p:cellEditor>
-                                    <f:facet name="output">
-                                        <h:outputText value="#{product.prodID}" />
-                                    </f:facet>
-                                    <f:facet name="input">
-                                        <p:inputText id="modelInput" value="#{product.prodID}" />
-                                    </f:facet>
-                                </p:cellEditor>
+                                <h:outputText value="#{product.prodID}" />
                             </p:column>
 
 

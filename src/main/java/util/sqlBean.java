@@ -20,6 +20,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
+import model.Account;
 import model.product;
 import model.user;
 import model.Customer;
@@ -85,63 +86,65 @@ public class sqlBean implements Serializable {
         return userList;
     }
 
-public void insertCustomer(Customer customer) {
-    try {
-        // Insert in Account table
-        String accountSql = "INSERT INTO Account (ACCPWD, ACCNAME) VALUES (?, ?)";
-        PreparedStatement accountStatement = conn.prepareStatement(accountSql);
-        accountStatement.setString(1, customer.getpassword());
-        accountStatement.setString(2, customer.getusername());
-        accountStatement.executeUpdate();
+    public void insertCustomer(Customer customer) {
+        try {
+            // Insert in Account table
+            String accountSql = "INSERT INTO Account (ACCPWD, ACCNAME) VALUES (?, ?)";
+            PreparedStatement accountStatement = conn.prepareStatement(accountSql);
+            accountStatement.setString(1, customer.getpassword());
+            accountStatement.setString(2, customer.getusername());
+            accountStatement.executeUpdate();
 
-        // Get the generated account ID
-        int accountID;
-        String accountIDSql = "SELECT LAST_INSERT_ID()";
-        PreparedStatement accountIDStatement = conn.prepareStatement(accountIDSql);
-        try (ResultSet accountIDResultSet = accountIDStatement.executeQuery()) {
-            if (accountIDResultSet.next()) {
-                accountID = accountIDResultSet.getInt(1);
-            } else {
-                throw new SQLException("Failed to retrieve generated account ID.");
+            // Get the generated account ID
+            int accountID;
+            String accountIDSql = "SELECT LAST_INSERT_ID()";
+            PreparedStatement accountIDStatement = conn.prepareStatement(accountIDSql);
+            try (ResultSet accountIDResultSet = accountIDStatement.executeQuery()) {
+                if (accountIDResultSet.next()) {
+                    accountID = accountIDResultSet.getInt(1);
+                } else {
+                    throw new SQLException("Failed to retrieve generated account ID.");
+                }
             }
-        }
 
-        // Insert in Customer table
-        String customerSql = "INSERT INTO Customer (FK_ACCID, CEMAIL, CFIRSTNAME, CFAMNAME, CSALUTATION, CBIRTHDATE) VALUES (?, ?, ?, ?, ?, ?)";
-        PreparedStatement customerStatement = conn.prepareStatement(customerSql);
-        customerStatement.setInt(1, accountID);
-        customerStatement.setString(2, customer.getemail());
-        customerStatement.setString(3, customer.getfirstname());
-        customerStatement.setString(4, customer.getlastname());
-        customerStatement.setString(5, customer.getsalutation());
-        customerStatement.setDate(6, customer.getbirthdate());
-        customerStatement.executeUpdate();
+            // Insert in Customer table
+            String customerSql = "INSERT INTO Customer (FK_ACCID, CEMAIL, CFIRSTNAME, CFAMNAME, CSALUTATION, CPHONE, CBIRTHDATE) VALUES (?, ?, ?, ?, ?, ?, ?)";
+            //String customerSql = "INSERT INTO Customer (FK_ACCID, CEMAIL, CFIRSTNAME, CFAMNAME) VALUES (?, ?, ?, ?)";
+            PreparedStatement customerStatement = conn.prepareStatement(customerSql);
+            customerStatement.setInt(1, accountID);
+            customerStatement.setString(2, customer.getemail());
+            customerStatement.setString(3, customer.getfirstname());
+            customerStatement.setString(4, customer.getlastname());
+            customerStatement.setString(5, customer.getsalutation());
+            customerStatement.setString(6, customer.getphone());
+            customerStatement.setDate(7, new java.sql.Date(customer.getbirthdate().getTime()));;
+            customerStatement.executeUpdate();
 
-        // Get the generated customer ID (CID)
-        int customerID;
-        String customerIDSql = "SELECT LAST_INSERT_ID()";
-        PreparedStatement customerIDStatement = conn.prepareStatement(customerIDSql);
-        try (ResultSet customerIDResultSet = customerIDStatement.executeQuery()) {
-            if (customerIDResultSet.next()) {
-                customerID = customerIDResultSet.getInt(1);
-            } else {
-                throw new SQLException("Failed to retrieve generated customer ID.");
+            // Get the generated customer ID (CID)
+            int customerID;
+            String customerIDSql = "SELECT LAST_INSERT_ID()";
+            PreparedStatement customerIDStatement = conn.prepareStatement(customerIDSql);
+            try (ResultSet customerIDResultSet = customerIDStatement.executeQuery()) {
+                if (customerIDResultSet.next()) {
+                    customerID = customerIDResultSet.getInt(1);
+                } else {
+                    throw new SQLException("Failed to retrieve generated customer ID.");
+                }
             }
-        }
 
-        // Insert in Address table
-        String addressSql = "INSERT INTO Address (FK_CID, ASTREET, AFEDSTATE, ACITYCODE, ACOUNTRY) VALUES (?, ?, ?, ?, ?)";
-        PreparedStatement addressStatement = conn.prepareStatement(addressSql);
-        addressStatement.setInt(1, customerID); // Use customerID as FK_CID
-        addressStatement.setString(2, customer.getaddress().getStreet());
-        addressStatement.setString(3, customer.getaddress().getFedState());
-        addressStatement.setString(4, customer.getaddress().getCityCode());
-        addressStatement.setString(5, customer.getaddress().getCountry());
-        addressStatement.executeUpdate();
-    } catch (SQLException ex) {
-        ex.printStackTrace();
+            // Insert in Address table
+            String addressSql = "INSERT INTO Address (FK_CID, ASTREET, AFEDSTATE, ACITYCODE, ACOUNTRY) VALUES (?, ?, ?, ?, ?)";
+            PreparedStatement addressStatement = conn.prepareStatement(addressSql);
+            addressStatement.setInt(1, customerID); // Use customerID as FK_CID
+            addressStatement.setString(2, customer.getaddress().getStreet());
+            addressStatement.setString(3, customer.getaddress().getFedState());
+            addressStatement.setString(4, customer.getaddress().getCityCode());
+            addressStatement.setString(5, customer.getaddress().getCountry());
+            addressStatement.executeUpdate();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
     }
-}
 
     public List<product> getProductList() {
 
@@ -180,6 +183,71 @@ public void insertCustomer(Customer customer) {
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
+    }
+
+    public boolean findAccName(String accountname) {
+        try {
+            String sql = "SELECT COUNT(*) FROM Account WHERE ACCNAME = ?";
+            PreparedStatement statement = conn.prepareStatement(sql);
+            statement.setString(1, accountname);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    int count = resultSet.getInt(1);
+                    return count > 0;
+                }
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean findEmail(String email) {
+        try {
+            String sql = "SELECT COUNT(*) FROM Customer WHERE CEMAIL = ?";
+            PreparedStatement statement = conn.prepareStatement(sql);
+            statement.setString(1, email);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    int count = resultSet.getInt(1);
+                    return count > 0;
+                }
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return false;
+    }
+
+    public Customer getCustomer(String username, String password) {
+        try {
+            String sql = "SELECT * FROM Customer C JOIN Account A ON C.FK_ACCID = A.ACCID WHERE A.ACCNAME = ? AND A.ACCPWD = ?";
+            PreparedStatement statement = conn.prepareStatement(sql);
+            statement.setString(1, username);
+            statement.setString(2, password);
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                Customer customer = new Customer();
+                Account account = new Account();
+                customer.setaccount(account);
+                customer.getaccount().setAccountname(resultSet.getString("ACCNAME"));
+                customer.getaccount().setPassword(resultSet.getString("ACCPWD"));
+                customer.getaccount().setRights(resultSet.getInt("ACCTYPE"));
+                customer.setemail(resultSet.getString("CEMAIL"));
+                customer.setfirstname(resultSet.getString("CFIRSTNAME"));
+                customer.setlastname(resultSet.getString("CFAMNAME"));
+                customer.setsalutation(resultSet.getString("CSALUTATION"));
+                customer.setphone(resultSet.getString("CPHONE"));
+                customer.setbirthdate(resultSet.getDate("CBIRTHDATE"));
+
+                return customer;
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return null;
     }
 
     public Connection getConn() {

@@ -7,17 +7,13 @@ package controller;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Named;
-import jakarta.enterprise.context.SessionScoped;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
-import jakarta.faces.event.ValueChangeEvent;
 import java.io.Serializable;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import model.product;
 import org.primefaces.event.RowEditEvent;
-import util.dataBean;
 import util.sqlBean;
 /**
  *

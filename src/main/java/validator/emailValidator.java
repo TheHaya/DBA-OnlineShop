@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSF/JSFManagedBean.java to edit this template
- */
 package validator;
 
 import jakarta.faces.application.FacesMessage;
@@ -10,46 +6,41 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.validator.FacesValidator;
 import jakarta.faces.validator.Validator;
 import jakarta.faces.validator.ValidatorException;
+import jakarta.inject.Inject;
+import util.sqlBean;
 
-/**
- *
- * @author Haya
- * 
- * Die Validierer stellen sicher, die Validierungsanforderungen erfüllt werden und 
- * dass der Benutzer bemerkt, falls eine Eingabe nicht korrekt ist oder bestimmte Regeln
- * bricht.
- */
 @FacesValidator(value = "emailValidator")
 public class emailValidator implements Validator {
 
-    /**
-     * Creates a new instance of usernameValidator
-     * @param fc
-     * @param uic
-     * @param obj
-     */
+    @Inject
+    private sqlBean registerData;
+    
+    public emailValidator() {
+        registerData = new sqlBean();
+    }
+
     @Override
-    public void validate(FacesContext fc, UIComponent uic, Object obj) 
-            throws ValidatorException {             // Wenn die Validierung fehlschlägt wird eine ausnahme  (hier famesMessage)
-        
+    public void validate(FacesContext fc, UIComponent uic, Object obj) throws ValidatorException {
         String email = obj.toString();
         FacesMessage facesMessage;
-        
-        if(email.length() > 7 && email.length() < 40&& email.contains("@")) {
-            if(email.contains(".")){
-                // Do Nothing
-            }
-            else {
-            facesMessage = new FacesMessage("Invalid Email", "Please input a valid Email");
-            facesMessage.setSeverity(FacesMessage.SEVERITY_ERROR);
-            throw new ValidatorException(facesMessage);
-            }
-        }
-        else {
-            facesMessage = new FacesMessage("Invalid Email", "Please input a valid Email");
+
+        if (!isValidEmail(email)) {
+            facesMessage = new FacesMessage("Invalid Email", "Please enter a valid email address");
             facesMessage.setSeverity(FacesMessage.SEVERITY_ERROR);
             throw new ValidatorException(facesMessage);
         }
-        
+
+        boolean emailExists = registerData.findEmail(email);
+        if (emailExists) {
+            facesMessage = new FacesMessage(FacesMessage.SEVERITY_ERROR, "", "Email is already taken");
+            throw new ValidatorException(facesMessage);
+        }
     }
+
+    private boolean isValidEmail(String email) {
+    if (email.length() >= 5 && email.length() <= 40 && email.contains("@") && email.contains(".")) {
+        return true;
+    }
+    return false;
+}
 }

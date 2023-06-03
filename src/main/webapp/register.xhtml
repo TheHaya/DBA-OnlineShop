@@ -22,10 +22,10 @@
                                     <span style="font-weight: bold">REGISTRATION</span>
                                 </f:facet>
                                 <p:outputLabel for="accName" value="Account Name:" style="margin: 10px; color: black; width: 150px;" styleClass="label label-primary"/> 
-                                <p:inputText id="accName" value="#{registerBean.accountname}" required="true" requiredMessage="Required field"
+                                <p:inputText id="accName" value="#{registerBean.accountname}" required="true" requiredMessage="Required field" validator="usernameValidator"
                                              placeholder="Account Name..." style="text-align: left; margin: 10px; margin-left: 10px; width: 200px;"  
                                              styleClass="form-control">
-                                    <p:ajax event="keyup" update="accNameMessage"/>           
+                                    <p:ajax event="blur" update="accNameMessage"/>           
                                 </p:inputText>
                                 <p:message id="accNameMessage" for="accName" style="margin-left: 20px;width: 200px;" styleClass="text-warning"/>
 

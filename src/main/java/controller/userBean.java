@@ -7,12 +7,10 @@ package controller;
 import jakarta.annotation.PostConstruct;
 import jakarta.inject.Named;
 import jakarta.enterprise.context.SessionScoped;
-import jakarta.inject.Inject;
 import java.io.Serializable;
 import java.util.Comparator;
 import java.util.List;
 import model.user;
-import util.dataBean;
 import util.sqlBean;
 /**
  *

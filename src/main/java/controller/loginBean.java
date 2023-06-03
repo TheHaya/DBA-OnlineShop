@@ -12,9 +12,7 @@ import jakarta.faces.context.FacesContext;
 import jakarta.inject.Inject;
 import jakarta.servlet.http.HttpSession;
 import java.io.Serializable;
-import java.util.List;
-import model.user;
-import util.dataBean;
+import model.Customer;
 import util.sqlBean;
 
 
@@ -30,14 +28,13 @@ import util.sqlBean;
 @SessionScoped
 public class loginBean implements Serializable {
     //object of user currently logged in
-    private user loggedInUser;
+    private Customer loggedInCustomer;
     
     private boolean loginCheck = false;
     private String loginName;
     private String loginPass;
     private FacesContext context;
     private boolean check;
-    private List<user> userDataList;
     private HttpSession session;
     private boolean adminRights;
     @Inject
@@ -49,7 +46,6 @@ public class loginBean implements Serializable {
     @PostConstruct
     public void init(){
         context = FacesContext.getCurrentInstance();
-        userDataList = loginData.getUserList();
         // Typecast sonst ClassCastException, Context wegen Servlet, wenn getSession true 
         // dann wird eine Session kreiert und eine Instanz zurückgegeben
         session = (HttpSession) context.getExternalContext().getSession(false);
@@ -58,6 +54,8 @@ public class loginBean implements Serializable {
     public loginBean() {
         loginData = new sqlBean();
     }
+    
+    
     
     /* Aufgrund von neuem Login screen unbenutzt, vorher eine eigene Seite, nun ein Modal Dialog
      
@@ -114,20 +112,13 @@ public class loginBean implements Serializable {
         FacesMessage facesMessage;
         context = FacesContext.getCurrentInstance();
         check = false;
-        userDataList = loginData.getUserList();
-        
-        for(user u : userDataList) {
-            if(u.getUsername().equals(loginName)
-                    &&u.getPassword().equals(loginPass)){
-                check = true;
-                if(u.getRights() <= 1){
-                    adminRights = true;
-                }
-                loggedInUser = u;
-                break;
-            }
+        Customer loginTry = loginData.getCustomer(loginName, loginPass);
+        if(loginTry != null) {
+            loggedInCustomer = loginTry;
+            if(loggedInCustomer.getaccount().getRights()== 0) adminRights = true;
         }
-        if(check == true){
+        
+        if(loggedInCustomer != null){
             loginCheck = true;
             
             getSession().setAttribute("username", loginName);
