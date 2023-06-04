@@ -26,6 +26,7 @@ import model.Account;
 import model.product;
 import model.user;
 import model.Customer;
+import model.ProductCategory;
 import model.ProductInfo;
 import model.UserInfo;
 
@@ -40,6 +41,7 @@ public class sqlBean implements Serializable {
     private static final Logger LOGGER = Logger.getLogger(sqlBean.class.getName());
     private Connection conn = null;
     private List<user> userList = new ArrayList<>();
+    private List<ProductCategory> categoryList = new ArrayList<>();
     private List<product> productList = new ArrayList<>();
 
     /**
@@ -55,6 +57,7 @@ public class sqlBean implements Serializable {
         } catch (ClassNotFoundException | SQLException ex) {
             LOGGER.log(Level.SEVERE, null, ex);
         }
+        categoryList = this.getCategories();
     }
 
     /**
@@ -375,6 +378,41 @@ public class sqlBean implements Serializable {
 
         return inactiveCustomers;
     }
+
+    public List<ProductCategory> getCategories() {
+        List<ProductCategory> categories = new ArrayList<>();
+        String query = "SELECT DISTINCT PCATENUM FROM product";
+
+        try (PreparedStatement stmt = conn.prepareStatement(query); ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) {
+                String categoryName = rs.getString("PCATENUM");
+
+                ProductCategory productCategory = new ProductCategory(categoryName);
+                categories.add(productCategory);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return categories;
+    }
+
+//    public ProductCategory getCategory(String categoryName) {
+//        String query = "SELECT DISTINCT PCATENUM FROM product WHERE PCATENUM = ?";
+//        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+//            stmt.setString(1, categoryName);
+//            try (ResultSet rs = stmt.executeQuery()) {
+//                if (rs.next()) {
+//                    String name = rs.getString("PCATENUM");
+//                    return new ProductCategory(name);
+//                }
+//            }
+//        } catch (SQLException ex) {
+//            ex.printStackTrace();
+//        }
+//        return null;
+//    }
+
 
     public Connection getConn() {
         return conn;
