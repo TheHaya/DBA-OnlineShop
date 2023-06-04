@@ -18,6 +18,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.logging.Level;
 import model.Customer;
@@ -43,7 +44,7 @@ public class cartBean implements Serializable {         // Serialisierbar ermög
     private List<product> cart;
     private user curUser;
     private FacesContext context;
-    private Date delDate;
+    private LocalDate delDate;
     private Customer customer;
     private String comment;
     private Timestamp changeDate;
@@ -53,6 +54,7 @@ public class cartBean implements Serializable {         // Serialisierbar ermög
     private Orders order;
     private OrderDetail orderDetail;
     
+    @Inject
     private loginBean cartLogin;
     
     @Inject

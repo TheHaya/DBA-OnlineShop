@@ -6,19 +6,24 @@ package model;
 
 import java.sql.Timestamp;
 import java.sql.Date;
+import java.time.LocalDate;
 
 /**
  *
  * @author wrede
  */
 public class Orders {
-
-    private Date delDate;
+    
+    private int oid;
+    private LocalDate delDate;
     private status status;
     private Customer customer;
     private String comment;
     private Timestamp changeDate;
     private OrderDetail orderDetail;
+    private LocalDate currentDate;
+
+    
     
     enum status {
     Pending,
@@ -26,7 +31,7 @@ public class Orders {
     Denied
 }
     
-    public Orders(Date delDate, 
+    public Orders(LocalDate delDate,
                   Customer customer, 
                   String comment, 
                   Timestamp changeDate) {
@@ -36,11 +41,13 @@ public class Orders {
         this.changeDate = changeDate;
     }
     
-    public Date getDelDate() {
+    public LocalDate getDelDate() {
+        currentDate = LocalDate.now();
+        delDate = currentDate.plusDays(7);
         return delDate;
     }
 
-    public void setDelDate(Date delDate) {
+    public void setDelDate(LocalDate delDate) {
         this.delDate = delDate;
     }
 

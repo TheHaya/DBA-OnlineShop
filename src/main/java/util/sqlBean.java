@@ -161,10 +161,19 @@ public class sqlBean implements Serializable {
             LOGGER.log(Level.SEVERE, "Customer object is null");
             return;
             }
+            
+//            if (customer != null) {
+//                LOGGER.log(Level.SEVERE, "Customer ID IS" + customer.getCid() + " END", customer.getCid());
+//            return;
+//            }
+            
             // Insert into orders table
-            String ordersSql = "INSERT INTO orders (FK_CID) VALUES (?)";
+            String ordersSql = "INSERT INTO orders (FK_CID, OSTATUS, ODELDATE, OCOMMENT) VALUES (?, ?, ?, ?)";
             PreparedStatement ordersStatement = conn.prepareStatement(ordersSql);
             ordersStatement.setInt(1, customer.getCid());
+            ordersStatement.setString(2, "Pending");
+            ordersStatement.setObject(3, order.getDelDate());
+            ordersStatement.setString(4, "Order #");
             ordersStatement.executeUpdate();
 
             // Get the generated order ID
@@ -303,6 +312,9 @@ public class sqlBean implements Serializable {
                 customer.getaccount().setAccountname(resultSet.getString("ACCNAME"));
                 customer.getaccount().setPassword(resultSet.getString("ACCPWD"));
                 customer.getaccount().setRights(resultSet.getInt("ACCTYPE"));
+                
+                customer.setCid(resultSet.getInt("CID"));
+                
                 customer.setemail(resultSet.getString("CEMAIL"));
                 customer.setfirstname(resultSet.getString("CFIRSTNAME"));
                 customer.setlastname(resultSet.getString("CFAMNAME"));
