@@ -4,6 +4,7 @@
  */
 package util;
 
+import controller.cartBean;
 import java.io.Serializable;
 
 import java.sql.Connection;
@@ -15,6 +16,7 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jakarta.enterprise.context.SessionScoped;
+import jakarta.faces.context.FacesContext;
 import jakarta.inject.Named;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -26,6 +28,8 @@ import model.Account;
 import model.product;
 import model.user;
 import model.Customer;
+import model.OrderDetail;
+import model.Orders;
 import model.ProductCategory;
 import model.ProductInfo;
 import model.UserInfo;
@@ -153,6 +157,59 @@ public class sqlBean implements Serializable {
         }
     }
 
+    public void insertCheckout(Orders order, Customer customer, cartBean cart) {
+        try {
+            
+            if (customer == null) {
+            LOGGER.log(Level.SEVERE, "Customer object is null");
+            return;
+            }
+            
+//            if (customer != null) {
+//                LOGGER.log(Level.SEVERE, "Customer ID IS" + customer.getCid() + " END", customer.getCid());
+//            return;
+//            }
+            
+            // Insert into orders table
+            String ordersSql = "INSERT INTO orders (FK_CID, OSTATUS, ODELDATE, OCOMMENT) VALUES (?, ?, ?, ?)";
+            PreparedStatement ordersStatement = conn.prepareStatement(ordersSql);
+            ordersStatement.setInt(1, customer.getCid());
+            ordersStatement.setString(2, "Pending");
+            ordersStatement.setObject(3, order.getDelDate());
+            ordersStatement.setString(4, "Order #");
+            ordersStatement.executeUpdate();
+
+            // Get the generated order ID
+            int orderID;
+            String orderIDSql = "SELECT LAST_INSERT_ID()";
+            PreparedStatement orderIDStatement = conn.prepareStatement(orderIDSql);
+            try (ResultSet orderIDResultSet = orderIDStatement.executeQuery()) {
+                if (orderIDResultSet.next()) {
+                    orderID = orderIDResultSet.getInt(1);
+                } else {
+                    throw new SQLException("Failed to retrieve generated order ID.");
+                }
+            }
+            
+            if (cart == null) {
+            LOGGER.log(Level.SEVERE, "Cart is null");
+            return;
+            }
+            
+            for (product p : cart.getCart()) {
+                String orderDetailsSql = "INSERT INTO orderdetail (FK_OID, FK_PRID, ODAMOUNT) VALUES (?, ?, ?)";
+                PreparedStatement orderDetailsStatement = conn.prepareStatement(orderDetailsSql);
+                orderDetailsStatement.setInt(1, orderID);
+                orderDetailsStatement.setInt(2, p.getProdID());
+                orderDetailsStatement.setInt(3, p.getProdQuant());
+                orderDetailsStatement.executeUpdate();
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+    
+    
     public List<product> getProductList() {
 
         try {
@@ -225,7 +282,24 @@ public class sqlBean implements Serializable {
         }
         return false;
     }
-
+    
+    public boolean findPhone(String phone) {
+        try {
+            String sql = "SELECT COUNT(*) FROM Customer WHERE CPHONE = ?";
+            PreparedStatement statement = conn.prepareStatement(sql);
+            statement.setString(1, phone);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    int count = resultSet.getInt(1);
+                    return count > 0;
+                }
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return false;
+    }
+    
     public Customer getCustomer(String username, String password) {
         try {
             String sql = "SELECT * FROM Customer C JOIN Account A ON C.FK_ACCID = A.ACCID WHERE A.ACCNAME = ? AND A.ACCPWD = ?";
@@ -241,6 +315,9 @@ public class sqlBean implements Serializable {
                 customer.getaccount().setAccountname(resultSet.getString("ACCNAME"));
                 customer.getaccount().setPassword(resultSet.getString("ACCPWD"));
                 customer.getaccount().setRights(resultSet.getInt("ACCTYPE"));
+                
+                customer.setCid(resultSet.getInt("CID"));
+                
                 customer.setemail(resultSet.getString("CEMAIL"));
                 customer.setfirstname(resultSet.getString("CFIRSTNAME"));
                 customer.setlastname(resultSet.getString("CFAMNAME"));

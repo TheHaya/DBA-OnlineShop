@@ -14,6 +14,7 @@ public class Customer {
     private Date birthdate;
     private Address address;
     private Account account;
+    private int cid;
     
     public Customer(){};
 
@@ -41,7 +42,31 @@ public class Customer {
         this.birthdate = birthdate;
         this.account = account;
     }
+    public Customer(int cid){
+        this.cid = cid;
+    }
+    
+    public Customer(int cid, String username, String password, String email, String firstname, String lastname, String salutation, String phone, Date birthdate, Account account) {
+        this.cid = cid;
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.salutation = salutation;
+        this.phone = phone;
+        this.birthdate = birthdate;
+        this.account = account;
+    }
+    
+    public int getCid() {
+        return cid;
+    }
 
+    public void setCid(int cid) {
+        this.cid = cid;
+    }
+    
     public String getusername() {
         return username;
     }

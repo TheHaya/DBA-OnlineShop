@@ -1,28 +1,37 @@
 package converter;
 
+import controller.productBean;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.convert.Converter;
 import jakarta.faces.convert.FacesConverter;
-import model.product;
+import model.ProductCategory;
 import util.sqlBean;
 
-
-
-@FacesConverter(value = "categoryConverter", forClass = product.class)
+@FacesConverter(value = "categoryConverter", forClass = ProductCategory.class)
 public class CategoryConverter implements Converter {
 
     @Override
     public Object getAsObject(FacesContext facesContext, UIComponent component, String value) {
-        if (value == null || value.isEmpty()) {
+        if (value == null || value.length() == 0) {
             return null;
         }
-        
-        sqlBean sqlBean = (sqlBean) facesContext.getApplication()
-                .evaluateExpressionGet(facesContext, "#{sqlBean}", sqlBean.class);
-        
-        //return sqlBean.getProductByCategory(value);
-        return null;
+        productBean controller
+                = (productBean) facesContext.getApplication()
+                        .getELResolver().getValue(facesContext.getELContext(), null, "productBean");
+        return controller.getCategory(value);
+    }
+
+//    java.lang.Integer getKey(String value) {
+//        java.lang.Integer key;
+//        key = Integer.valueOf(value);
+//        return key;
+//    }
+
+    String getStringKey(java.lang.Integer value) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(value);
+        return sb.toString();
     }
 
     @Override
@@ -30,12 +39,11 @@ public class CategoryConverter implements Converter {
         if (object == null) {
             return null;
         }
-        
-        if (object instanceof product) {
-            product product = (product) object;
-            return product.getProdType();
+        if (object instanceof ProductCategory) {
+            ProductCategory o = (ProductCategory) object;
+            return getStringKey(o.getId());
+        } else {
+            return null;
         }
-        
-        return null;
     }
 }

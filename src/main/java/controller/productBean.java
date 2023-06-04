@@ -12,34 +12,39 @@ import jakarta.faces.context.FacesContext;
 import java.io.Serializable;
 import java.util.Comparator;
 import java.util.List;
+import model.ProductCategory;
 import model.product;
 import org.primefaces.event.RowEditEvent;
 import util.sqlBean;
+
 /**
  *
  * @author Haya
- * 
- * Die productBean ist die Schnittstelle zwischen dem User und der Datenbank bezüglich der Produktansicht.
- * Hier sind  dazu noch Funktionen zum DataTable RowEdit und löschen eines Produkts aus dem Data Table.
+ *
+ * Die productBean ist die Schnittstelle zwischen dem User und der Datenbank
+ * bezüglich der Produktansicht. Hier sind dazu noch Funktionen zum DataTable
+ * RowEdit und löschen eines Produkts aus dem Data Table.
  */
 @Named(value = "productBean")
 @ApplicationScoped
 public class productBean implements Serializable {
-    
+
     private List<product> productDataList;
+    private List<ProductCategory> categoryList;
     private String sortOrder = "idAsc";
     private product currentProduct;
-    
+
     private sqlBean productData;
-    
+
     @PostConstruct
     public void init() {
         sortProducts();
     }
-    
-    public productBean(){
+
+    public productBean() {
         productData = new sqlBean();
         productDataList = productData.getProductList();
+        categoryList = productData.getCategories();
     }
 
     // Löschen eines Produkts mit einer Growl Bestätigung.
@@ -48,26 +53,25 @@ public class productBean implements Serializable {
 //        FacesContext.getCurrentInstance().addMessage(null, msg);
 //        productDataList.remove(selectedProduct);
 //    }
-    
     // Gibt eine Growl Bestätigung wenn der Benutzer mit Adminrechten ein Produkt geändert hat
-    public void onRowEdit(RowEditEvent<product> event){
-        FacesMessage msg = new FacesMessage("Product Edited", "Product with ID: " +
-                String.valueOf(event.getObject().getProdID())+ " has been edited");
+    public void onRowEdit(RowEditEvent<product> event) {
+        FacesMessage msg = new FacesMessage("Product Edited", "Product with ID: "
+                + String.valueOf(event.getObject().getProdID()) + " has been edited");
         FacesContext.getCurrentInstance().addMessage(null, msg);
     }
 
     // Gibt eine Growl Bestätigung wenn der Benutzer mit Adminrechten ein Produkt doch nicht geändert hat
-    public void onRowCancel(RowEditEvent<product> event){
+    public void onRowCancel(RowEditEvent<product> event) {
         FacesMessage msg = new FacesMessage("Editing Cancelled", null);
         FacesContext.getCurrentInstance().addMessage(null, msg);
     }
-    
+
     public void saveCurrentProduct(product currentProduct) {
         productData.updateProduct(currentProduct);
-        FacesMessage msg = new FacesMessage("Product Edited", currentProduct.getProdName()+" has been edited");
+        FacesMessage msg = new FacesMessage("Product Edited", currentProduct.getProdName() + " has been edited");
         FacesContext.getCurrentInstance().addMessage(null, msg);
     }
-    
+
     public void sortProducts() {
         if (sortOrder.equals("idAsc")) {
             productDataList.sort(Comparator.comparing(product::getProdID));
@@ -75,7 +79,24 @@ public class productBean implements Serializable {
             productDataList.sort(Comparator.comparing(product::getProdID).reversed());
         }
     }
-    
+
+    public ProductCategory getCategory(String name) {
+        if (categoryList == null) {
+            // Handle this error as you see fit, perhaps load the category list
+            return null;
+        }
+
+        for (int i = 0; i < categoryList.size(); i++) {
+            ProductCategory category = categoryList.get(i);
+            if (category.getCategoryName().equals(name)) {
+                return category;
+            }
+        }
+
+        // Category not found in list
+        return null;
+    }
+
     //Getter und Setter
     public List<product> getProductDataList() {
         return productDataList;
@@ -85,12 +106,20 @@ public class productBean implements Serializable {
         this.productDataList = productDataList;
     }
 
+    public List<ProductCategory> getCategoryList() {
+        return categoryList;
+    }
+
+    public void setCategoryList(List<ProductCategory> catgoryList) {
+        this.categoryList = categoryList;
+    }
+
     public String getSortOrder() {
         return sortOrder;
     }
-    
+
     public void setSortOrder(String sortOrder) {
         this.sortOrder = sortOrder;
     }
-    
+
 }
