@@ -542,6 +542,38 @@ public class sqlBean implements Serializable {
 //        }
 //        return null;
 //    }
+    
+    public List<UserInfo> getAllUsers() {
+        List<UserInfo> allUserList = new ArrayList<>();
+
+        try {
+            String sql = "SELECT c.CFAMNAME AS LastName, c.CFIRSTNAME AS FirstName, COUNT(DISTINCT o.OID) AS OrdersAmount, c.CID "
+                    + "FROM Customer c "
+                    + "LEFT JOIN Orders o ON o.FK_CID = c.CID "
+                    + "LEFT JOIN OrderDetail od ON od.FK_OID = o.OID "
+                    + "LEFT JOIN Product p ON p.PRID = od.FK_PRID "
+                    + "GROUP BY c.CID "
+                    + "ORDER BY OrdersAmount DESC";
+            PreparedStatement statement = conn.prepareStatement(sql);
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                String lastName = resultSet.getString("LastName");
+                String firstName = resultSet.getString("FirstName");
+                int cid = resultSet.getInt("CID");
+                int ordersAmount = resultSet.getInt("OrdersAmount");
+                double totalRevenue = getRevenue(cid);
+
+                UserInfo userInfo = new UserInfo(firstName + " " + lastName, ordersAmount, totalRevenue);
+                allUserList.add(userInfo);
+            }
+        } catch (SQLException ex) {
+             LOGGER.log(Level.SEVERE, "Error while retrieving best customer list from the database", ex);
+        }
+
+        return allUserList;
+    }
+    
     public Connection getConn() {
         return conn;
     }
