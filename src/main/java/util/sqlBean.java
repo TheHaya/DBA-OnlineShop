@@ -235,20 +235,19 @@ public class sqlBean implements Serializable {
     public List<product> getProductList() {
 
         try {
-            String sql = "SELECT PRNAME, PCATENUM, PRCOMMENT, PRIMAGEPATH, PRPRICENETTO, PRID, PRNO FROM Product";
+            String sql = "SELECT PRNAME, PCATENUM, PRCOMMENT, PRIMAGEPATH, PRPRICENETTO, PRID FROM Product";
             PreparedStatement statement = conn.prepareStatement(sql);
             ResultSet resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
                 String prodName = resultSet.getString("PRNAME");
-                String prodType = resultSet.getString("PCATENUM");
+                ProductCategory prodType = new ProductCategory( resultSet.getString("PCATENUM"));
                 String prodDesc = resultSet.getString("PRCOMMENT");
                 String prodPic = resultSet.getString("PRIMAGEPATH");
                 double prodPrice = resultSet.getDouble("PRPRICENETTO");
                 int prodID = resultSet.getInt("PRID");
-                int prodQuant = resultSet.getInt("PRNO");
 
-                product prod = new product(prodName, prodType, prodDesc, prodPic, prodPrice, prodID, prodQuant);
+                product prod = new product(prodName, prodType, prodDesc, prodPic, prodPrice, prodID);
                 productList.add(prod);
             }
         } catch (SQLException ex) {
@@ -265,7 +264,7 @@ public class sqlBean implements Serializable {
             statement.setString(1, product.getProdName());
             statement.setString(2, product.getProdDesc());
             statement.setDouble(3, product.getProdPrice());
-            statement.setString(4, product.getProdType());
+            statement.setString(4, product.getProdType().getCategoryName());
             statement.setInt(5, product.getProdID());
             statement.executeUpdate();
         } catch (SQLException ex) {

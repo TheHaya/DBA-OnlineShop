@@ -80,7 +80,7 @@ public class productBean implements Serializable {
         }
     }
 
-    public ProductCategory getCategory(String name) {
+    public ProductCategory getCategory(int id) {
         if (categoryList == null) {
             // Handle this error as you see fit, perhaps load the category list
             return null;
@@ -88,13 +88,12 @@ public class productBean implements Serializable {
 
         for (int i = 0; i < categoryList.size(); i++) {
             ProductCategory category = categoryList.get(i);
-            if (category.getCategoryName().equals(name)) {
-    return category;
-}
+            if (category.getId() == id) {
+                return category;
+            }
         }
 
-        // Category not found in list
-        return null;
+        return null; // Return null if no matching category is found
     }
 
     //Getter und Setter
@@ -121,6 +120,5 @@ public class productBean implements Serializable {
     public void setSortOrder(String sortOrder) {
         this.sortOrder = sortOrder;
     }
-    
 
 }

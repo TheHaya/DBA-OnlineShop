@@ -24,8 +24,14 @@ public class ProductCategory {
         if ("Cake".equals(categoryName)) {
             id = 2;
         }
-        if ("Fruis".equals(categoryName)) {
+        if ("Fruit".equals(categoryName)) {
             id = 3;
+        }
+        if ("Fish".equals(categoryName)) {
+            id = 4;
+        }
+        if ("empty".equals(categoryName)) {
+            id = 99;
         }
     }
 

@@ -14,7 +14,7 @@ import java.io.Serializable;
  */
 public class product implements Serializable{
     private String prodName;  // Product Name
-    private String prodType;  // Product Type
+    private ProductCategory prodType;  // Product Type
     private String prodDesc;  // Product Description
     private String prodPic;   // Product Picture
     private double prodPrice; // Product Price
@@ -22,19 +22,18 @@ public class product implements Serializable{
     private int prodQuant;    // Product Quantity
     
     public product(String prodName, 
-                   String prodType, 
+                   ProductCategory prodType, 
                    String prodDesc, 
                    String prodPic,
                    double prodPrice, 
-                   int prodID,
-                   int prodQuant){
+                   int prodID){
         this.prodName = prodName;
         this.prodType = prodType;
         this.prodDesc = prodDesc;
         this.prodPic = prodPic;
         this.prodPrice = prodPrice;
         this.prodID = prodID;
-        this.prodQuant = prodQuant;
+        this.prodQuant = 0;
     }
     
     // Getter und Setter
@@ -46,11 +45,11 @@ public class product implements Serializable{
         this.prodName = prodName;
     }
 
-    public String getProdType() {
+    public ProductCategory getProdType() {
         return prodType;
     }
 
-    public void setProdType(String prodType) {
+    public void setProdType(ProductCategory prodType) {
         this.prodType = prodType;
     }
 

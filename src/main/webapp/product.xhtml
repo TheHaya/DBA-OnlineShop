@@ -69,7 +69,7 @@
                                         <p:selectOneMenu id="option" value="#{product.prodType}" style="width:auto"
                                                          converter="categoryConverter">
                                             <f:selectItems value="#{productBean.categoryList}" var="category"
-                                                           itemValue="#{category.categoryName}" />
+                                                           itemValue="#{category}"  itemLabel="#{category.categoryName}" />
                                         </p:selectOneMenu>
 
                                     </f:facet>

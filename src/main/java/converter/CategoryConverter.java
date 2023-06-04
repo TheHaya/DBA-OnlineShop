@@ -19,7 +19,7 @@ public class CategoryConverter implements Converter {
         productBean controller
                 = (productBean) facesContext.getApplication()
                         .getELResolver().getValue(facesContext.getELContext(), null, "productBean");
-        ProductCategory newCategory = controller.getCategory(value);
+        ProductCategory newCategory = controller.getCategory(getKey(value));
         return newCategory;
     }
 
