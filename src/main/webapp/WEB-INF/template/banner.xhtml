@@ -26,12 +26,12 @@
             <p:menubar style="height: 60px; background-color: #dff9ff;">
                 <p:menuitem value="Home" outcome="index.xhtml" style="color: white"/>
                 <p:menuitem value="All Products" outcome="product.xhtml"/>
-                <p:menuitem value="Admin Infos" outcome="adminInfos.xhtml"/>
+                <p:menuitem value="Admin Infos" outcome="adminInfos.xhtml" rendered="#{loginBean.isAdminRights()}"/>
 
                 <p:submenu label="Info">
                     <p:menuitem value="Shipping Policy" outcome="shipping.xhtml"/>
                     <p:menuitem value="Contact Us" outcome="contact.xhtml"/>
-                    <p:menuitem rendered="#{loginBean.isAdminRights()}" value="User Table" outcome="userTable.xhtml"/>
+<!--                    <p:menuitem rendered="#{loginBean.isAdminRights()}" value="User Table" outcome="userTable.xhtml"/>-->
                 </p:submenu>
                
                 <f:facet name="options">

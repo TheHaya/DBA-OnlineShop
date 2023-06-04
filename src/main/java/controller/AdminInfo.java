@@ -43,7 +43,7 @@ public class AdminInfo implements Serializable {
 
     public void refreshData() {
         productInfo = sqlBean.getBestsellers();
-        userInfo = sqlBean.getInactiveCustomers();
+        userInfo = sqlBean.getUserInfoList();
     }
 
     public String getSelectedDataType() {

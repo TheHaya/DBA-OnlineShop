@@ -11,10 +11,7 @@ import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
 import jakarta.inject.Inject;
 import java.io.Serializable;
-import java.sql.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import model.Account;
 import model.Address;
 import model.Customer;
@@ -44,7 +41,6 @@ public class registerBean implements Serializable {
     private String country;
     private java.util.Date birthdate;
     private int rights;
-    private List<user> userDataList;
     private Customer customer;
     private Account account;
     private Address address;
@@ -56,7 +52,6 @@ public class registerBean implements Serializable {
     @PostConstruct
     public void init() {
         context = FacesContext.getCurrentInstance();
-        userDataList = registerData.getUserList();
     }
 
     public registerBean() {
@@ -203,13 +198,6 @@ public class registerBean implements Serializable {
         this.rights = rights;
     }
 
-    public List<user> getUserDataList() {
-        return userDataList;
-    }
-
-    public void setUserDataList(List<user> userDataList) {
-        this.userDataList = userDataList;
-    }
 
     public Customer getCustomer() {
         return customer;

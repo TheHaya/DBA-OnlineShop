@@ -16,63 +16,60 @@
                 <h:form id="form">
                     <p:growl id="messages" showDetail="true" showSummary="true"/>
 
+                    <div class="p-grid">
+                        <div class="p-col">
+                            <p:selectOneMenu id="dataTypeMenu" value="#{adminInfo.selectedDataType}" placeholder="Select a DataType">
+                                <f:selectItem itemLabel="Bestseller" itemValue="bestseller" />
+                                <f:selectItem itemLabel="Low Selling Products" itemValue="lowSelling" />
+                                <p:ajax event="valueChange" listener="#{adminInfo.loadProductInfo}" update="dt-products" />
+                            </p:selectOneMenu>
 
-                    <p:selectOneMenu id="dataTypeMenu" value="#{adminInfo.selectedDataType}">
-                        <f:selectItem itemLabel="Product Info" itemDisabled="true" />
-                        <f:selectItem itemLabel="Bestseller" itemValue="bestseller" />
-                        <f:selectItem itemLabel="Low Selling Products" itemValue="lowSelling" />
-                        <p:ajax event="valueChange" listener="#{adminInfo.loadProductInfo}" update="dt-products" />
-                    </p:selectOneMenu>
+                            <!-- DataTable for Top Sellers / Least Sold Products -->
+                            <p:dataTable id="dt-products" var="product" value="#{adminInfo.productInfo}"
+                                         reflow="true" styleClass="products-table"
+                                         rowKey="#{product.productName}">
+                                <p:column headerText="Product Name" width="auto" style="text-align: center">
+                                    <h:outputText value="#{product.productName}" />
+                                </p:column>
 
-                    <!-- DataTable for Top Sellers / Least Sold Products -->
-                    <p:dataTable id="dt-products" var="product" value="#{adminInfo.productInfo}"
-                                 reflow="true" styleClass="products-table"
-                                 rowKey="#{product.productName}" paginator="true" rows="8" paginatorPosition="bottom">
-                        <p:column headerText="Product Name" sortBy="#{product.productName}" filterBy="#{product.productName}"
-                                  width="auto" style="text-align: center">
-                            <h:outputText value="#{product.productName}" />
-                        </p:column>
+                                <p:column headerText="Total Amount" width="auto" style="text-align: center">
+                                    <h:outputText value="#{product.totalAmount}" />
+                                </p:column>
 
-                        <p:column headerText="Total Amount" sortBy="#{product.totalAmount}" filterBy="#{product.totalAmount}"
-                                  width="auto" style="text-align: center">
-                            <h:outputText value="#{product.totalAmount}" />
-                        </p:column>
+                                <p:column headerText="Category" width="auto" style="text-align: center">
+                                    <h:outputText value="#{product.category}" />
+                                </p:column>
+                            </p:dataTable>
+                        </div>
 
-                        <p:column headerText="Category" sortBy="#{product.category}" filterBy="#{product.category}"
-                                  width="auto" style="text-align: center">
-                            <h:outputText value="#{product.category}" />
-                        </p:column>
-                    </p:dataTable>
-                    <p:selectOneMenu id="UserInfoTypeMenu" value="#{adminInfo.selectedUserInfoType}">
-                        <f:selectItem itemLabel="User Info" itemDisabled="true" />
-                        <f:selectItem itemLabel="Best Customers" itemValue="bestCustomers" />
-                        <f:selectItem itemLabel="Worst Customers" itemValue="worstCustomers" />
-                        <p:ajax event="valueChange" listener="#{adminInfo.loadUserInfo}" update="dt-customers" />
-                    </p:selectOneMenu>
+                        <div class="p-col">
+                            <p:selectOneMenu id="UserInfoTypeMenu" value="#{adminInfo.selectedUserInfoType}" placeholder="Select a UserInfo Type">
+                                <f:selectItem itemLabel="Best Customers" itemValue="bestCustomers" />
+                                <f:selectItem itemLabel="Worst Customers" itemValue="worstCustomers" />
+                                <p:ajax event="valueChange" listener="#{adminInfo.loadUserInfo}" update="dt-customers" />
+                            </p:selectOneMenu>
 
+                            <!-- DataTable for Best Customers / Worst Customers -->
+                            <p:dataTable id="dt-customers" var="customer" value="#{adminInfo.userInfo}"
+                                         reflow="true" styleClass="products-table"
+                                         rowKey="#{customer.accName}">
+                                <p:column headerText="Customer Name" width="auto" style="text-align: center">
+                                    <h:outputText value="#{customer.accName}" />
+                                </p:column>
 
+                                <p:column headerText="Total Orders" width="auto" style="text-align: center">
+                                    <h:outputText value="#{customer.ordersAmount}" />
+                                </p:column>
 
+                                <p:column headerText="Total Revenue" width="auto" style="text-align: center">
+                                    <h:outputText value="#{customer.totalRevenue}">
+                                        <f:convertNumber type="currency" currencySymbol="€" />
+                                    </h:outputText>
+                                </p:column>
 
-                    <!-- DataTable for Best Customers / Worst Customers -->
-                    <p:dataTable id="dt-customers" var="customer" value="#{adminInfo.userInfo}"
-                                 reflow="true" styleClass="products-table"
-                                 rowKey="#{customer.accName}" paginator="true" rows="8" paginatorPosition="bottom">
-
-                        <p:column headerText="Customer Name" sortBy="#{customer.accName}" filterBy="#{customer.accName}"
-                                  width="auto" style="text-align: center">
-                            <h:outputText value="#{customer.accName}" />
-                        </p:column>
-
-                        <p:column headerText="Total Orders" sortBy="#{customer.ordersAmount}" filterBy="#{customer.ordersAmount}"
-                                  width="auto" style="text-align: center">
-                            <h:outputText value="#{customer.ordersAmount}" />
-                        </p:column>
-
-                        <p:column headerText="Total Revenue" sortBy="#{customer.totalRevenue}" filterBy="#{customer.totalRevenue}"
-                                  width="auto" style="text-align: center">
-                            <h:outputText value="#{customer.totalRevenue}" />
-                        </p:column>
-                    </p:dataTable>
+                            </p:dataTable>
+                        </div>
+                    </div>
 
                 </h:form>
             </ui:define>
