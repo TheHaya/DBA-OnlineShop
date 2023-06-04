@@ -89,8 +89,8 @@ public class productBean implements Serializable {
         for (int i = 0; i < categoryList.size(); i++) {
             ProductCategory category = categoryList.get(i);
             if (category.getCategoryName().equals(name)) {
-                return category;
-            }
+    return category;
+}
         }
 
         // Category not found in list
@@ -121,5 +121,6 @@ public class productBean implements Serializable {
     public void setSortOrder(String sortOrder) {
         this.sortOrder = sortOrder;
     }
+    
 
 }

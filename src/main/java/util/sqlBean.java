@@ -238,11 +238,13 @@ public class sqlBean implements Serializable {
 
     public void updateProduct(product product) {
         try {
-            String sql = "UPDATE Product SET PRNAME = ?, PRPRICENETTO = ? WHERE PRID = ?";
+            String sql = "UPDATE Product SET PRNAME = ?, PRCOMMENT = ?, PRPRICENETTO = ?, PCATENUM = ? WHERE PRID = ?";
             PreparedStatement statement = conn.prepareStatement(sql);
             statement.setString(1, product.getProdName());
-            statement.setDouble(2, product.getProdPrice());
-            statement.setInt(3, product.getProdID());
+            statement.setString(2, product.getProdDesc());
+            statement.setDouble(3, product.getProdPrice());
+            statement.setString(4, product.getProdType());
+            statement.setInt(5, product.getProdID());
             statement.executeUpdate();
         } catch (SQLException ex) {
             ex.printStackTrace();

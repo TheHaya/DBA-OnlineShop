@@ -66,12 +66,12 @@
                                         <h:outputText value="#{product.prodType}" />
                                     </f:facet>
                                     <f:facet name="input">
-                                        <p:selectOneMenu id="option" value="#{product.prodType}" style="width:auto">
-                                            <f:selectItem itemLabel="Pizza" itemValue="Pizza"/> 
-                                            <f:selectItem itemLabel="Ice Cream" itemValue="Ice Cream"/> 
-                                            <f:selectItem itemLabel="Cake" itemValue="Cake"/> 
-                                            <f:selectItem itemLabel="Fruit" itemValue="Fruit"/> 
+                                        <p:selectOneMenu id="option" value="#{product.prodType}" style="width:auto"
+                                                         converter="categoryConverter">
+                                            <f:selectItems value="#{productBean.categoryList}" var="category"
+                                                           itemValue="#{category.categoryName}" />
                                         </p:selectOneMenu>
+
                                     </f:facet>
                                 </p:cellEditor>
                             </p:column>

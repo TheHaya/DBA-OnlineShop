@@ -19,14 +19,15 @@ public class CategoryConverter implements Converter {
         productBean controller
                 = (productBean) facesContext.getApplication()
                         .getELResolver().getValue(facesContext.getELContext(), null, "productBean");
-        return controller.getCategory(value);
+        ProductCategory newCategory = controller.getCategory(value);
+        return newCategory;
     }
 
-//    java.lang.Integer getKey(String value) {
-//        java.lang.Integer key;
-//        key = Integer.valueOf(value);
-//        return key;
-//    }
+    java.lang.Integer getKey(String value) {
+        java.lang.Integer key;
+        key = Integer.valueOf(value);
+        return key;
+    }
 
     String getStringKey(java.lang.Integer value) {
         StringBuilder sb = new StringBuilder();
