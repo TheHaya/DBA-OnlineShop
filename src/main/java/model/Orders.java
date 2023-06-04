@@ -18,27 +18,22 @@ public class Orders {
     private Customer customer;
     private String comment;
     private Timestamp changeDate;
-
+    private OrderDetail orderDetail;
+    
     enum status {
     Pending,
     Completed,
     Denied
 }
     
-    public Orders(Date delDate, status status, Customer customer, String comment, Timestamp changeDate) {
+    public Orders(Date delDate, 
+                  Customer customer, 
+                  String comment, 
+                  Timestamp changeDate) {
         this.delDate = delDate;
-        this.status = status;
         this.customer = customer;
         this.comment = comment;
         this.changeDate = changeDate;
-    }
-    
-    public status getStatus() {
-        return status;
-    }
-
-    public void setStatus(status status) {
-        this.status = status;
     }
     
     public Date getDelDate() {
@@ -71,6 +66,22 @@ public class Orders {
 
     public void setChangeDate(Timestamp changeDate) {
         this.changeDate = changeDate;
+    }
+
+    public status getStatus() {
+        return status;
+    }
+
+    public void setStatus(status status) {
+        this.status = status;
+    }
+
+    public OrderDetail getOrderDetail() {
+        return orderDetail;
+    }
+
+    public void setOrderDetail(OrderDetail orderDetail) {
+        this.orderDetail = orderDetail;
     }
             
     

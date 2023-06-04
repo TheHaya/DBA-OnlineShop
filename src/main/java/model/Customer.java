@@ -42,6 +42,9 @@ public class Customer {
         this.birthdate = birthdate;
         this.account = account;
     }
+    public Customer(int cid){
+        this.cid = cid;
+    }
     
     public Customer(int cid, String username, String password, String email, String firstname, String lastname, String salutation, String phone, Date birthdate, Account account) {
         this.cid = cid;

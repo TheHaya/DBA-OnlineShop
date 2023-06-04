@@ -29,6 +29,7 @@ import model.product;
 import model.user;
 import model.Customer;
 import model.OrderDetail;
+import model.Orders;
 import model.ProductInfo;
 import model.UserInfo;
 
@@ -153,15 +154,17 @@ public class sqlBean implements Serializable {
         }
     }
 
-    public void insertCheckout(OrderDetail orderDetail, Customer customer, cartBean cart) {
+    public void insertCheckout(Orders order, Customer customer, cartBean cart) {
         try {
-
+            
+            if (customer == null) {
+            LOGGER.log(Level.SEVERE, "Customer object is null");
+            return;
+            }
             // Insert into orders table
-            String ordersSql = "INSERT INTO orders (FK_CID, ODELDATE, OSTATUS) VALUES (?, ?, ?)";
+            String ordersSql = "INSERT INTO orders (FK_CID) VALUES (?)";
             PreparedStatement ordersStatement = conn.prepareStatement(ordersSql);
             ordersStatement.setInt(1, customer.getCid());
-            ordersStatement.setDate(2, orderDetail.getOrder().getDelDate());
-            ordersStatement.setString(3, orderDetail.getOrder().getStatus());
             ordersStatement.executeUpdate();
 
             // Get the generated order ID
@@ -175,8 +178,11 @@ public class sqlBean implements Serializable {
                     throw new SQLException("Failed to retrieve generated order ID.");
                 }
             }
-
-            // Insert into orderdetail table
+            
+            if (cart == null) {
+            LOGGER.log(Level.SEVERE, "Cart is null");
+            return;
+            }
             
             for (product p : cart.getCart()) {
                 String orderDetailsSql = "INSERT INTO orderdetail (FK_OID, FK_PRID, ODAMOUNT) VALUES (?, ?, ?)";
@@ -267,7 +273,7 @@ public class sqlBean implements Serializable {
     
     public boolean findPhone(String phone) {
         try {
-            String sql = "SELECT COUNT(*) FROM Customer WHERE CEMAIL = ?";
+            String sql = "SELECT COUNT(*) FROM Customer WHERE CPHONE = ?";
             PreparedStatement statement = conn.prepareStatement(sql);
             statement.setString(1, phone);
             try (ResultSet resultSet = statement.executeQuery()) {

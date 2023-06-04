@@ -4,6 +4,7 @@
  */
 package controller;
 
+import jakarta.annotation.PostConstruct;
 import jakarta.inject.Named;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.faces.application.FacesMessage;
@@ -18,6 +19,7 @@ import java.util.ArrayList;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.logging.Level;
 import model.Customer;
 import model.OrderDetail;
 import model.Orders;
@@ -42,11 +44,10 @@ public class cartBean implements Serializable {         // Serialisierbar ermög
     private user curUser;
     private FacesContext context;
     private Date delDate;
-    private enum status {Pending, Completed, Denied};
     private Customer customer;
     private String comment;
+    private Timestamp changeDate;
     private Timestamp orderDate;
-    private Timestamp ODDate;
     private int amount;
     private product product;
     private Orders order;
@@ -56,6 +57,11 @@ public class cartBean implements Serializable {         // Serialisierbar ermög
     
     @Inject
     private sqlBean cartData;
+    
+    @PostConstruct
+    public void init(){
+        context = FacesContext.getCurrentInstance();
+    }
     
     public cartBean() {
         cartData = new sqlBean();
@@ -117,11 +123,23 @@ public class cartBean implements Serializable {         // Serialisierbar ermög
     }
 
     public String checkout(){
-        Orders newOrder = new Orders(delDate, customer, comment, orderDate);
+        context = FacesContext.getCurrentInstance();
+        FacesMessage facesMessage;
+        
         Customer curCustomer = cartLogin.getLoggedInCustomer();
-        orderDetail.setOrder(newOrder);
-        cartData.insertCheckout(orderDetail, curCustomer, this);
+        customer = curCustomer;
+        
+        Orders newOrder = new Orders(delDate, customer, comment, changeDate);
+        order = newOrder;
+        
+        OrderDetail newOrderDetail = new OrderDetail(orderDate, amount, product);
+        order.setOrderDetail(newOrderDetail);
+
+        cartData.insertCheckout(order, customer, this);
+        facesMessage = new FacesMessage(FacesMessage.SEVERITY_INFO, "Checkout successful", "Thanks for shopping!");
+        context.addMessage(null, facesMessage);
         cart = new ArrayList<>();
+        
         return "checkout.xhtml";
     }
     

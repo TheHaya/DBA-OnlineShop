@@ -12,6 +12,8 @@ import jakarta.faces.context.FacesContext;
 import jakarta.inject.Inject;
 import jakarta.servlet.http.HttpSession;
 import java.io.Serializable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import model.Customer;
 import util.sqlBean;
 

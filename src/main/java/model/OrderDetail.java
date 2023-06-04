@@ -20,12 +20,11 @@ public class OrderDetail {
 
     public OrderDetail(Timestamp date,
                        int amount,
-                       product product,
-                       Orders order) {
+                       product product) {
+        
         this.date = date;
         this.amount = amount;
         this.product = product;
-        this.order = order;
     }
 
     public Timestamp getDate() {
