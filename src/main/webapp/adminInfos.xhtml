@@ -27,7 +27,7 @@
                             <!-- DataTable for Top Sellers / Least Sold Products -->
                             <p:dataTable id="dt-products" var="product" value="#{adminInfo.productInfo}"
                                          reflow="true" styleClass="products-table"
-                                         rowKey="#{product.productName}">
+                                         rowKey="#{product.productName}" paginator="true" rows="5" paginatorPosition="bottom">
                                 <p:column headerText="Product Name" width="auto" style="text-align: center">
                                     <h:outputText value="#{product.productName}" />
                                 </p:column>
@@ -43,7 +43,8 @@
                         </div>
 
                         <div class="p-col">
-                            <p:selectOneMenu id="UserInfoTypeMenu" value="#{adminInfo.selectedUserInfoType}" placeholder="Select a UserInfo Type">
+                            <p:selectOneMenu id="UserInfoTypeMenu" value="#{adminInfo.selectedUserInfoType}">
+                                <f:selectItem itemLabel="All Customers" itemValue="allCustomers" />
                                 <f:selectItem itemLabel="Best Customers" itemValue="bestCustomers" />
                                 <f:selectItem itemLabel="Worst Customers" itemValue="worstCustomers" />
                                 <p:ajax event="valueChange" listener="#{adminInfo.loadUserInfo}" update="dt-customers" />
@@ -52,7 +53,7 @@
                             <!-- DataTable for Best Customers / Worst Customers -->
                             <p:dataTable id="dt-customers" var="customer" value="#{adminInfo.userInfo}"
                                          reflow="true" styleClass="products-table"
-                                         rowKey="#{customer.accName}">
+                                         rowKey="#{customer.accName}" paginator="true" rows="10" paginatorPosition="bottom">
                                 <p:column headerText="Customer Name" width="auto" style="text-align: center">
                                     <h:outputText value="#{customer.accName}" />
                                 </p:column>

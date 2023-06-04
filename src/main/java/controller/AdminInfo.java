@@ -71,11 +71,21 @@ public class AdminInfo implements Serializable {
     }
 
     public void loadUserInfo() {
-        if ("bestCustomers".equals(selectedUserInfoType)) {
-            userInfo = sqlBean.getUserInfoList();
-        } else if ("worstCustomers".equals(selectedUserInfoType)) {
-            userInfo = sqlBean.getInactiveCustomers();
+        if (null != selectedUserInfoType) switch (selectedUserInfoType) {
+            case "allCustomers":
+                userInfo = sqlBean.getAllUsers();
+                break;
+            case "bestCustomers":
+                userInfo = sqlBean.getUserInfoList();
+                break;
+            case "worstCustomers":
+                userInfo = sqlBean.getInactiveCustomers();
+                break;
+            default:
+                break;
+        
         }
+        
     }
 
 }
