@@ -7,23 +7,14 @@
       xmlns:p="http://primefaces.org/ui">
     
     <h:body>
-        <div id="main">
-            <div id="banner">
-                <ui:insert name="banner">
-                    <ui:include src="banner.xhtml"/>
-                </ui:insert>
-            </div>
-            
-            <div id="content">
-                <p:growl 
-                    id="growl"  
-                    globalOnly="true" 
-                    showSummary="true" 
-                    showDetail="true" 
-                    life="5000" 
-                    skipDetailIfEqualsSummary="true"/>
-                <ui:insert name="content"></ui:insert>
-            </div>
+        <header>
+            <ui:insert name="banner">
+                <ui:include src="banner.xhtml"/>
+            </ui:insert>
+        </header>   
+
+        <div id="content">
+            <ui:insert name="content"/>
         </div>
     </h:body>
 </html>

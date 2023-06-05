@@ -18,16 +18,23 @@
 
                     <div class="p-grid">
                         <div class="p-col">
-                            <p:selectOneMenu id="dataTypeMenu" value="#{adminInfo.selectedDataType}" placeholder="Select a DataType">
-                                <f:selectItem itemLabel="Bestseller" itemValue="bestseller" />
-                                <f:selectItem itemLabel="Low Selling Products" itemValue="lowSelling" />
-                                <p:ajax event="valueChange" listener="#{adminInfo.loadProductInfo}" update="dt-products" />
-                            </p:selectOneMenu>
+                            
 
                             <!-- DataTable for Top Sellers / Least Sold Products -->
-                            <p:dataTable id="dt-products" var="product" value="#{adminInfo.productInfo}"
-                                         reflow="true" styleClass="products-table"
-                                         rowKey="#{product.productName}" paginator="true" rows="5" paginatorPosition="bottom">
+                            <p:dataTable  id="dt-products" var="product" value="#{adminInfo.productInfo}"
+                                         reflow="true" styleClass="tableHeader" rowStyleClass="adminTableRows1"
+                                         rowKey="#{product.productName}" paginator="true" rows="10" paginatorPosition="bottom">
+                               
+                                    <f:facet name="header" >   
+                                        <span style="font-weight: bold">PRODUCTS</span>
+                                        <p:selectOneMenu id="dataTypeMenu" value="#{adminInfo.selectedDataType}" 
+                                                         placeholder="Select a DataType" styleClass="adminHeaderSort">
+                                            <f:selectItem itemLabel="Bestseller" itemValue="bestseller" />
+                                            <f:selectItem itemLabel="Low Selling Products" itemValue="lowSelling" />
+                                            <p:ajax event="valueChange" listener="#{adminInfo.loadProductInfo}" update="dt-products" />
+                                        </p:selectOneMenu>
+                                    </f:facet>
+                                
                                 <p:column headerText="Product Name" width="auto" style="text-align: center">
                                     <h:outputText value="#{product.productName}" />
                                 </p:column>
@@ -43,18 +50,20 @@
                         </div>
 
                         <div class="p-col">
-                            <p:selectOneMenu id="UserInfoTypeMenu" value="#{adminInfo.selectedUserInfoType}">
-                                <f:selectItem itemLabel="All Customers" itemValue="allCustomers" />
-                                <f:selectItem itemLabel="Best Customers" itemValue="bestCustomers" />
-                                <f:selectItem itemLabel="Worst Customers" itemValue="worstCustomers" />
-                                <p:ajax event="valueChange" listener="#{adminInfo.loadUserInfo}" update="dt-customers" />
-                            </p:selectOneMenu>
-
+                            
                             <!-- DataTable for Best Customers / Worst Customers -->
                             <p:dataTable id="dt-customers" var="customer" value="#{adminInfo.userInfo}"
-                                         reflow="true" styleClass="products-table"
-                                         rowKey="#{customer.accName}" paginator="true" rows="10" paginatorPosition="bottom">
-                                <p:column headerText="Customer Name" width="auto" style="text-align: center">
+                                         reflow="true" styleClass="tableHeader" rowStyleClass="adminTableRows2"
+                                         rowKey="#{customer.accName}" >
+                                <f:facet name="header">
+                                    <span style="font-weight: bold">CUSTOMERS</span>
+                                    <p:selectOneMenu id="UserInfoTypeMenu" value="#{adminInfo.selectedUserInfoType}" styleClass="adminHeaderSort">
+                                        <f:selectItem itemLabel="Best Customers" itemValue="bestCustomers" />
+                                        <f:selectItem itemLabel="Worst Customers" itemValue="worstCustomers" />
+                                        <p:ajax event="valueChange" listener="#{adminInfo.loadUserInfo}" update="dt-customers" />
+                                    </p:selectOneMenu>
+                                </f:facet>
+                                <p:column styleClass="adminTableRows" headerText="Customer Name" width="auto" style="text-align: center">
                                     <h:outputText value="#{customer.accName}" />
                                 </p:column>
 

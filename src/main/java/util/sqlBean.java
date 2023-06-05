@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 import model.Account;
 import model.product;
-import model.user;
 import model.Customer;
 import model.Orders;
 import model.ProductCategory;
@@ -167,6 +166,71 @@ public class sqlBean implements Serializable {
         }
     }
 
+//    public void insertCheckout(Orders order, Customer customer, cartBean cart) {
+//        try {
+//            conn.setAutoCommit(false);
+//            if (customer == null) {
+//                LOGGER.log(Level.SEVERE, "Customer object is null");
+//                return;
+//            }
+//
+////            if (customer != null) {
+////                LOGGER.log(Level.SEVERE, "Customer ID IS" + customer.getCid() + " END", customer.getCid());
+////            return;
+////            }
+//            // Insert into orders table
+//            String ordersSql = "INSERT INTO orders (FK_CID, OSTATUS, ODELDATE, OCOMMENT) VALUES (?, ?, ?, ?)";
+//            PreparedStatement ordersStatement = conn.prepareStatement(ordersSql);
+//            ordersStatement.setInt(1, customer.getCid());
+//            ordersStatement.setString(2, "Pending");
+//            ordersStatement.setObject(3, order.getDelDate());
+//            ordersStatement.setString(4, "Order #");
+//            ordersStatement.executeUpdate();
+//
+//            // Get the generated order ID
+//            int orderID;
+//            String orderIDSql = "SELECT LAST_INSERT_ID()";
+//            PreparedStatement orderIDStatement = conn.prepareStatement(orderIDSql);
+//            try (ResultSet orderIDResultSet = orderIDStatement.executeQuery()) {
+//                if (orderIDResultSet.next()) {
+//                    orderID = orderIDResultSet.getInt(1);
+//                } else {
+//                    throw new SQLException("Failed to retrieve generated order ID.");
+//                }
+//            }
+//
+//            if (cart == null) {
+//                LOGGER.log(Level.SEVERE, "Cart is null");
+//                return;
+//            }
+//
+//            for (product p : cart.getCart()) {
+//                String orderDetailsSql = "INSERT INTO orderdetail (FK_OID, FK_PRID, ODAMOUNT) VALUES (?, ?, ?)";
+//                PreparedStatement orderDetailsStatement = conn.prepareStatement(orderDetailsSql);
+//                orderDetailsStatement.setInt(1, orderID);
+//                orderDetailsStatement.setInt(2, p.getProdID());
+//                orderDetailsStatement.setInt(3, p.getProdQuant());
+//                orderDetailsStatement.executeUpdate();
+//            }
+//            conn.commit();
+//
+//        } catch (SQLException ex) {
+//            LOGGER.log(Level.SEVERE, "Error while inserting checkout into the database", ex);
+//
+//            try {
+//                conn.rollback(); // Rollback the transaction in case of an exception
+//            } catch (SQLException rollbackEx) {
+//                LOGGER.log(Level.SEVERE, "Error while rolling back the transaction", rollbackEx);
+//            }
+//        } finally {
+//            try {
+//                conn.setAutoCommit(true); // Enable autocommit
+//            } catch (SQLException ex) {
+//                LOGGER.log(Level.SEVERE, "Error while enabling autocommit", ex);
+//            }
+//        }
+//    }
+    
     public void insertCheckout(Orders order, Customer customer, cartBean cart) {
         try {
             conn.setAutoCommit(false);
@@ -492,7 +556,7 @@ public class sqlBean implements Serializable {
                     + "WHERE c.CID = ? "
                     + "AND YEAR(o.ODELDATE) = YEAR(CURRENT_DATE()) "
                     + "GROUP BY c.CID, o.OID "
-                    + "HAVING COUNT(o.OID) > 1 "
+                    + "HAVING COUNT(o.OID) > 1 " 
                     + "ORDER BY COUNT(o.OID) DESC, o.OID";
             PreparedStatement statement = conn.prepareStatement(sql);
             statement.setInt(1, cid);
@@ -542,37 +606,6 @@ public class sqlBean implements Serializable {
 //        }
 //        return null;
 //    }
-    
-    public List<UserInfo> getAllUsers() {
-        List<UserInfo> allUserList = new ArrayList<>();
-
-        try {
-            String sql = "SELECT c.CFAMNAME AS LastName, c.CFIRSTNAME AS FirstName, COUNT(DISTINCT o.OID) AS OrdersAmount, c.CID "
-                    + "FROM Customer c "
-                    + "LEFT JOIN Orders o ON o.FK_CID = c.CID "
-                    + "LEFT JOIN OrderDetail od ON od.FK_OID = o.OID "
-                    + "LEFT JOIN Product p ON p.PRID = od.FK_PRID "
-                    + "GROUP BY c.CID "
-                    + "ORDER BY OrdersAmount DESC";
-            PreparedStatement statement = conn.prepareStatement(sql);
-            ResultSet resultSet = statement.executeQuery();
-
-            while (resultSet.next()) {
-                String lastName = resultSet.getString("LastName");
-                String firstName = resultSet.getString("FirstName");
-                int cid = resultSet.getInt("CID");
-                int ordersAmount = resultSet.getInt("OrdersAmount");
-                double totalRevenue = getRevenue(cid);
-
-                UserInfo userInfo = new UserInfo(firstName + " " + lastName, ordersAmount, totalRevenue);
-                allUserList.add(userInfo);
-            }
-        } catch (SQLException ex) {
-             LOGGER.log(Level.SEVERE, "Error while retrieving best customer list from the database", ex);
-        }
-
-        return allUserList;
-    }
     
     public Connection getConn() {
         return conn;

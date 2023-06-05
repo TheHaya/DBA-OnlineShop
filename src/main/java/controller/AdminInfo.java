@@ -22,9 +22,10 @@ public class AdminInfo implements Serializable {
     @PostConstruct
     public void init() {
         sqlBean = new sqlBean();
-        refreshData();
+        refreshData();  
     }
-
+    
+    
     public List<ProductInfo> getProductInfo() {
         return productInfo;
     }
@@ -71,21 +72,11 @@ public class AdminInfo implements Serializable {
     }
 
     public void loadUserInfo() {
-        if (null != selectedUserInfoType) switch (selectedUserInfoType) {
-            case "allCustomers":
-                userInfo = sqlBean.getAllUsers();
-                break;
-            case "bestCustomers":
-                userInfo = sqlBean.getUserInfoList();
-                break;
-            case "worstCustomers":
-                userInfo = sqlBean.getInactiveCustomers();
-                break;
-            default:
-                break;
-        
+        if (selectedUserInfoType.equals("bestCustomers")) {
+            userInfo = sqlBean.getUserInfoList();
         }
-        
+        else if(selectedUserInfoType.equals("worstCustomers")) {
+            userInfo = sqlBean.getInactiveCustomers();
+        }
     }
-
 }

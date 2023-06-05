@@ -15,7 +15,7 @@
 
                 <div>
                     <h:form>
-                        <p:growl id="messages" showDetail="true" showSummary="true"/>
+                        <!--<p:growl id="messages" showDetail="true" showSummary="true"/>-->
                         <div class="regPanel">
                             <p:panelGrid id="pgrid1" columns="3" style="margin: 50px;">
                                 <f:facet name="header">
@@ -41,7 +41,7 @@
                                 <p:inputText id="cityCode" value="#{registerBean.citycode}" required="true" requiredMessage="Required field"
                                              placeholder="City Code..." style="text-align: left; margin: 10px; margin-left: 10px; width: 200px;"  
                                              styleClass="form-control">
-                                    <p:ajax event="keyup" update="cityCodeMessage growl"/>           
+                                    <p:ajax event="keyup" update="cityCodeMessage"/>           
                                 </p:inputText>
                                 <p:message id="cityCodeMessage" for="cityCode" style="margin-left: 20px;width: 200px;" styleClass="text-warning"/>
 
@@ -49,7 +49,7 @@
                                 <p:inputText id="country" value="#{registerBean.country}" required="true" requiredMessage="Required field"
                                              placeholder="Country..." style="text-align: left; margin: 10px; margin-left: 10px; width: 200px;"  
                                              styleClass="form-control">
-                                    <p:ajax event="keyup" update="countryMessage growl"/>           
+                                    <p:ajax event="keyup" update="countryMessage"/>           
                                 </p:inputText>
                                 <p:message id="countryMessage" for="country" style="margin-left: 20px;width: 200px;" styleClass="text-warning"/>
 
