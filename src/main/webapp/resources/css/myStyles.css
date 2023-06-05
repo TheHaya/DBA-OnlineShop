@@ -13,6 +13,8 @@ body
     font-family: Verdana;
 }
 
+
+
 .banner{
     position:absolute;
     top:10px;
@@ -26,6 +28,16 @@ body
     margin-left:-150px;
 }
 
+/*#content
+{
+    position:absolute;
+    top:180px;
+    width: 1010px;
+    height: 700px;
+    background-image: url("images/bg.png");
+    background-size: cover;
+    
+}*/
 .faq-info{
     position:absolute;
     top: 225px;
@@ -76,10 +88,43 @@ body
     text-align: center;
 }
 
-.adminSortHeader{
+.adminTable1 th{
+    background-color: #9bb6bd !important;
+}
+
+.adminTable2 th{
+    background-color: #9bb6bd !important;
+}
+
+.adminTableRows1 {
+    background-color: #dff9ff !important;
+}
+
+.adminTableRows2 {
+    background-color: #dff9ff !important;
+}
+
+.adminHeaderSort{
     margin-left: 20px;
     margin-bottom: 5px;
     position: absolute;
+}
+
+.adminHeaderColor{
+    background-color: #ffff22;
+}
+
+.tableHeader th{
+    background-color: #28343c !important;
+    color: #ffffff !important;
+}
+
+.tableRows{
+    background-color: #dff9ff !important;
+}
+
+.ui-panelgrid .ui-panelgrid-header {
+    background-color: #ADD8E6 !important;
 }
 
 .regPanel{

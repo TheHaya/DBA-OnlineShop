@@ -14,10 +14,10 @@
                 <h:form id="form">
                         <div class="productTable">
                             <p:dataTable id="cartTable" var="product" value="#{cartBean.cart}"
-                                reflow="true" scrollable="true"
+                                         reflow="true" scrollable="true" styleClass="tableHeader" rowStyleClass="tableRows"
                                 rowKey="#{product.prodID}" scrollHeight="372px">
                                 <f:facet name="header">
-                                <span style="font-weight: bold">CART</span>
+                                <span style="font-weight: bold;">CART</span>
                                 </f:facet>
                                 
                                 <f:facet name="footer">  

@@ -17,7 +17,7 @@
                     <div class="productTable">
                         <!--<p:growl id="messages" showDetail="true" showSummary="true"/>-->
                         <p:dataTable id="prodTable" var="product" value="#{productBean.productDataList}"
-                                     styleClass="products-table" editable="true" 
+                                     styleClass="tableHeader" editable="true" rowStyleClass="tableRows"
                                      rowKey="#{product.prodID}" paginator="true" rows="5" paginatorPosition="bottom">
                             <f:facet name="header">
                                 <span style="font-weight: bold">PRODUCTS</span>
