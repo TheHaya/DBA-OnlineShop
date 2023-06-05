@@ -33,7 +33,7 @@ public class product implements Serializable{
         this.prodPic = prodPic;
         this.prodPrice = prodPrice;
         this.prodID = prodID;
-        this.prodQuant = 0;
+        this.prodQuant = 1;
     }
     
     // Getter und Setter

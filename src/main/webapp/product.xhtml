@@ -15,7 +15,7 @@
             <ui:define name="content">
                 <h:form id="form">
                     <div class="productTable">
-                        <p:growl id="messages" showDetail="true" showSummary="true"/>
+                        <!--<p:growl id="messages" showDetail="true" showSummary="true"/>-->
                         <p:dataTable id="prodTable" var="product" value="#{productBean.productDataList}"
                                      styleClass="products-table" editable="true" 
                                      rowKey="#{product.prodID}" paginator="true" rows="5" paginatorPosition="bottom">

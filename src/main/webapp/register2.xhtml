@@ -15,7 +15,7 @@
 
                 <div>
                     <h:form>
-                        <p:growl id="messages" showDetail="true" showSummary="true"/>
+                        <!--<p:growl id="messages" showDetail="true" showSummary="true"/>-->
                         <div class="regPanel">
                             <p:panelGrid id="pgrid1" columns="3" style="margin: 50px;">
                                 <f:facet name="header">
@@ -50,7 +50,7 @@
                                 <p:inputText id="email" value="#{registerBean.email}" required="true" requiredMessage="Required field"
                                              validator="emailValidator" placeholder="Email..."
                                              style="text-align: left; margin: 10px; margin-left: 10px; width: 200px;"  styleClass="form-control">
-                                    <p:ajax event="blur" update="emailMessage growl"/>           
+                                    <p:ajax event="blur" update="emailMessage"/>           
                                 </p:inputText>
                                 <p:message id="emailMessage" for="email" style="margin-left: 20px;width: 200px;" styleClass="text-warning"/>
 
