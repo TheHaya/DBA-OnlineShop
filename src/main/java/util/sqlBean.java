@@ -555,8 +555,7 @@ public class sqlBean implements Serializable {
                     + "LEFT JOIN Product p ON p.PRID = od.FK_PRID "
                     + "WHERE c.CID = ? "
                     + "AND YEAR(o.ODELDATE) = YEAR(CURRENT_DATE()) "
-                    + "GROUP BY c.CID, o.OID "
-                    + "HAVING COUNT(o.OID) > 1 " 
+                    + "GROUP BY c.CID, o.OID " 
                     + "ORDER BY COUNT(o.OID) DESC, o.OID";
             PreparedStatement statement = conn.prepareStatement(sql);
             statement.setInt(1, cid);
