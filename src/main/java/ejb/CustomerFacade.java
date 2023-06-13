@@ -2,17 +2,18 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package newModel;
+package ejb;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import newModel.Customer;
 
 /**
  *
  * @author Haya
  */
 @jakarta.ejb.Stateless
-public class ProductingredientFacade extends AbstractFacade<Productingredient> implements ProductingredientFacadeLocal {
+public class CustomerFacade extends AbstractFacade<Customer> implements CustomerFacadeLocal {
 
     @PersistenceContext(unitName = "my_persistence_unit")
     private EntityManager em;
@@ -22,8 +23,8 @@ public class ProductingredientFacade extends AbstractFacade<Productingredient> i
         return em;
     }
 
-    public ProductingredientFacade() {
-        super(Productingredient.class);
+    public CustomerFacade() {
+        super(Customer.class);
     }
     
 }

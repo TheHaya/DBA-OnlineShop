@@ -139,7 +139,7 @@ public class Address implements Serializable {
 
     @Override
     public String toString() {
-        return "newModel.Address[ adrid=" + adrid + " ]";
+        return "newnewmodel.Address[ adrid=" + adrid + " ]";
     }
     
 }

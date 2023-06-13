@@ -16,9 +16,9 @@
                 <h:form id="form">
                     <div class="productTable">
                         <!--<p:growl id="messages" showDetail="true" showSummary="true"/>-->
-                        <p:dataTable id="prodTable" var="product" value="#{productBean.productDataList}"
+                        <p:dataTable id="prodTable" var="product" value="#{DBRequestBean.products}"
                                      styleClass="tableHeader" editable="true" rowStyleClass="tableRows"
-                                     rowKey="#{product.prodID}" paginator="true" rows="5" paginatorPosition="bottom">
+                                     rowKey="#{product.prid}" paginator="true" rows="5" paginatorPosition="bottom">
                             <f:facet name="header">
                                 <span style="font-weight: bold">PRODUCTS</span>
                             </f:facet>
@@ -27,46 +27,46 @@
                             <p:ajax event="rowEditCancel" listener="#{productBean.onRowCancel}" update="messages"/>
 
                             <p:column rendered="#{loginBean.isAdminRights()}" headerText="ID" width="auto">
-                                <h:outputText value="#{product.prodID}" />
+                                <h:outputText value="#{product.prid}" />
                             </p:column>
 
 
-                            <p:column headerText="Name" sortBy="#{product.prodName}" filterBy="#{product.prodName}"
+                            <p:column headerText="Name" sortBy="#{product.prname}" filterBy="#{product.prname}"
                                       width="auto" style="text-align: center">
                                 <p:cellEditor>
                                     <f:facet name="output">
-                                        <h:outputText value="#{product.prodName}" />
+                                        <h:outputText value="#{product.prname}" />
                                     </f:facet>
                                     <f:facet name="input">
-                                        <p:inputText label="Name" value="#{product.prodName}" />
+                                        <p:inputText label="Name" value="#{product.prname}" />
                                     </f:facet>
                                 </p:cellEditor>
                             </p:column>
 
                             <p:column headerText="Image" exportable="false" width="auto" style="text-align: center">
-                                <p:graphicImage name="#{product.prodPic}" width="100px"/>
+                                <p:graphicImage name="#{product.primagepath}" width="100px"/>
                             </p:column>
 
 
                             <p:column headerText="Description" width="auto" style="text-align: center">
                                 <p:cellEditor>
                                     <f:facet name="output">
-                                        <h:outputText value="#{product.prodDesc}" />
+                                        <h:outputText value="#{product.prcomment}" />
                                     </f:facet>
                                     <f:facet name="input">
-                                        <p:inputText label="Name" value="#{product.prodDesc}" />
+                                        <p:inputText label="Name" value="#{product.prcomment}" />
                                     </f:facet>
                                 </p:cellEditor>
                             </p:column>
 
-                            <p:column headerText="Category" sortBy="#{product.prodType}" filterBy="#{product.prodType}"
+                            <p:column headerText="Category" sortBy="#{product.pcatenum}" filterBy="#{product.pcatenum}"
                                       width="auto" style="text-align: center">
                                 <p:cellEditor>
                                     <f:facet name="output">
-                                        <h:outputText value="#{product.prodType}" />
+                                        <h:outputText value="#{product.pcatenum}" />
                                     </f:facet>
                                     <f:facet name="input">
-                                        <p:selectOneMenu id="option" value="#{product.prodType}" style="width:auto"
+                                        <p:selectOneMenu id="option" value="#{product.pcatenum}" style="width:auto"
                                                          converter="categoryConverter">
                                             <f:selectItems value="#{productBean.categoryList}" var="category"
                                                            itemValue="#{category}"  itemLabel="#{category.categoryName}" />
@@ -76,16 +76,16 @@
                                 </p:cellEditor>
                             </p:column>
 
-                            <p:column headerText="Price" sortBy="#{product.prodPrice}"
+                            <p:column headerText="Price" sortBy="#{product.prpricenetto}"
                                       width="auto" style="text-align: center">
                                 <p:cellEditor>
                                     <f:facet name="output">
-                                        <h:outputText value="#{product.prodPrice}" >
+                                        <h:outputText value="#{product.prpricenetto}" >
                                             <f:convertNumber type="currency" currencySymbol="€"/>
                                         </h:outputText>
                                     </f:facet>
                                     <f:facet name="input">
-                                        <p:inputNumber label="Name" value="#{product.prodPrice}" symbol="€"/>
+                                        <p:inputNumber label="Name" value="#{product.prpricenetto}" symbol="€"/>
                                     </f:facet>
                                 </p:cellEditor>
                             </p:column>

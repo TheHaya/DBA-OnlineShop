@@ -128,7 +128,7 @@ public class Supplierproduct implements Serializable {
 
     @Override
     public String toString() {
-        return "newModel.Supplierproduct[ supplierproductPK=" + supplierproductPK + " ]";
+        return "newnewmodel.Supplierproduct[ supplierproductPK=" + supplierproductPK + " ]";
     }
     
 }

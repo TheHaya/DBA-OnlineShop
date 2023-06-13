@@ -2,28 +2,29 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Interface.java to edit this template
  */
-package newModel;
+package ejb;
 
 import java.util.List;
+import newModel.Product;
 
 /**
  *
  * @author Haya
  */
 @jakarta.ejb.Local
-public interface SupplierFacadeLocal {
+public interface ProductFacadeLocal {
 
-    void create(Supplier supplier);
+    void create(Product product);
 
-    void edit(Supplier supplier);
+    void edit(Product product);
 
-    void remove(Supplier supplier);
+    void remove(Product product);
 
-    Supplier find(Object id);
+    Product find(Object id);
 
-    List<Supplier> findAll();
+    List<Product> findAll();
 
-    List<Supplier> findRange(int[] range);
+    List<Product> findRange(int[] range);
 
     int count();
     

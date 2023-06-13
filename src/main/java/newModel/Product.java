@@ -202,7 +202,7 @@ public class Product implements Serializable {
 
     @Override
     public String toString() {
-        return "newModel.Product[ prid=" + prid + " ]";
+        return "newnewmodel.Product[ prid=" + prid + " ]";
     }
     
 }

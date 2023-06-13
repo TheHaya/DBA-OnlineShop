@@ -113,7 +113,7 @@ public class Allergen implements Serializable {
 
     @Override
     public String toString() {
-        return "newModel.Allergen[ allid=" + allid + " ]";
+        return "newnewmodel.Allergen[ allid=" + allid + " ]";
     }
     
 }

@@ -9,11 +9,13 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Named;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
+import jakarta.transaction.RollbackException;
 import java.io.Serializable;
 import java.util.Comparator;
 import java.util.List;
 import model.ProductCategory;
 import model.product;
+import newModel.Product;
 import org.primefaces.event.RowEditEvent;
 import util.sqlBean;
 
@@ -29,17 +31,12 @@ import util.sqlBean;
 @ApplicationScoped
 public class productBean implements Serializable {
 
-    private List<product> productDataList;
+    private List<Product> productDataList;
     private List<ProductCategory> categoryList;
     private String sortOrder = "idAsc";
-    private product currentProduct;
 
     private sqlBean productData;
 
-    @PostConstruct
-    public void init() {
-        sortProducts();
-    }
 
     public productBean() {
         productData = new sqlBean();
@@ -66,19 +63,12 @@ public class productBean implements Serializable {
         FacesContext.getCurrentInstance().addMessage(null, msg);
     }
 
-    public void saveCurrentProduct(product currentProduct) {
+    public void saveCurrentProduct(Product currentProduct) throws RollbackException {
         productData.updateProduct(currentProduct);
-        FacesMessage msg = new FacesMessage("Product Edited", currentProduct.getProdName() + " has been edited");
+        FacesMessage msg = new FacesMessage("Product Edited", currentProduct.getPrname() + " has been edited");
         FacesContext.getCurrentInstance().addMessage(null, msg);
     }
 
-    public void sortProducts() {
-        if (sortOrder.equals("idAsc")) {
-            productDataList.sort(Comparator.comparing(product::getProdID));
-        } else if (sortOrder.equals("idDesc")) {
-            productDataList.sort(Comparator.comparing(product::getProdID).reversed());
-        }
-    }
 
     public ProductCategory getCategory(int id) {
         if (categoryList == null) {
@@ -97,11 +87,11 @@ public class productBean implements Serializable {
     }
 
     //Getter und Setter
-    public List<product> getProductDataList() {
+    public List<Product> getProductDataList() {
         return productDataList;
     }
 
-    public void setProductDataList(List<product> productDataList) {
+    public void setProductDataList(List<Product> productDataList) {
         this.productDataList = productDataList;
     }
 

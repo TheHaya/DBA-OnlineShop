@@ -121,7 +121,7 @@ public class Ingredient implements Serializable {
 
     @Override
     public String toString() {
-        return "newModel.Ingredient[ ingid=" + ingid + " ]";
+        return "newnewmodel.Ingredient[ ingid=" + ingid + " ]";
     }
     
 }

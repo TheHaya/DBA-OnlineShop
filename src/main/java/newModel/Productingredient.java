@@ -111,7 +111,7 @@ public class Productingredient implements Serializable {
 
     @Override
     public String toString() {
-        return "newModel.Productingredient[ productingredientPK=" + productingredientPK + " ]";
+        return "newnewmodel.Productingredient[ productingredientPK=" + productingredientPK + " ]";
     }
     
 }

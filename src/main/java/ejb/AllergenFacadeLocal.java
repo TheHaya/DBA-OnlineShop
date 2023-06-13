@@ -2,28 +2,29 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Interface.java to edit this template
  */
-package newModel;
+package ejb;
 
 import java.util.List;
+import newModel.Allergen;
 
 /**
  *
  * @author Haya
  */
 @jakarta.ejb.Local
-public interface ProductFacadeLocal {
+public interface AllergenFacadeLocal {
 
-    void create(Product product);
+    void create(Allergen allergen);
 
-    void edit(Product product);
+    void edit(Allergen allergen);
 
-    void remove(Product product);
+    void remove(Allergen allergen);
 
-    Product find(Object id);
+    Allergen find(Object id);
 
-    List<Product> findAll();
+    List<Allergen> findAll();
 
-    List<Product> findRange(int[] range);
+    List<Allergen> findRange(int[] range);
 
     int count();
     

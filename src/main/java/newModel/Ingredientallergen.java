@@ -111,7 +111,7 @@ public class Ingredientallergen implements Serializable {
 
     @Override
     public String toString() {
-        return "newModel.Ingredientallergen[ iaid=" + iaid + " ]";
+        return "newnewmodel.Ingredientallergen[ iaid=" + iaid + " ]";
     }
     
 }

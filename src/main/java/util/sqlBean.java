@@ -5,6 +5,8 @@
 package util;
 
 import controller.cartBean;
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.Resource;
 import java.io.Serializable;
 
 import java.sql.Connection;
@@ -16,7 +18,22 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jakarta.enterprise.context.SessionScoped;
+import jakarta.faces.context.FacesContext;
 import jakarta.inject.Named;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.PersistenceUnit;
+import jakarta.persistence.Query;
+import jakarta.persistence.RollbackException;
+import jakarta.persistence.TypedQuery;
+import jakarta.servlet.http.HttpSession;
+import jakarta.transaction.HeuristicMixedException;
+import jakarta.transaction.HeuristicRollbackException;
+import jakarta.transaction.NotSupportedException;
+import jakarta.transaction.SystemException;
+import jakarta.transaction.UserTransaction;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -28,6 +45,7 @@ import model.Orders;
 import model.ProductCategory;
 import model.ProductInfo;
 import model.UserInfo;
+import newModel.Product;
 
 /**
  * SqlBean handles the database operations using SQL queries and statements. It
@@ -37,15 +55,28 @@ import model.UserInfo;
 @SessionScoped
 public class sqlBean implements Serializable {
 
+    private FacesContext context;
     private static final Logger LOGGER = Logger.getLogger(sqlBean.class.getName());
     private Connection conn = null;
 //    private List<user> userList = new ArrayList<>();
-    private List<product> productList = new ArrayList<>();
-
+    private List<Product> productList = new ArrayList<>();
+    private HttpSession session;
+    
+    @PersistenceUnit(unitName = "my_PU")
+    private EntityManagerFactory emf;
+    
+    @Resource
+    private UserTransaction ut;
+    
+    @PersistenceContext
+    private EntityManager em;
     /**
      * Establishes the JDBC database connection.
      */
     public sqlBean() {
+        
+        emf = Persistence.createEntityManagerFactory("my_PU",System.getProperties());
+        
         try {
             String driver = "org.mariadb.jdbc.Driver";
             Class.forName(driver); // Register the DB driver
@@ -55,6 +86,13 @@ public class sqlBean implements Serializable {
         } catch (ClassNotFoundException | SQLException ex) {
             LOGGER.log(Level.SEVERE, "Error while establishing the database connection", ex);
         }
+    }
+    
+    @PostConstruct
+    public void init() {
+        context = FacesContext.getCurrentInstance();
+        session = (HttpSession) context.getExternalContext().getSession(false);
+        LOGGER.log(Level.INFO, "Databean: {0}", session.getId());
     }
 
 //    /**
@@ -296,44 +334,99 @@ public class sqlBean implements Serializable {
         }
     }
 
-    public List<product> getProductList() {
+//    public List<product> getProductList() {
+//
+//        try {
+//            String sql = "SELECT PRNAME, PCATENUM, PRCOMMENT, PRIMAGEPATH, PRPRICENETTO, PRID FROM Product";
+//            PreparedStatement statement = conn.prepareStatement(sql);
+//            ResultSet resultSet = statement.executeQuery();
+//
+//            while (resultSet.next()) {
+//                String prodName = resultSet.getString("PRNAME");
+//                ProductCategory prodType = new ProductCategory( resultSet.getString("PCATENUM"));
+//                String prodDesc = resultSet.getString("PRCOMMENT");
+//                String prodPic = resultSet.getString("PRIMAGEPATH");
+//                double prodPrice = resultSet.getDouble("PRPRICENETTO");
+//                int prodID = resultSet.getInt("PRID");
+//
+//                product prod = new product(prodName, prodType, prodDesc, prodPic, prodPrice, prodID);
+//                productList.add(prod);
+//            }
+//        } catch (SQLException ex) {
+//            LOGGER.log(Level.SEVERE, "Error while retrieving product list from the database", ex);
+//        }
+//
+//        return productList;
+//    }
 
+    public List<Product> getProductList() {
         try {
-            String sql = "SELECT PRNAME, PCATENUM, PRCOMMENT, PRIMAGEPATH, PRPRICENETTO, PRID FROM Product";
-            PreparedStatement statement = conn.prepareStatement(sql);
-            ResultSet resultSet = statement.executeQuery();
-
-            while (resultSet.next()) {
-                String prodName = resultSet.getString("PRNAME");
-                ProductCategory prodType = new ProductCategory( resultSet.getString("PCATENUM"));
-                String prodDesc = resultSet.getString("PRCOMMENT");
-                String prodPic = resultSet.getString("PRIMAGEPATH");
-                double prodPrice = resultSet.getDouble("PRPRICENETTO");
-                int prodID = resultSet.getInt("PRID");
-
-                product prod = new product(prodName, prodType, prodDesc, prodPic, prodPrice, prodID);
-                productList.add(prod);
-            }
-        } catch (SQLException ex) {
+            TypedQuery<Product> query = em.createNamedQuery("Product.findAll", Product.class);
+            productList = query.getResultList();
+        } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, "Error while retrieving product list from the database", ex);
         }
-
         return productList;
     }
-
-    public void updateProduct(product product) {
+    
+//    public void updateProduct(product product) {
+//        try {
+//            String sql = "UPDATE Product SET PRNAME = ?, PRCOMMENT = ?, PRPRICENETTO = ?, PCATENUM = ? WHERE PRID = ?";
+//            PreparedStatement statement = conn.prepareStatement(sql);
+//            statement.setString(1, product.getProdName());
+//            statement.setString(2, product.getProdDesc());
+//            statement.setDouble(3, product.getProdPrice());
+//            statement.setString(4, product.getProdType().getCategoryName());
+//            statement.setInt(5, product.getProdID());
+//            statement.executeUpdate();
+//        } catch (SQLException ex) {
+//             LOGGER.log(Level.SEVERE, "Error while updating Product in the database", ex);
+//        }
+//    }
+    
+//    public void updateProduct(Product product) {
+//        try {
+//            String jpql = "UPDATE Product p SET p.prname = :prname, p.prcomment = :prcomment, p.prpricenetto = :prpricenetto, p.pcatenum = :pcatenum WHERE p.prid = :prid";
+//            Query query = em.createQuery(jpql);
+//            query.setParameter("prname", product.getPrname());
+//            query.setParameter("prcomment", product.getPrcomment());
+//            query.setParameter("prpricenetto", product.getPrpricenetto());
+//            query.setParameter("pcatenum", product.getPcatenum());
+//            query.setParameter("prid", product.getPrid());
+//            query.executeUpdate();
+//        } catch (Exception ex) {
+//            LOGGER.log(Level.SEVERE, "Error while updating Product in the database", ex);
+//        }
+//    }
+    
+    @SuppressWarnings("empty-statement")
+    public boolean updateProduct(Product p) throws jakarta.transaction.RollbackException {
+        boolean ok = true;
+        //Erfragen des korrekten ID-Schlüssels für das zu ändernde Produkt
+        Product product = findProductByName(p.getPrname());
+        p.setPrid(product.getPrid());
+        EntityManager em = emf.createEntityManager();
         try {
-            String sql = "UPDATE Product SET PRNAME = ?, PRCOMMENT = ?, PRPRICENETTO = ?, PCATENUM = ? WHERE PRID = ?";
-            PreparedStatement statement = conn.prepareStatement(sql);
-            statement.setString(1, product.getProdName());
-            statement.setString(2, product.getProdDesc());
-            statement.setDouble(3, product.getProdPrice());
-            statement.setString(4, product.getProdType().getCategoryName());
-            statement.setInt(5, product.getProdID());
-            statement.executeUpdate();
-        } catch (SQLException ex) {
-             LOGGER.log(Level.SEVERE, "Error while updating Product in the database", ex);
+            //(Normale) Transaktion: Erforderlich für INSERT,UPDATE,DELETE-Ops
+            ut.begin();
+            em.joinTransaction(); // JOINTRANSACTION darf man nicht benutzen
+            em.merge(p);
+            ut.commit();
+            ok=true;
+        } catch (IllegalStateException | SecurityException ex) {
+            try {
+                LOGGER.log(Level.SEVERE, null, ex);
+                ut.rollback();
+            } catch (IllegalStateException | SecurityException |
+                SystemException ex1) {
+                LOGGER.log(Level.SEVERE, null, ex1);
+            }
+            ok=false;
+        } catch (NotSupportedException | SystemException | RollbackException | HeuristicMixedException |
+                 HeuristicRollbackException ex) {
+            LOGGER.log(Level.SEVERE, null, ex);
         }
+        return ok;
     }
 
     public boolean findAccName(String accountname) {

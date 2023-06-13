@@ -2,28 +2,29 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Interface.java to edit this template
  */
-package newModel;
+package ejb;
 
 import java.util.List;
+import newModel.Customer;
 
 /**
  *
  * @author Haya
  */
 @jakarta.ejb.Local
-public interface OrdersFacadeLocal {
+public interface CustomerFacadeLocal {
 
-    void create(Orders orders);
+    void create(Customer customer);
 
-    void edit(Orders orders);
+    void edit(Customer customer);
 
-    void remove(Orders orders);
+    void remove(Customer customer);
 
-    Orders find(Object id);
+    Customer find(Object id);
 
-    List<Orders> findAll();
+    List<Customer> findAll();
 
-    List<Orders> findRange(int[] range);
+    List<Customer> findRange(int[] range);
 
     int count();
     

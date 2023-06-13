@@ -192,7 +192,7 @@ public class Customer implements Serializable {
 
     @Override
     public String toString() {
-        return "newModel.Customer[ cid=" + cid + " ]";
+        return "newnewmodel.Customer[ cid=" + cid + " ]";
     }
     
 }

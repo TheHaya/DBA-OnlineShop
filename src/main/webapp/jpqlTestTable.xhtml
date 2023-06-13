@@ -14,36 +14,55 @@
         <ui:composition template="WEB-INF/template/master.xhtml">
             <ui:define name="content">
                 <h:form id="form">
-                    <p:growl id="messages" showDetail="true" showSummary="true"/>
-
-                    <p:dataTable var="list" value="#{DBRequestBean.accountList}"
-                                 paginator="true" rows="8" paginatorPosition="bottom">
+                    
+                    <p:dataTable var="list" value="#{DBRequestBean.products}"
+                                 paginator="true" rows="3" paginatorPosition="bottom">
                         
                         <f:facet name="header">
-                                <span style="font-weight: bold">JPQL TESTER</span>
+                                <span style="font-weight: bold">JPQL TESTER 1</span>
                         </f:facet>
 
                         <p:column headerText="ID" width="auto" style="text-align: center">
-                            <h:outputText value="#{list.accname}" />
+                            <h:outputText value="#{list.prid}" />
+                        </p:column>
+                        
+                        <p:column headerText="Name" width="auto" style="text-align: center">
+                            <h:outputText value="#{list.prname}" />
+                        </p:column>    
+                    </p:dataTable>
+                    
+                    <p:dataTable var="list" value="#{DBRequestBean.accounts}"
+                                 paginator="true" rows="3" paginatorPosition="bottom">
+                        
+                        <f:facet name="header">
+                                <span style="font-weight: bold">JPQL TESTER 2</span>
+                        </f:facet>
+
+                        <p:column headerText="ID" width="auto" style="text-align: center">
+                            <h:outputText value="#{list.accid}" />
                         </p:column>
                         
                         <p:column headerText="Name" width="auto" style="text-align: center">
                             <h:outputText value="#{list.accname}" />
                         </p:column>
-                        
-                        <p:column headerText="Password" width="auto" style="text-align: center">
-                            <h:outputText value="#{list.accname}" />
-                        </p:column>
-                        
-                        <p:column headerText="Email" width="auto" style="text-align: center">
-                            <h:outputText value="#{list.accname}" />
-                        </p:column>
-                        
-                        <p:column headerText="Rights" width="auto" style="text-align: center">
-                            <h:outputText value="#{list.accname}" />
-                        </p:column>
-                        
                     </p:dataTable>
+                    
+                    <p:dataTable var="list" value="#{productBean.productDataList}"
+                                 paginator="true" rows="3" paginatorPosition="bottom">
+                        
+                        <f:facet name="header">
+                                <span style="font-weight: bold">JPQL TESTER 3</span>
+                        </f:facet>
+
+                        <p:column headerText="ID" width="auto" style="text-align: center">
+                            <h:outputText value="#{list.prid}" />
+                        </p:column>
+                        
+                        <p:column headerText="Name" width="auto" style="text-align: center">
+                            <h:outputText value="#{list.prname}" />
+                        </p:column>
+                    </p:dataTable>
+                    
                 </h:form>
             </ui:define>
         </ui:composition>

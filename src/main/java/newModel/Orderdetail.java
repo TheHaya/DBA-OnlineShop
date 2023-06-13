@@ -128,7 +128,7 @@ public class Orderdetail implements Serializable {
 
     @Override
     public String toString() {
-        return "newModel.Orderdetail[ odid=" + odid + " ]";
+        return "newnewmodel.Orderdetail[ odid=" + odid + " ]";
     }
     
 }

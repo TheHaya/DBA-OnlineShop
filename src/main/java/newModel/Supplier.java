@@ -152,7 +152,7 @@ public class Supplier implements Serializable {
 
     @Override
     public String toString() {
-        return "newModel.Supplier[ supid=" + supid + " ]";
+        return "newnewmodel.Supplier[ supid=" + supid + " ]";
     }
     
 }
