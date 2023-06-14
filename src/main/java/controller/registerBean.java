@@ -11,11 +11,11 @@ import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
 import jakarta.inject.Inject;
 import java.io.Serializable;
-import java.util.List;
-import model.Account;
-import model.Address;
-import model.Customer;
-import model.user;
+import java.util.ArrayList;
+import java.util.Collection;
+import newModel.Account;
+import newModel.Address;
+import newModel.Customer;
 import util.sqlBean;
 
 /**
@@ -55,14 +55,14 @@ public class registerBean implements Serializable {
     }
 
     public registerBean() {
-        registerData = new sqlBean();
+        
     }
 
     // Registrierungsfunktion für Account
     public String createAccount() {
 
         // Create new account object
-        Account newAccount = new Account(accountname, password);
+        Account newAccount = new Account();
 
 
         account = newAccount;
@@ -74,7 +74,7 @@ public class registerBean implements Serializable {
     public String createCustomer() {
 
         // Create new account object
-        Customer newCustomer = new Customer(accountname, password, email, firstname, lastname, salutation, phone, birthdate, account);
+        Customer newCustomer = new Customer();
 
         customer = newCustomer;
         return "register3.xhtml";
@@ -84,9 +84,11 @@ public class registerBean implements Serializable {
         context = FacesContext.getCurrentInstance();
         FacesMessage facesMessage;
 
-        Address newAddress = new Address(street, fedstate, citycode, country);
-        customer.setaddress(newAddress);
-        registerData.insertCustomer(customer);
+        Address newAddress = new Address();
+        Collection<Address> addressCollection = new ArrayList<>();
+        addressCollection.add(newAddress);
+        customer.setAddressCollection(addressCollection);
+        registerData.persistCustomer(customer);
         facesMessage = new FacesMessage(FacesMessage.SEVERITY_INFO, "Registration successful", "Welcome to our shop!");
         context.addMessage(null, facesMessage);
 

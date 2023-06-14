@@ -5,7 +5,7 @@ import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.convert.Converter;
 import jakarta.faces.convert.FacesConverter;
-import model.ProductCategory;
+import newModel.ProductCategory;
 import util.sqlBean;
 
 @FacesConverter(value = "categoryConverter", forClass = ProductCategory.class)

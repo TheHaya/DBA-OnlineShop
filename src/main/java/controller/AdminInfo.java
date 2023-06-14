@@ -5,8 +5,8 @@ import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Named;
 import java.io.Serializable;
 import java.util.List;
-import model.ProductInfo;
-import model.UserInfo;
+import newModel.ProductInfo;
+import newModel.UserInfo;
 import util.sqlBean;
 
 @Named(value = "adminInfo")

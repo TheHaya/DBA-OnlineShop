@@ -13,9 +13,9 @@
             <ui:define name="content">
                 <h:form id="form">
                         <div class="productTable">
-                            <p:dataTable id="cartTable" var="product" value="#{cartBean.cart}"
+                            <p:dataTable id="cartTable" var="cart" value="#{cartBean.cart}"
                                          reflow="true" scrollable="true" styleClass="tableHeader" rowStyleClass="tableRows"
-                                rowKey="#{product.prodID}" scrollHeight="372px">
+                                rowKey="#{cart.product.prid}" scrollHeight="372px">
                                 <f:facet name="header">
                                 <span style="font-weight: bold;">CART</span>
                                 </f:facet>
@@ -48,39 +48,39 @@
                                  </f:facet>
 
                             <p:column headerText="Image" exportable="false" width="auto" style="text-align: center">
-                                <p:graphicImage name="#{product.prodPic}" width="100px"/>
+                                <p:graphicImage name="#{cart.product.primagepath}" width="100px"/>
                             </p:column>
 
-                            <p:column headerText="Name" sortBy="#{product.prodName}" width="auto" style="text-align: center">
-                                <h:outputText value="#{product.prodName}" />
+                            <p:column headerText="Name" sortBy="#{cart.product.prname}" width="auto" style="text-align: center">
+                                <h:outputText value="#{cart.product.prname}" />
                             </p:column>
 
                             <p:column headerText="Description" width="auto" style="text-align: center">
-                                <h:outputText value="#{product.prodDesc}" />
+                                <h:outputText value="#{cart.product.prcomment}" />
                             </p:column>
 
-                            <p:column headerText="Category" sortBy="#{product.prodType}" width="auto" style="text-align: center">
-                                <h:outputText value="#{product.prodType}" />
+                            <p:column headerText="Category" sortBy="#{cart.product.pcatenum}" width="auto" style="text-align: center">
+                                <h:outputText value="#{cart.product.pcatenum}" />
                             </p:column>
 
-                            <p:column headerText="Price" sortBy="#{product.prodPrice}" width="auto" style="text-align: center">
-                                <h:outputText value="#{product.prodPrice}" style="font-weight: 700">
+                            <p:column headerText="Price" sortBy="#{cart.product.prpricenetto}" width="auto" style="text-align: center">
+                                <h:outputText value="#{cart.product.prpricenetto}" style="font-weight: 700">
                                     <f:convertNumber currencySymbol="€" type="currency" />
                                 </h:outputText>
                             </p:column>
 
                             <p:column headerText="Quantity" width="50px" style="text-align: center">
-                                <p:spinner buttons="vertical" value="#{product.prodQuant}" min="0"
+                                <p:spinner buttons="vertical" value="#{cart.quantity}" min="0"
                                            upButtonStyleClass="ui-button-secondary" 
                                            downButtonStyleClass="ui-button-secondary">
                                     <p:ajax event="change" update="cartTable totalPriceOutput"  
-                                            listener="#{cartBean.spinnerChangeListener(product)}"/> 
+                                            listener="#{cartBean.spinnerChangeListener(cart)}"/> 
                                 </p:spinner>
                                 
                             </p:column>
                             <p:column width="auto">
                                 <p:commandButton icon="pi pi-trash" styleClass="rounded-button ui-button-danger"
-                                                 action="#{cartBean.delItem(product)}" update="cartTable totalPriceOutput">
+                                                 action="#{cartBean.delItem(cart)}" update="cartTable totalPriceOutput">
                                 </p:commandButton>
                             </p:column>
                         </p:dataTable>

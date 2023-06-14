@@ -9,23 +9,18 @@ import jakarta.inject.Named;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
-import jakarta.faces.event.AjaxBehaviorEvent;
 import jakarta.inject.Inject;
 import java.io.Serializable;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
-import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.util.Iterator;
 import java.util.List;
-import java.util.logging.Level;
-import model.Customer;
-import model.OrderDetail;
-import model.Orders;
-import model.product;
+import newModel.Customer;
+import newModel.Orderdetail;
+import newModel.Orders;
 import model.user;
+import newModel.Product;
 import util.sqlBean;
 /**
  *
@@ -41,7 +36,7 @@ import util.sqlBean;
 @SessionScoped
 public class cartBean implements Serializable {         // Serialisierbar ermöglicht die Objektspeicherung und Verkehr im Netzwerk
 
-    private List<product> cart;
+    private List<CartItem> cart;
     private user curUser;
     private FacesContext context;
     private LocalDate delDate;
@@ -50,9 +45,10 @@ public class cartBean implements Serializable {         // Serialisierbar ermög
     private Timestamp changeDate;
     private Timestamp orderDate;
     private int amount;
-    private product product;
+    private Product product;
     private Orders order;
-    private OrderDetail orderDetail;
+    private Orderdetail orderDetail;
+    
     
     @Inject
     private loginBean cartLogin;
@@ -63,6 +59,7 @@ public class cartBean implements Serializable {         // Serialisierbar ermög
     @PostConstruct
     public void init(){
         context = FacesContext.getCurrentInstance();
+        cart = new ArrayList<>();
     }
     
     public cartBean() {
@@ -73,54 +70,59 @@ public class cartBean implements Serializable {         // Serialisierbar ermög
     
     // Fügt das Produkt zum Warenkorb hinzu
     // Checkt ob der Warenkorb schon denselben Artikel enthält und erhöhr dann nur die Variable Quantity um 1
-    public void addToCart(product product){
-        FacesMessage msg = new FacesMessage("Product added",product.getProdName() + " has been added to your cart.");
+    public void addToCart(Product product){
+        FacesMessage msg = new FacesMessage("Product added",product.getPrname() + " has been added to your cart.");
         if(!cart.isEmpty()){
             boolean match = false;          // match: Variable zum Abgleich von schon vorhandenen Artikeln
-            for(product p : cart) {         // for-Schleife geht jeden Artikel durch im Warenkorb und vergleicht die IDs
-                if(p.getProdID() == product.getProdID()) {
+            for(CartItem item : cart) {         // for-Schleife geht jeden Artikel durch im Warenkorb und vergleicht die IDs
+                if(item.getProduct().getPrid() == product.getPrid()) {
                     match = true;
-                    p.setProdQuant(p.getProdQuant() + 1);
+                    item.setQuantity(item.getQuantity() + 1);
                     FacesContext.getCurrentInstance().addMessage(null, msg);    // Der User sieht die msg im Growl
                     break;
                 }
             }
             if(match == false){
                 FacesContext.getCurrentInstance().addMessage(null, msg);
-                cart.add(product);
+                cart.add(new CartItem(product, 1));
             }
         } 
         else{
             FacesContext.getCurrentInstance().addMessage(null, msg);
-            cart.add(product);
+            cart.add(new CartItem(product, 1));
         }
     }
     
     // Entfernt das alle Artikel (auch Duplikate) mit derselben ID aus dem Warenkorb
-    public void delItem(product product){
-        FacesMessage msg = new FacesMessage("Product removed",product.getProdName() + " has been removed from your cart.");
+    public void delItem(Product product){
+        FacesMessage msg = new FacesMessage("Product removed",product.getPrname() + " has been removed from your cart.");
         FacesContext.getCurrentInstance().addMessage(null, msg);
-	cart.remove(product);
+	for (Iterator<CartItem> iterator = cart.iterator(); iterator.hasNext();) {
+            CartItem item = iterator.next();
+            if (item.getProduct().getPrid() == product.getPrid()) {
+                iterator.remove();
+            }
+        }
     }
     
     // Berechnet und gibt den gesamten Warenwert im Warenkorb an
     public double cartPrice(){
         double total = 0.00;
-        for(product p : cart) {
-            total = total + (p.getProdPrice() * p.getProdQuant());
+        for(CartItem item : cart) {
+            total = total + (item.getProduct().getPrpricenetto() * item.getQuantity());
         }
         return total;
     }
     
     // Entfernt den Artikel aus dem Warenkorb wenn die Quantity durch einen Spinner oder manueller Eingabe
     // 0 erreicht hat und der Sync button betätigt wurde (Seite wird neugeladen)
-    public void spinnerChangeListener(product p) {
+    public void spinnerChangeListener(CartItem item) {
        // cartPrice();
-        if(p.getProdQuant() == 0)
+        if(item.getQuantity() == 0)
         {
-            FacesMessage msg = new FacesMessage("Product removed",p.getProdName() + " has been removed from your cart.");
+            FacesMessage msg = new FacesMessage("Product removed",item.getProduct().getPrname() + " has been removed from your cart.");
             FacesContext.getCurrentInstance().addMessage(null, msg);
-            cart.remove(p);
+            cart.remove(item);
         }
     }
 
@@ -129,15 +131,14 @@ public class cartBean implements Serializable {         // Serialisierbar ermög
         FacesMessage facesMessage;
         
         Customer curCustomer = cartLogin.getLoggedInCustomer();
-        customer = curCustomer;
+        Orders newOrder = new Orders();
         
-        Orders newOrder = new Orders(delDate, customer, comment, changeDate);
-        order = newOrder;
-        
-        OrderDetail newOrderDetail = new OrderDetail(orderDate, amount, product);
-        order.setOrderDetail(newOrderDetail);
-
-        cartData.insertCheckout(order, customer, this);
+        for (CartItem item : cart) {
+            Product p = item.getProduct();
+            int quantity = item.getQuantity();
+            Orderdetail orderDetail = new Orderdetail();
+        }
+        cartData.insertCheckout(newOrder, curCustomer, this);
         facesMessage = new FacesMessage(FacesMessage.SEVERITY_INFO, "Checkout successful", "Thanks for shopping!");
         context.addMessage(null, facesMessage);
         cart = new ArrayList<>();
@@ -146,7 +147,7 @@ public class cartBean implements Serializable {         // Serialisierbar ermög
     }
     
     //Getter and Setter
-    public List<product> getCart() {
+    public List<CartItem> getCart() {
         return cart;
     }
 }

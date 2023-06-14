@@ -43,5 +43,9 @@ public class Account {
     public void setRights(int rights) {
         this.rights = rights;
     }
+
+    public void setAccpwd(String password) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }
 

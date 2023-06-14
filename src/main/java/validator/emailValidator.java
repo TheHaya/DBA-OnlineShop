@@ -16,7 +16,7 @@ public class emailValidator implements Validator {
     private sqlBean registerData;
     
     public emailValidator() {
-        registerData = new sqlBean();
+
     }
 
     @Override

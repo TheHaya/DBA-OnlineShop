@@ -13,8 +13,7 @@ import jakarta.transaction.RollbackException;
 import java.io.Serializable;
 import java.util.Comparator;
 import java.util.List;
-import model.ProductCategory;
-import model.product;
+import newModel.ProductCategory;
 import newModel.Product;
 import org.primefaces.event.RowEditEvent;
 import util.sqlBean;
@@ -40,7 +39,7 @@ public class productBean implements Serializable {
 
     public productBean() {
         productData = new sqlBean();
-        productDataList = productData.getProductList();
+        productDataList = productData.findAllProducts();
         categoryList = productData.getCategories();
     }
 
@@ -51,14 +50,14 @@ public class productBean implements Serializable {
 //        productDataList.remove(selectedProduct);
 //    }
     // Gibt eine Growl Bestätigung wenn der Benutzer mit Adminrechten ein Produkt geändert hat
-    public void onRowEdit(RowEditEvent<product> event) {
+    public void onRowEdit(RowEditEvent<Product> event) {
         FacesMessage msg = new FacesMessage("Product Edited", "Product with ID: "
-                + String.valueOf(event.getObject().getProdID()) + " has been edited");
+                + String.valueOf(event.getObject().getPrid()) + " has been edited");
         FacesContext.getCurrentInstance().addMessage(null, msg);
     }
 
     // Gibt eine Growl Bestätigung wenn der Benutzer mit Adminrechten ein Produkt doch nicht geändert hat
-    public void onRowCancel(RowEditEvent<product> event) {
+    public void onRowCancel(RowEditEvent<Product> event) {
         FacesMessage msg = new FacesMessage("Editing Cancelled", null);
         FacesContext.getCurrentInstance().addMessage(null, msg);
     }

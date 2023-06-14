@@ -15,7 +15,7 @@
             <ui:define name="content">
                 <h:form id="form">
                     
-                    <p:dataTable var="list" value="#{DBRequestBean.products}"
+                    <p:dataTable var="list" value="#{cartBean.cart}"
                                  paginator="true" rows="3" paginatorPosition="bottom">
                         
                         <f:facet name="header">
@@ -23,11 +23,11 @@
                         </f:facet>
 
                         <p:column headerText="ID" width="auto" style="text-align: center">
-                            <h:outputText value="#{list.prid}" />
+                            <h:outputText value="#{list.product.prid}" />
                         </p:column>
                         
                         <p:column headerText="Name" width="auto" style="text-align: center">
-                            <h:outputText value="#{list.prname}" />
+                            <h:outputText value="#{list.product.prname}" />
                         </p:column>    
                     </p:dataTable>
                     

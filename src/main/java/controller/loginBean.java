@@ -12,7 +12,7 @@ import jakarta.faces.context.FacesContext;
 import jakarta.inject.Inject;
 import jakarta.servlet.http.HttpSession;
 import java.io.Serializable;
-import model.Customer;
+import newModel.Customer;
 import util.sqlBean;
 
 
@@ -63,10 +63,10 @@ public class loginBean implements Serializable {
         FacesMessage facesMessage;
         context = FacesContext.getCurrentInstance();
         check = false;
-        Customer loginTry = loginData.getCustomer(loginName, loginPass);
+        Customer loginTry = loginData.findCustomer(loginName, loginPass);
         if(loginTry != null) {
             loggedInCustomer = loginTry;
-            if(loggedInCustomer.getaccount().getRights()== 0) adminRights = true;
+            if(loggedInCustomer.getFkAccid().getAcctype()== 0) adminRights = true;
         }
         
         if(loggedInCustomer != null){
