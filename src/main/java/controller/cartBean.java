@@ -63,8 +63,6 @@ public class cartBean implements Serializable {         // Serialisierbar ermög
     }
     
     public cartBean() {
-        cartData = new sqlBean();
-        cartLogin = new loginBean();
         cart = new ArrayList<>();
     }
     

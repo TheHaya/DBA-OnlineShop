@@ -9,6 +9,7 @@ import controller.cartBean;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.Resource;
 import jakarta.enterprise.context.RequestScoped;
+import jakarta.enterprise.context.SessionScoped;
 import java.io.Serializable;
 
 import java.util.logging.Level;

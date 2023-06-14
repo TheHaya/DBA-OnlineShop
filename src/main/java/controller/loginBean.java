@@ -52,7 +52,6 @@ public class loginBean implements Serializable {
     }
     
     public loginBean() {
-        loginData = new sqlBean();
     }
     
     

@@ -66,10 +66,9 @@
                                         <h:outputText value="#{product.pcatenum}" />
                                     </f:facet>
                                     <f:facet name="input">
-                                        <p:selectOneMenu id="option" value="#{product.pcatenum}" style="width:auto"
-                                                         converter="categoryConverter">
+                                        <p:selectOneMenu id="option" value="#{product.pcatenum}" style="width:auto">
                                             <f:selectItems value="#{productBean.categoryList}" var="category"
-                                                           itemValue="#{category}"  itemLabel="#{category.categoryName}" />
+                                                           itemValue="#{category.categoryName}" />
                                         </p:selectOneMenu>
 
                                     </f:facet>

@@ -16,7 +16,6 @@ public class phoneValidator implements Validator {
     private sqlBean registerData;
     
     public phoneValidator() {
-        registerData = new sqlBean();
     }
 
     @Override

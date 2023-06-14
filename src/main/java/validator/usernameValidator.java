@@ -17,7 +17,6 @@ public class usernameValidator implements Validator {
     private sqlBean registerData;
 
     public usernameValidator() {
-        registerData = new sqlBean();
     }
 
     @Override

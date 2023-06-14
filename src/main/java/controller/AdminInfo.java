@@ -21,7 +21,6 @@ public class AdminInfo implements Serializable {
 
     @PostConstruct
     public void init() {
-        sqlBean = new sqlBean();
         refreshData();  
     }
     

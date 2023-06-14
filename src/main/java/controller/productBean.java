@@ -6,9 +6,11 @@ package controller;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.SessionScoped;
 import jakarta.inject.Named;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
+import jakarta.inject.Inject;
 import jakarta.transaction.RollbackException;
 import java.io.Serializable;
 import java.util.Comparator;
@@ -27,20 +29,22 @@ import util.sqlBean;
  * RowEdit und löschen eines Produkts aus dem Data Table.
  */
 @Named(value = "productBean")
-@ApplicationScoped
+@SessionScoped
 public class productBean implements Serializable {
 
     private List<Product> productDataList;
     private List<ProductCategory> categoryList;
     private String sortOrder = "idAsc";
 
+    @Inject
     private sqlBean productData;
+    
+    
 
-
-    public productBean() {
-        productData = new sqlBean();
-        productDataList = productData.findAllProducts();
-        categoryList = productData.getCategories();
+    @PostConstruct
+    public void init(){
+            productDataList = productData.findAllProducts();
+            categoryList = productData.getCategories();
     }
 
     // Löschen eines Produkts mit einer Growl Bestätigung.
