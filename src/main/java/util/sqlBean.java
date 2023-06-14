@@ -217,6 +217,7 @@ public class sqlBean implements Serializable {
 //    EntityTransaction transaction = em.getTransaction();
     try {
         ut.begin();
+        product.setPrpricenetto(15);
         em.merge(product);
         ut.commit();
     } catch (Exception ex) {

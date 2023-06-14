@@ -67,7 +67,9 @@ public class productBean implements Serializable {
     }
 
     public void saveCurrentProduct(Product currentProduct) throws RollbackException {
+        System.out.println("before");
         productData.updateProduct(currentProduct);
+        System.out.println("after");
         FacesMessage msg = new FacesMessage("Product Edited", currentProduct.getPrname() + " has been edited");
         FacesContext.getCurrentInstance().addMessage(null, msg);
     }
