@@ -2,6 +2,7 @@ package controller;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.RequestScoped;
+import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import java.io.Serializable;
 import java.util.List;
@@ -15,6 +16,7 @@ public class AdminInfo implements Serializable {
 
     private List<ProductInfo> productInfo;
     private List<UserInfo> userInfo;
+    @Inject
     private sqlBean sqlBean;
     private String selectedDataType;
     private String selectedUserInfoType;

@@ -18,11 +18,13 @@ import jakarta.faces.context.FacesContext;
 import jakarta.inject.Named;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
 import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.UserTransaction;
 import java.util.ArrayList;
 import java.util.List;
+import model.OrderDetail;
 import newModel.*;
 
 /**
@@ -39,22 +41,21 @@ public class sqlBean implements Serializable {
     //private List<user> userList = new ArrayList<>();
     private List<Product> productList = new ArrayList<>();
     private HttpSession session;
-    
+
 //    @PersistenceUnit(unitName = "my_PU")
 //    private EntityManagerFactory emf;
-    
     @Resource
     private UserTransaction ut;
-    
+
     @PersistenceContext
     private EntityManager em;
+
     /**
      * Establishes the JDBC database connection.
      */
     public sqlBean() {
-        
+
 //        emf = Persistence.createEntityManagerFactory("my_PU",System.getProperties());
-        
 //        try {
 //            String driver = "org.mariadb.jdbc.Driver";
 //            Class.forName(driver); // Register the DB driver
@@ -65,88 +66,94 @@ public class sqlBean implements Serializable {
 //            LOGGER.log(Level.SEVERE, "Error while establishing the database connection", ex);
 //        }
     }
-    
+
 //    @PostConstruct
 //    public void init() {
 //        context = FacesContext.getCurrentInstance();
 //        session = (HttpSession) context.getExternalContext().getSession(false);
 //        LOGGER.log(Level.INFO, "Databean: {0}", session.getId());
 //    }
-
-    
     public void persistCustomer(Customer curCustomer) {
         try {
+            ut.begin(); // Begin transaction
+
             // Insert in Account table
             Account account = new Account();
             account.setAccpwd(curCustomer.getFkAccid().getAccpwd());
             account.setAccname(curCustomer.getFkAccid().getAccname());
-
-            int accountID = account.getAccid();
+            em.persist(account);
 
             // Insert in Customer table
             Customer customer = new Customer();
             customer.setFkAccid(account);
-            customer.setCemail(customer.getCemail());
-            customer.setCfirstname(customer.getCfirstname());
-            customer.setCfamname(customer.getCfamname());
-            customer.setCsalutation(customer.getCsalutation());
-            customer.setCphone(customer.getCphone());
-            customer.setCbirthdate(customer.getCbirthdate());
+            customer.setCemail(curCustomer.getCemail());
+            customer.setCfirstname(curCustomer.getCfirstname());
+            customer.setCfamname(curCustomer.getCfamname());
+            customer.setCsalutation(curCustomer.getCsalutation());
+            customer.setCphone(curCustomer.getCphone());
+            customer.setCbirthdate(curCustomer.getCbirthdate());
+            em.persist(customer);
 
-            int customerID = customer.getCid();
+            // Convert Collection to List
+            List<Address> addressList = new ArrayList<>(curCustomer.getAddressCollection());
 
-            // Insert in Address table
+            // Get the first address
+            Address firstAddress = addressList.get(0);
+
+            // Set values
             Address address = new Address();
             address.setFkCid(customer);
-            address.setAstreet(address.getAstreet());
-            address.setAfedstate(address.getAfedstate());
-            address.setAcitycode(address.getAcitycode());
-            address.setAcountry(address.getAcountry());
-
-            ut.begin();
-            em.persist(account);
-            em.persist(customer);
+            address.setAstreet(firstAddress.getAstreet());
+            address.setAfedstate(firstAddress.getAfedstate());
+            address.setAcitycode(firstAddress.getAcitycode());
+            address.setAcountry(firstAddress.getAcountry());
             em.persist(address);
-            ut.commit();
-            
+
+            ut.commit(); // Commit transaction
         } catch (Exception ex) {
+            if (ut != null) {
+                try {
+                    ut.rollback(); // Rollback transaction in case of error
+                } catch (Exception e) {
+                    LOGGER.log(Level.SEVERE, "Failed to rollback transaction");
+                }
+            }
             LOGGER.log(Level.SEVERE, "Persist Error");
             ex.printStackTrace();
         }
     }
-    
-   public void insertCheckout(Orders curOrder, Customer customer, cartBean cart) {
-    try {
-        // Insert into orders table
-        Orders order = new Orders();
-        order.setFkCid(customer);
-        order.setOstatus("Pending");
-        order.setOdeldate(curOrder.getOdeldate());
-        order.setOcomment("Order #");
 
-        // Get the generated order ID
-        int orderID = order.getOid();
+    public void insertCheckout(Orders curOrder, Customer customer, cartBean cart) {
+        try {
+            // Insert into orders table
+            Orders order = new Orders();
+            order.setFkCid(customer);
+            order.setOstatus("Pending");
+            order.setOdeldate(curOrder.getOdeldate());
+            order.setOcomment("Order #");
 
-        for (CartItem item : cart.getCart()) {
-            Product p = item.getProduct();
-            int quantity = item.getQuantity();
-            Orderdetail orderDetail = new Orderdetail();
-            orderDetail.setFkOid(order);
-            orderDetail.setFkPrid(p);
-            orderDetail.setOdamount(quantity);
-            em.persist(orderDetail);
+            // Get the generated order ID
+            int orderID = order.getOid();
+
+            for (CartItem item : cart.getCart()) {
+                Product p = item.getProduct();
+                int quantity = item.getQuantity();
+                Orderdetail orderDetail = new Orderdetail();
+                orderDetail.setFkOid(order);
+                orderDetail.setFkPrid(p);
+                orderDetail.setOdamount(quantity);
+                em.persist(orderDetail);
+            }
+
+            ut.begin();
+            em.persist(order);
+            ut.commit();
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, "Checkout Error");
+            ex.printStackTrace();
         }
-
-        ut.begin();
-        em.persist(order);
-        ut.commit();
-    } catch (Exception ex) {
-        LOGGER.log(Level.SEVERE, "Checkout Error");
-        ex.printStackTrace();
     }
-}
 
-    
     public List<Product> findAllProducts() {
         try {
             TypedQuery<Product> query = em.createNamedQuery("Product.findAll", Product.class);
@@ -157,20 +164,26 @@ public class sqlBean implements Serializable {
         }
         return productList;
     }
- 
+
     public boolean findAccName(String accountname) {
         try {
-//            String jpql = "SELECT COUNT(a) FROM Account a WHERE a.accname = :accname";
-            TypedQuery<Account> query = em.createNamedQuery("Account.findByAccname", Account.class);
+            String jpql = "SELECT COUNT(a) FROM Account a WHERE a.accname = :accname";
+            TypedQuery<Long> query = em.createQuery(jpql, Long.class);
             query.setParameter("accname", accountname);
-            return query.getResultList().isEmpty();
+            long erg = query.getSingleResult();
+            if (erg >= 1) {
+                return true;
+            } else {
+                return false;
+            }
+//            return query.getSingleResult() == 0;
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, "Error retrieving account names", ex);
             ex.printStackTrace();
         }
         return false;
     }
-    
+
     public boolean findEmail(String email) {
         try {
             TypedQuery<Customer> query = em.createNamedQuery("Customer.findByCemail", Customer.class);
@@ -182,7 +195,7 @@ public class sqlBean implements Serializable {
         }
         return false;
     }
-    
+
     public boolean findPhone(String phone) {
         try {
             TypedQuery<Customer> query = em.createNamedQuery("Customer.findByCphone", Customer.class);
@@ -194,12 +207,12 @@ public class sqlBean implements Serializable {
         }
         return false;
     }
-    
+
     public Customer findCustomer(String username, String password) {
         try {
-            
-            TypedQuery<Customer> query = 
-                    em.createQuery("SELECT c FROM Customer c JOIN c.fkAccid a WHERE a.accname = :accname AND a.accpwd = :accpwd", Customer.class);
+
+            TypedQuery<Customer> query
+                    = em.createQuery("SELECT c FROM Customer c JOIN c.fkAccid a WHERE a.accname = :accname AND a.accpwd = :accpwd", Customer.class);
             query.setParameter("accname", username);
             query.setParameter("accpwd", password);
             List<Customer> customers = query.getResultList();
@@ -212,107 +225,140 @@ public class sqlBean implements Serializable {
         }
         return null;
     }
-    
+
     public void updateProduct(Product product) {
 //    EntityTransaction transaction = em.getTransaction();
-    try {
-        ut.begin();
-        product.setPrpricenetto(15);
-        em.merge(product);
-        ut.commit();
-    } catch (Exception ex) {
-         LOGGER.log(Level.SEVERE, "Error updating product", ex);
-         ex.printStackTrace();
-    }
-}
-    public List<ProductInfo> getBestsellers() {
-        List<ProductInfo> bestsellers = new ArrayList<>();
         try {
-            TypedQuery<ProductInfo> query 
-                    = em.createQuery("SELECT NEW ProductInfo(p.prname, SUM(od.odamount), p.pcatenum) "
-                                   + "FROM Product p "
-                                   + "JOIN p.orderdetailCollection od "
-                                   + "JOIN od.fkOid o "
-                                   + "GROUP BY p.prname, p.pcatenum "
-                                   + "HAVING SUM(od.odamount) > 0 "
-                                   + "ORDER BY SUM(od.odamount) DESC", ProductInfo.class);
-            bestsellers = query.getResultList();
+            ut.begin();
+            product.setPrpricenetto(15);
+            em.merge(product);
+            ut.commit();
         } catch (Exception ex) {
-            LOGGER.log(Level.SEVERE, "Error retrieving bestsellers", ex);
+            LOGGER.log(Level.SEVERE, "Error updating product", ex);
+            ex.printStackTrace();
         }
-        return bestsellers;
+    }
+
+    public List<ProductInfo> getBestsellers() {
+        List<ProductInfo> leastSoldProducts = new ArrayList<>();
+
+        try {
+            TypedQuery<Product> query = em.createQuery("SELECT p "
+                    + "FROM Product p "
+                    + "LEFT JOIN p.orderdetailCollection od "
+                    + "GROUP BY p "
+                    + "ORDER BY SUM(od.odamount) DESC", Product.class);
+            query.setMaxResults(5);
+
+            List<Product> products = query.getResultList();
+            for (Product product : products) {
+                int totalAmount = 0;
+                for (Orderdetail orderdetail : product.getOrderdetailCollection()) {
+                    totalAmount += orderdetail.getOdamount();
+                }
+                ProductInfo item = new ProductInfo(product.getPrname(), totalAmount, product.getPcatenum());
+                leastSoldProducts.add(item);
+            }
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, "Error while retrieving least sold product list from the database", ex);
+        }
+
+        return leastSoldProducts;
     }
 
     public List<ProductInfo> getLeastSoldProducts() {
-        List<ProductInfo> worstsellers = new ArrayList<>();
+        List<ProductInfo> leastSoldProducts = new ArrayList<>();
+
         try {
-            TypedQuery<ProductInfo> query 
-                    = em.createQuery("SELECT NEW ProductInfo(p.prname, SUM(od.odamount), p.pcatenum) "
-                                   + "FROM Product p "
-                                   + "JOIN p.orderdetailCollection od "
-                                   + "JOIN od.fkOid o "
-                                   + "GROUP BY p.prname, p.pcatenum "
-                                   + "ORDER BY SUM(od.odamount) ASC", ProductInfo.class);
-            worstsellers = query.getResultList();
+            TypedQuery<Product> query = em.createQuery("SELECT p "
+                    + "FROM Product p "
+                    + "LEFT JOIN p.orderdetailCollection od "
+                    + "GROUP BY p "
+                    + "ORDER BY SUM(od.odamount) ASC", Product.class);
+            query.setMaxResults(5);
+            List<Product> products = query.getResultList();
+            for (Product product : products) {
+                int totalAmount = 0;
+                for (Orderdetail orderdetail : product.getOrderdetailCollection()) {
+                    totalAmount += orderdetail.getOdamount();
+                }
+                ProductInfo item = new ProductInfo(product.getPrname(), totalAmount, product.getPcatenum());
+                leastSoldProducts.add(item);
+            }
         } catch (Exception ex) {
-            LOGGER.log(Level.SEVERE, "Error retrieving least sold products", ex);
+            LOGGER.log(Level.SEVERE, "Error while retrieving least sold product list from the database", ex);
         }
-        return worstsellers;
+
+        return leastSoldProducts;
     }
-    
+
     public List<UserInfo> getUserInfoList() {
         List<UserInfo> userInfoList = new ArrayList<>();
         try {
-            TypedQuery<UserInfo> query 
-                    = em.createQuery("SELECT NEW newModel.UserInfo(c.cfirstname || ' ' || c.cfamname, COUNT(DISTINCT o.oid), FUNCTION('getRevenue', c.cid)) "
-                                   + "FROM Customer c "
-                                   + "JOIN c.ordersCollection o "
-                                   + "JOIN o.orderdetailCollection od "
-                                   + "JOIN od.fkPrid p "
-                                   + "WHERE FUNCTION('YEAR', o.odeldate) = FUNCTION('YEAR', CURRENT_DATE - FUNCTION('INTERVAL', 2, 'MONTH')) "
-                                   + "GROUP BY c.cid "
-                                   + "HAVING COUNT(DISTINCT o.oid) > 1 "
-                                   + "ORDER BY COUNT(DISTINCT o.oid) DESC", UserInfo.class);
-            userInfoList = query.getResultList();
+            TypedQuery<Customer> query = em.createQuery("SELECT c "
+                    + "FROM Customer c "
+                    + "LEFT JOIN c.orderdetails od "
+                    + "LEFT JOIN od.product p "
+                    + "WHERE FUNCTION('YEAR', o.odeldate) <> FUNCTION('YEAR', CURRENT_DATE) OR o.odeldate IS NULL "
+                    + "GROUP BY c "
+                    + "ORDER BY COUNT(o) ASC", Customer.class);
+
+            query.setMaxResults(5);
+            List<Customer> customers = query.getResultList();
+
+            for (Customer customer : customers) {
+                int ordersAmount = customer.getOrdersCollection().size();
+                UserInfo userInfo = new UserInfo((customer.getCfamname() + customer.getCfirstname()), ordersAmount, 10);
+                userInfoList.add(userInfo);
+            }
         } catch (Exception ex) {
-            LOGGER.log(Level.SEVERE, "Error retrieving top customers", ex);
+            LOGGER.log(Level.SEVERE, "Error while retrieving best customer list from the database", ex);
         }
         return userInfoList;
     }
-    
+
     public List<UserInfo> getInactiveCustomers() {
         List<UserInfo> inactiveCustomers = new ArrayList<>();
+
         try {
-            TypedQuery<UserInfo> query
-                    = em.createQuery("SELECT NEW newModel.UserInfo(c.cfirstname || ' ' || c.cfamname, COUNT(o.oid), FUNCTION('getRevenue', c.cid)) "
-                                   + "FROM Customer c "
-                                   + "JOIN c.ordersCollection o "
-                                   + "JOIN o.orderdetailCollection od "
-                                   + "JOIN od.fkPrid p "
-                                   + "WHERE FUNCTION('YEAR', o.odeldate) <> FUNCTION('YEAR', CURRENT_DATE) OR o.odeldate IS NULL "
-                                   + "GROUP BY c.cid", UserInfo.class);
-            inactiveCustomers = query.getResultList();
+            TypedQuery<Customer> query = em.createQuery("SELECT c "
+                    + "FROM Customer c "
+                    + "LEFT JOIN c.orderdetails od "
+                    + "LEFT JOIN od.product p "
+                    + "WHERE FUNCTION('YEAR', o.odeldate) <> FUNCTION('YEAR', CURRENT_DATE) OR o.odeldate IS NULL "
+                    + "GROUP BY c "
+                    + "ORDER BY COUNT(o) ASC", Customer.class);
+
+            query.setMaxResults(5);
+            List<Customer> customers = query.getResultList();
+
+            for (Customer customer : customers) {
+                int ordersAmount = customer.getOrdersCollection().size();
+                UserInfo userInfo = new UserInfo((customer.getCfamname() + customer.getCfirstname()), ordersAmount, 10);
+                inactiveCustomers.add(userInfo);
+            }
         } catch (Exception ex) {
-            LOGGER.log(Level.SEVERE, "Error retrieving inactive customers", ex);
+            LOGGER.log(Level.SEVERE, "Error while retrieving inactive customer list from the database", ex);
         }
+
         return inactiveCustomers;
     }
-    
+
     public double getRevenue(int cid) {
         double totalRevenue = 0.0;
         try {
-            TypedQuery<Double> query 
+            TypedQuery<Double> query
                     = em.createQuery("SELECT SUM(p.prpricenetto * od.odamount) "
-                                   + "FROM Customer c "
-                                   + "JOIN c.ordersCollection o "
-                                   + "JOIN o.orderdetailCollection od "
-                                   + "JOIN od.fkPrid p "
-                                   + "WHERE c.cid = :cid "
-                                   + "AND FUNCTION('YEAR', o.odeldate) = FUNCTION('YEAR', CURRENT_DATE) "
-                                   + "GROUP BY c.cid, o.oid "
-                                   + "ORDER BY COUNT(o.oid) DESC, o.oid", Double.class);
+                            + "FROM Customer c "
+                            + "JOIN c.ordersCollection o "
+                            + "JOIN o.orderdetailCollection od "
+                            + "JOIN od.fkPrid p "
+                            + "WHERE c.cid = :cid "
+                            + "AND FUNCTION('YEAR', o.odeldate) = FUNCTION('YEAR', CURRENT_DATE) "
+                            + "GROUP BY c.cid, o.oid "
+                            + "ORDER BY COUNT(o.oid) DESC, o.oid", Double.class);
             query.setParameter("cid", cid);
-            
+
             List<Double> revenues = query.getResultList();
             for (Double revenue : revenues) {
                 totalRevenue += revenue;
@@ -322,7 +368,7 @@ public class sqlBean implements Serializable {
         }
         return totalRevenue;
     }
-    
+
     public List<ProductCategory> getCategories() {
         List<ProductCategory> categories = new ArrayList<>();
         try {
@@ -511,7 +557,6 @@ public class sqlBean implements Serializable {
 //            }
 //        }
 //    }
-    
 //    public void insertCheckout(Orders order, Customer customer, cartBean cart) {
 //        try {
 //            conn.setAutoCommit(false);
@@ -576,7 +621,6 @@ public class sqlBean implements Serializable {
 //            }
 //        }
 //    }
-
 //    public List<product> getProductList() {
 //
 //        try {
@@ -601,7 +645,6 @@ public class sqlBean implements Serializable {
 //
 //        return productList;
 //    }
-
 //    public List<Product> getProductList() {
 //        try {
 //            TypedQuery<Product> query = em.createNamedQuery("Product.findAll", Product.class);
@@ -611,7 +654,6 @@ public class sqlBean implements Serializable {
 //        }
 //        return productList;
 //    }
-    
 //    public void updateProduct(product product) {
 //        try {
 //            String sql = "UPDATE Product SET PRNAME = ?, PRCOMMENT = ?, PRPRICENETTO = ?, PCATENUM = ? WHERE PRID = ?";
@@ -626,7 +668,6 @@ public class sqlBean implements Serializable {
 //             LOGGER.log(Level.SEVERE, "Error while updating Product in the database", ex);
 //        }
 //    }
-    
 //    public void updateProduct(Product product) {
 //        try {
 //            String jpql = "UPDATE Product p SET p.prname = :prname, p.prcomment = :prcomment, p.prpricenetto = :prpricenetto, p.pcatenum = :pcatenum WHERE p.prid = :prid";
@@ -641,9 +682,6 @@ public class sqlBean implements Serializable {
 //            LOGGER.log(Level.SEVERE, "Error while updating Product in the database", ex);
 //        }
 //    }
-    
-    
-
 //    public boolean findAccName(String accountname) {
 //        try {
 //            String sql = "SELECT COUNT(*) FROM Account WHERE ACCNAME = ?";
@@ -660,7 +698,6 @@ public class sqlBean implements Serializable {
 //        }
 //        return false;
 //    }
-
 //    public boolean findEmail(String email) {
 //        try {
 //            String sql = "SELECT COUNT(*) FROM Customer WHERE CEMAIL = ?";
@@ -677,7 +714,6 @@ public class sqlBean implements Serializable {
 //        }
 //        return false;
 //    }
-
 //    public boolean findPhone(String phone) {
 //        try {
 //            String sql = "SELECT COUNT(*) FROM Customer WHERE CPHONE = ?";
@@ -694,7 +730,6 @@ public class sqlBean implements Serializable {
 //        }
 //        return false;
 //    }
-
 //    public Customer getCustomer(String username, String password) {
 //        try {
 //            String sql = "SELECT * FROM Customer C JOIN Account A ON C.FK_ACCID = A.ACCID WHERE A.ACCNAME = ? AND A.ACCPWD = ?";
@@ -728,7 +763,6 @@ public class sqlBean implements Serializable {
 //
 //        return null;
 //    }
-
 //    public List<ProductInfo> getBestsellers() {
 //        List<ProductInfo> bestsellers = new ArrayList<>();
 //
@@ -758,7 +792,6 @@ public class sqlBean implements Serializable {
 //
 //        return bestsellers;
 //    }
-
 //    public List<ProductInfo> getLeastSoldProducts() {
 //        List<ProductInfo> leastSoldProducts = new ArrayList<>();
 //
@@ -787,7 +820,6 @@ public class sqlBean implements Serializable {
 //
 //        return leastSoldProducts;
 //    }
-
 //    public List<UserInfo> getUserInfoList() {
 //        List<UserInfo> userInfoList = new ArrayList<>();
 //
@@ -820,7 +852,6 @@ public class sqlBean implements Serializable {
 //
 //        return userInfoList;
 //    }
-
 //    public List<UserInfo> getInactiveCustomers() {
 //        List<UserInfo> inactiveCustomers = new ArrayList<>();
 //
@@ -879,7 +910,6 @@ public class sqlBean implements Serializable {
 //
 //        return totalRevenue;
 //    }
-
 //    public List<ProductCategory> getCategories() {
 //        List<ProductCategory> categories = new ArrayList<>();
 //        String query = "SELECT DISTINCT PCATENUM FROM product";
@@ -897,7 +927,6 @@ public class sqlBean implements Serializable {
 //
 //        return categories;
 //    }
-
 //    public ProductCategory getCategory(String categoryName) {
 //        String query = "SELECT DISTINCT PCATENUM FROM product WHERE PCATENUM = ?";
 //        try (PreparedStatement stmt = conn.prepareStatement(query)) {
@@ -913,7 +942,6 @@ public class sqlBean implements Serializable {
 //        }
 //        return null;
 //    }
-    
 //    public Connection getConn() {
 //        return conn;
 //    }

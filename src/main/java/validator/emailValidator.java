@@ -12,11 +12,11 @@ import util.sqlBean;
 @FacesValidator(value = "emailValidator")
 public class emailValidator implements Validator {
 
-    @Inject
     private sqlBean registerData;
-    
-    public emailValidator() {
 
+    public emailValidator() {
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        registerData = (sqlBean) facesContext.getApplication().evaluateExpressionGet(facesContext, "#{sqlBean}", sqlBean.class);
     }
 
     @Override
@@ -31,16 +31,20 @@ public class emailValidator implements Validator {
         }
 
         boolean emailExists = registerData.findEmail(email);
-        if (emailExists) {
+        if (!emailExists) {
             facesMessage = new FacesMessage(FacesMessage.SEVERITY_ERROR, "", "Email is already taken");
             throw new ValidatorException(facesMessage);
         }
     }
 
     private boolean isValidEmail(String email) {
-    if (email.length() >= 5 && email.length() <= 40 && email.contains("@") && email.contains(".")) {
-        return true;
+        // This pattern matches basic email addresses
+        String emailPattern = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$";
+
+        // Check if the email matches the pattern
+        if (email.matches(emailPattern)) {
+            return true;
+        }
+        return false;
     }
-    return false;
-}
 }

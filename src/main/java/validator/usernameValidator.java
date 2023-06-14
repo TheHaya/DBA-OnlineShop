@@ -13,10 +13,11 @@ import util.sqlBean;
 @FacesValidator(value = "usernameValidator")
 public class usernameValidator implements Validator {
 
-    @Inject
     private sqlBean registerData;
 
     public usernameValidator() {
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        registerData = (sqlBean) facesContext.getApplication().evaluateExpressionGet(facesContext, "#{sqlBean}", sqlBean.class);
     }
 
     @Override

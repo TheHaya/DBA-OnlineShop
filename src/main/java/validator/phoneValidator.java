@@ -12,10 +12,11 @@ import util.sqlBean;
 @FacesValidator(value = "phoneValidator")
 public class phoneValidator implements Validator {
 
-    @Inject
     private sqlBean registerData;
-    
+
     public phoneValidator() {
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        registerData = (sqlBean) facesContext.getApplication().evaluateExpressionGet(facesContext, "#{sqlBean}", sqlBean.class);
     }
 
     @Override
@@ -30,16 +31,16 @@ public class phoneValidator implements Validator {
         }
 
         boolean phoneExists = registerData.findPhone(phoneNum);
-        if (phoneExists) {
+        if (!phoneExists) {
             facesMessage = new FacesMessage(FacesMessage.SEVERITY_ERROR, "", "Phone number is already in use");
             throw new ValidatorException(facesMessage);
         }
     }
 
     private boolean isValidPhone(String phone) {
-        if (phone.length() >= 7 && phone.length() <= 16 && phone.matches("[0-9]+")){ 
+        if (phone.length() >= 7 && phone.length() <= 16 && phone.matches("[0-9]+")) {
             return true;
         }
-    return false;
+        return false;
     }
 }

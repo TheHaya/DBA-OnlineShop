@@ -55,7 +55,7 @@ public class registerBean implements Serializable {
     }
 
     public registerBean() {
-        
+
     }
 
     // Registrierungsfunktion für Account
@@ -63,7 +63,9 @@ public class registerBean implements Serializable {
 
         // Create new account object
         Account newAccount = new Account();
-
+        newAccount.setAccname(accountname);
+        newAccount.setAccpwd(password);
+        account = newAccount;;
 
         account = newAccount;
 
@@ -72,11 +74,18 @@ public class registerBean implements Serializable {
 
     // Registrierungsfunktion zur Erstellung des Kunden und Abschluss der Registrierung
     public String createCustomer() {
-
-        // Create new account object
+        // Create new customer object
         Customer newCustomer = new Customer();
+        newCustomer.setFkAccid(account);
+        newCustomer.setCemail(email);
+        newCustomer.setCfirstname(firstname);
+        newCustomer.setCfamname(lastname);
+        newCustomer.setCsalutation(salutation);
+        newCustomer.setCphone(phone);
+        newCustomer.setCbirthdate(birthdate);
 
         customer = newCustomer;
+
         return "register3.xhtml";
     }
 
@@ -85,10 +94,19 @@ public class registerBean implements Serializable {
         FacesMessage facesMessage;
 
         Address newAddress = new Address();
+        newAddress.setFkCid(customer);
+        newAddress.setAstreet(street);
+        newAddress.setAfedstate(fedstate);
+        newAddress.setAcitycode(citycode);
+        newAddress.setAcountry(country);
+
+        address = newAddress;
         Collection<Address> addressCollection = new ArrayList<>();
         addressCollection.add(newAddress);
         customer.setAddressCollection(addressCollection);
+
         registerData.persistCustomer(customer);
+
         facesMessage = new FacesMessage(FacesMessage.SEVERITY_INFO, "Registration successful", "Welcome to our shop!");
         context.addMessage(null, facesMessage);
 
@@ -199,7 +217,6 @@ public class registerBean implements Serializable {
     public void setRights(int rights) {
         this.rights = rights;
     }
-
 
     public Customer getCustomer() {
         return customer;
