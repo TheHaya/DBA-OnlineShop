@@ -397,10 +397,7 @@ public class sqlBean implements Serializable {
                             + "JOIN c.ordersCollection o "
                             + "JOIN o.orderdetailCollection od "
                             + "JOIN od.fkPrid p "
-                            + "WHERE c.cid = :cid "
-                            + "AND FUNCTION('YEAR', o.odeldate) = FUNCTION('YEAR', CURRENT_DATE) "
-                            + "GROUP BY c.cid, o.oid "
-                            + "ORDER BY COUNT(o.oid) DESC, o.oid", Double.class);
+                            + "WHERE c.cid = :cid ", Double.class);
             query.setParameter("cid", cid);
 
             List<Double> revenues = query.getResultList();
