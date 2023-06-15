@@ -15,6 +15,8 @@ import jakarta.transaction.RollbackException;
 import java.io.Serializable;
 import java.util.Comparator;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import newModel.ProductCategory;
 import newModel.Product;
 import org.primefaces.event.RowEditEvent;
@@ -32,15 +34,14 @@ import util.sqlBean;
 @SessionScoped
 public class productBean implements Serializable {
 
+    private static final Logger LOGGER = Logger.getLogger(sqlBean.class.getName());
     private List<Product> productDataList;
     private List<ProductCategory> categoryList;
     private String sortOrder = "idAsc";
 
     @Inject
     private sqlBean productData;
-    
-    
-
+   
     @PostConstruct
     public void init(){
             productDataList = productData.findAllProducts();
@@ -66,12 +67,23 @@ public class productBean implements Serializable {
         FacesContext.getCurrentInstance().addMessage(null, msg);
     }
 
-    public void saveCurrentProduct(Product currentProduct) throws RollbackException {
-        System.out.println("before");
-        productData.updateProduct(currentProduct);
-        System.out.println("after");
-        FacesMessage msg = new FacesMessage("Product Edited", currentProduct.getPrname() + " has been edited");
-        FacesContext.getCurrentInstance().addMessage(null, msg);
+    public void saveCurrentProduct(Product currentProduct) {
+        try{
+            
+            LOGGER.log(Level.INFO, "currentProduct ID: " + currentProduct.getPrid());
+            LOGGER.log(Level.INFO, "currentProduct name: " + currentProduct.getPrname());
+            LOGGER.log(Level.INFO, "currentProduct price: " + currentProduct.getPrpricenetto());
+            LOGGER.log(Level.INFO, "currentProduct desc: " + currentProduct.getPrcomment());
+            LOGGER.log(Level.INFO, "currentProduct type: " + currentProduct.getPcatenum());
+            
+    
+            productData.updateProduct(currentProduct);
+            FacesMessage msg = new FacesMessage("Product Edited", currentProduct.getPrname() + " has been edited");
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+        }
+        catch (Exception ex){
+            LOGGER.log(Level.SEVERE, "Error saving product", ex);
+        }
     }
 
 

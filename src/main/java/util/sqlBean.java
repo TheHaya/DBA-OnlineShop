@@ -6,10 +6,8 @@ package util;
 
 import controller.CartItem;
 import controller.cartBean;
-import jakarta.annotation.PostConstruct;
 import jakarta.annotation.Resource;
 import jakarta.enterprise.context.RequestScoped;
-import jakarta.enterprise.context.SessionScoped;
 import java.io.Serializable;
 
 import java.util.logging.Level;
@@ -18,16 +16,13 @@ import jakarta.faces.context.FacesContext;
 import jakarta.inject.Named;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
-import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.UserTransaction;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import model.OrderDetail;
 import newModel.*;
 
 /**
@@ -38,15 +33,9 @@ import newModel.*;
 @RequestScoped
 public class sqlBean implements Serializable {
 
-    private FacesContext context;
     private static final Logger LOGGER = Logger.getLogger(sqlBean.class.getName());
-//    private Connection conn = null;
-    //private List<user> userList = new ArrayList<>();
     private List<Product> productList = new ArrayList<>();
-    private HttpSession session;
-
-//    @PersistenceUnit(unitName = "my_PU")
-//    private EntityManagerFactory emf;
+    
     @Resource
     private UserTransaction ut;
 
@@ -58,24 +47,8 @@ public class sqlBean implements Serializable {
      */
     public sqlBean() {
 
-//        emf = Persistence.createEntityManagerFactory("my_PU",System.getProperties());
-//        try {
-//            String driver = "org.mariadb.jdbc.Driver";
-//            Class.forName(driver); // Register the DB driver
-//            String dbUrl = "jdbc:mariadb://localhost:3306/onlineshop";
-//            conn = DriverManager.getConnection(dbUrl, "dba", "dba");
-//            LOGGER.info("Connection to the database established successfully!");
-//        } catch (ClassNotFoundException | SQLException ex) {
-//            LOGGER.log(Level.SEVERE, "Error while establishing the database connection", ex);
-//        }
     }
 
-//    @PostConstruct
-//    public void init() {
-//        context = FacesContext.getCurrentInstance();
-//        session = (HttpSession) context.getExternalContext().getSession(false);
-//        LOGGER.log(Level.INFO, "Databean: {0}", session.getId());
-//    }
     public void persistCustomer(Customer curCustomer) {
         try {
             ut.begin(); // Begin transaction
@@ -229,10 +202,8 @@ public class sqlBean implements Serializable {
     }
 
     public void updateProduct(Product product) {
-//    EntityTransaction transaction = em.getTransaction();
         try {
             ut.begin();
-            product.setPrpricenetto(15);
             em.merge(product);
             ut.commit();
         } catch (Exception ex) {
@@ -400,7 +371,7 @@ public class sqlBean implements Serializable {
                 categories.add(productCategory);
             }
         } catch (Exception ex) {
-            // handle exception
+            LOGGER.log(Level.SEVERE, "Error retrieving categories", ex);
         }
         return categories;
     }

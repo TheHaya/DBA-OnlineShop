@@ -16,7 +16,7 @@
                 <h:form id="form">
                     <div class="productTable">
                         <!--<p:growl id="messages" showDetail="true" showSummary="true"/>-->
-                        <p:dataTable id="prodTable" var="product" value="#{sqlBean.findAllProducts()}"
+                        <p:dataTable id="prodTable" var="product" value="#{productBean.productDataList}"
                                      styleClass="tableHeader" editable="true" rowStyleClass="tableRows"
                                      rowKey="#{product.prid}" paginator="true" rows="5" paginatorPosition="bottom">
                             <f:facet name="header">
