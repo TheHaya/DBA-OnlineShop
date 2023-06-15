@@ -29,7 +29,7 @@
                                         <span style="font-weight: bold">PRODUCTS</span>
                                         <p:selectOneMenu id="dataTypeMenu" value="#{adminInfo.selectedDataType}" 
                                                          placeholder="Select a DataType" styleClass="adminHeaderSort">
-                                            <f:selectItem itemLabel="Bestseller" itemValue="bestseller" />
+                                            <f:selectItem itemLabel="Best Selling Products" itemValue="bestseller" />
                                             <f:selectItem itemLabel="Low Selling Products" itemValue="lowSelling" />
                                             <p:ajax event="valueChange" listener="#{adminInfo.loadProductInfo}" update="dt-products" />
                                         </p:selectOneMenu>
@@ -59,7 +59,7 @@
                                     <span style="font-weight: bold">CUSTOMERS</span>
                                     <p:selectOneMenu id="UserInfoTypeMenu" value="#{adminInfo.selectedUserInfoType}" styleClass="adminHeaderSort">
                                         <f:selectItem itemLabel="Best Customers" itemValue="bestCustomers" />
-                                        <f:selectItem itemLabel="Worst Customers" itemValue="worstCustomers" />
+                                        <f:selectItem itemLabel="Inactive Customers" itemValue="worstCustomers" />
                                         <p:ajax event="valueChange" listener="#{adminInfo.loadUserInfo}" update="dt-customers" />
                                     </p:selectOneMenu>
                                 </f:facet>

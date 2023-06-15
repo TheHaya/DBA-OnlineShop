@@ -44,7 +44,7 @@ public class productBean implements Serializable {
     @PostConstruct
     public void init(){
             productDataList = productData.findAllProducts();
-            categoryList = productData.getCategories();
+            categoryList = productData.findCategories();
     }
 
     // Löschen eines Produkts mit einer Growl Bestätigung.

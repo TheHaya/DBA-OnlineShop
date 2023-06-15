@@ -44,8 +44,8 @@ public class AdminInfo implements Serializable {
     }
 
     public void refreshData() {
-        productInfo = sqlBean.getBestsellers();
-        userInfo = sqlBean.getUserInfoList();
+        productInfo = sqlBean.findBestsellers();
+        userInfo = sqlBean.findBestCustomers();
     }
 
     public String getSelectedDataType() {
@@ -57,10 +57,10 @@ public class AdminInfo implements Serializable {
     }
 
     public void loadProductInfo() {
-        if ("bestseller".equals(selectedDataType)) {
-            productInfo = sqlBean.getBestsellers();
-        } else if ("lowSelling".equals(selectedDataType)) {
-            productInfo = sqlBean.getLeastSoldProducts();
+        if (selectedDataType.equals("bestseller")) {
+            productInfo = sqlBean.findBestsellers();
+        } else if (selectedDataType.equals("lowSelling")) {
+            productInfo = sqlBean.findLeastSoldProducts();
         }
     }
 
@@ -74,10 +74,10 @@ public class AdminInfo implements Serializable {
 
     public void loadUserInfo() {
         if (selectedUserInfoType.equals("bestCustomers")) {
-            userInfo = sqlBean.getUserInfoList();
+            userInfo = sqlBean.findBestCustomers();
         }
         else if(selectedUserInfoType.equals("worstCustomers")) {
-            userInfo = sqlBean.getInactiveCustomers();
+            userInfo = sqlBean.findInactiveCustomers();
         }
     }
 }

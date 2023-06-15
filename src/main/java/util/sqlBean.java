@@ -22,7 +22,10 @@ import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
 import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.UserTransaction;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import model.OrderDetail;
 import newModel.*;
@@ -124,7 +127,7 @@ public class sqlBean implements Serializable {
         }
     }
 
-    public void insertCheckout(Orders curOrder, Customer customer, cartBean cart) {
+    public void persistCheckout(Orders curOrder, Customer customer, cartBean cart) {
         try {
             ut.begin();
             // Insert into orders table
@@ -238,15 +241,16 @@ public class sqlBean implements Serializable {
         }
     }
 
-    public List<ProductInfo> getBestsellers() {
+    public List<ProductInfo> findBestsellers() {
         List<ProductInfo> leastSoldProducts = new ArrayList<>();
 
         try {
-            TypedQuery<Product> query = em.createQuery("SELECT p "
-                    + "FROM Product p "
-                    + "LEFT JOIN p.orderdetailCollection od "
-                    + "GROUP BY p "
-                    + "ORDER BY SUM(od.odamount) DESC", Product.class);
+            TypedQuery<Product> query 
+                    = em.createQuery("SELECT p "
+                                   + "FROM Product p "
+                                   + "JOIN p.orderdetailCollection od "
+                                   + "GROUP BY p "
+                                   + "ORDER BY SUM(od.odamount) DESC", Product.class);
             query.setMaxResults(5);
 
             List<Product> products = query.getResultList();
@@ -265,15 +269,16 @@ public class sqlBean implements Serializable {
         return leastSoldProducts;
     }
 
-    public List<ProductInfo> getLeastSoldProducts() {
+    public List<ProductInfo> findLeastSoldProducts() {
         List<ProductInfo> leastSoldProducts = new ArrayList<>();
 
         try {
-            TypedQuery<Product> query = em.createQuery("SELECT p "
-                    + "FROM Product p "
-                    + "LEFT JOIN p.orderdetailCollection od "
-                    + "GROUP BY p "
-                    + "ORDER BY SUM(od.odamount) ASC", Product.class);
+            TypedQuery<Product> query 
+                    = em.createQuery("SELECT p "
+                                   + "FROM Product p "
+                                   + "LEFT JOIN p.orderdetailCollection od "
+                                   + "GROUP BY p "
+                                   + "ORDER BY SUM(od.odamount) ASC", Product.class);
             query.setMaxResults(5);
             List<Product> products = query.getResultList();
             for (Product product : products) {
@@ -291,23 +296,32 @@ public class sqlBean implements Serializable {
         return leastSoldProducts;
     }
 
-    public List<UserInfo> getUserInfoList() {
+    public List<UserInfo> findBestCustomers() {
         List<UserInfo> userInfoList = new ArrayList<>();
+        
         try {
-            TypedQuery<Customer> query = em.createQuery("SELECT c "
-                    + "FROM Customer c "
-                    + "LEFT JOIN c.orderdetails od "
-                    + "LEFT JOIN od.product p "
-                    + "WHERE FUNCTION('YEAR', o.odeldate) <> FUNCTION('YEAR', CURRENT_DATE) OR o.odeldate IS NULL "
-                    + "GROUP BY c "
-                    + "ORDER BY COUNT(o) ASC", Customer.class);
-
+            TypedQuery<Customer> query 
+                    = em.createQuery("SELECT c "
+                                   + "FROM Customer c "
+                                   + "JOIN c.ordersCollection o "
+                                   + "JOIN o.orderdetailCollection od "
+                                   + "WHERE o.odeldate >= :twoMonthsAgo "
+                                   + "GROUP BY c "
+                                   + "ORDER BY SIZE(c.ordersCollection) DESC", Customer.class);
+            
+            // LocalDate in Date wandeln
+            LocalDate currentLocalDate = LocalDate.now();
+            LocalDate recentLocalDate = currentLocalDate.minusMonths(2);
+            Date recentDate;
+            recentDate = Date.from(recentLocalDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+            
+            query.setParameter("twoMonthsAgo", recentDate);
             query.setMaxResults(5);
             List<Customer> customers = query.getResultList();
-
+            
             for (Customer customer : customers) {
                 int ordersAmount = customer.getOrdersCollection().size();
-                UserInfo userInfo = new UserInfo((customer.getCfamname() + customer.getCfirstname()), ordersAmount, 10);
+                UserInfo userInfo = new UserInfo((customer.getCfamname() + customer.getCfirstname()), ordersAmount, findRevenue(customer.getCid()));
                 userInfoList.add(userInfo);
             }
         } catch (Exception ex) {
@@ -316,24 +330,31 @@ public class sqlBean implements Serializable {
         return userInfoList;
     }
 
-    public List<UserInfo> getInactiveCustomers() {
+    public List<UserInfo> findInactiveCustomers() {
         List<UserInfo> inactiveCustomers = new ArrayList<>();
 
         try {
-            TypedQuery<Customer> query = em.createQuery("SELECT c "
-                    + "FROM Customer c "
-                    + "LEFT JOIN c.orderdetails od "
-                    + "LEFT JOIN od.product p "
-                    + "WHERE FUNCTION('YEAR', o.odeldate) <> FUNCTION('YEAR', CURRENT_DATE) OR o.odeldate IS NULL "
-                    + "GROUP BY c "
-                    + "ORDER BY COUNT(o) ASC", Customer.class);
-
-            query.setMaxResults(5);
+            TypedQuery<Customer> query 
+                    = em.createQuery("SELECT c "
+                                   + "FROM Customer c "
+                                   + "LEFT JOIN c.ordersCollection o "
+                                   + "LEFT JOIN o.orderdetailCollection od "
+                                   + "WHERE o.odeldate <= :oneYearAgo OR o.odeldate IS NULL "
+                                   + "GROUP BY c "
+                                   + "ORDER BY SIZE(c.ordersCollection) ASC", Customer.class);
+            
+            // LocalDate in Date wandeln
+            LocalDate currentLocalDate = LocalDate.now();
+            LocalDate recentLocalDate = currentLocalDate.minusYears(1);
+            Date recentDate;
+            recentDate = Date.from(recentLocalDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+            
+            query.setParameter("oneYearAgo", recentDate);
             List<Customer> customers = query.getResultList();
-
+            
             for (Customer customer : customers) {
                 int ordersAmount = customer.getOrdersCollection().size();
-                UserInfo userInfo = new UserInfo((customer.getCfamname() + customer.getCfirstname()), ordersAmount, 10);
+                UserInfo userInfo = new UserInfo((customer.getCfamname() + customer.getCfirstname()), ordersAmount, findRevenue(customer.getCid()));
                 inactiveCustomers.add(userInfo);
             }
         } catch (Exception ex) {
@@ -343,7 +364,7 @@ public class sqlBean implements Serializable {
         return inactiveCustomers;
     }
 
-    public double getRevenue(int cid) {
+    public double findRevenue(int cid) {
         double totalRevenue = 0.0;
         try {
             TypedQuery<Double> query
@@ -368,7 +389,7 @@ public class sqlBean implements Serializable {
         return totalRevenue;
     }
 
-    public List<ProductCategory> getCategories() {
+    public List<ProductCategory> findCategories() {
         List<ProductCategory> categories = new ArrayList<>();
         try {
             String jpql = "SELECT DISTINCT p.pcatenum FROM Product p";

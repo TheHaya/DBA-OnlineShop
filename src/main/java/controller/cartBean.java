@@ -37,17 +37,17 @@ import util.sqlBean;
 public class cartBean implements Serializable {         // Serialisierbar ermöglicht die Objektspeicherung und Verkehr im Netzwerk
 
     private List<CartItem> cart;
-    private user curUser;
+//    private user curUser;
     private FacesContext context;
-    private LocalDate delDate;
+//    private LocalDate delDate;
     private Customer customer;
-    private String comment;
-    private Timestamp changeDate;
-    private Timestamp orderDate;
-    private int amount;
-    private Product product;
+//    private String comment;
+//    private Timestamp changeDate;
+//    private Timestamp orderDate;
+//    private int amount;
+//    private Product product;
     private Orders order;
-    private Orderdetail orderDetail;
+//    private Orderdetail orderDetail;
     
     
     @Inject
@@ -129,7 +129,7 @@ public class cartBean implements Serializable {         // Serialisierbar ermög
         Orders newOrder = new Orders();
         order = newOrder;
 
-        cartData.insertCheckout(order, customer, this);
+        cartData.persistCheckout(order, customer, this);
         facesMessage = new FacesMessage(FacesMessage.SEVERITY_INFO, "Checkout successful", "Thanks for shopping!");
         context.addMessage(null, facesMessage);
         cart = new ArrayList<>();
