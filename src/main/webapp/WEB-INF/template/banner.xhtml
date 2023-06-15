@@ -31,20 +31,18 @@
                     <p:menuitem value="Shipping Policy" outcome="shipping.xhtml"/>
                     <p:menuitem value="Contact Us" outcome="contact.xhtml"/>
                     <p:menuitem value="Admin Infos" outcome="adminInfos.xhtml" rendered="#{loginBean.isAdminRights()}"/>
-<!--                    <p:menuitem rendered="#{loginBean.isAdminRights()}" value="User Table" outcome="userTable.xhtml"/>-->
                 </p:submenu>
                
-                <f:facet name="options">
-                    <!--<f:event type="preRenderView" listener="#{loginBean.resetInput()}" />-->
+                <f:facet name="options">                    
                     <p:commandButton value ="Login" styleClass="ui-button-flat ui-button-plain" 
                                      rendered="#{!loginBean.getLoginCheck()}" onclick="PF('login').show()"/>
                     
-                    
-
                     <p:commandButton value ="Logout" styleClass="ui-button-flat ui-button-plain" 
-                                     rendered="#{loginBean.getLoginCheck()}" action="#{loginBean.logout()}" ajax="false"/>                    
+                                     rendered="#{loginBean.getLoginCheck()}" action="#{loginBean.logout()}" ajax="false"/>
+                    
                     <p:button value ="Register" styleClass="ui-button-flat ui-button-plain" 
                               rendered="#{!loginBean.getLoginCheck()}" outcome="register.xhtml"/>
+                    
                     <p:button value="Cart" styleClass="ui-button-flat ui-button-plain" outcome="cart.xhtml"/>
                 </f:facet>
             </p:menubar>

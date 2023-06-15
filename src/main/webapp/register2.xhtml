@@ -12,10 +12,8 @@
     <h:body>
         <ui:composition template="WEB-INF/template/master.xhtml"> 
             <ui:define name="content">
-
                 <div>
                     <h:form>
-                        <!--<p:growl id="messages" showDetail="true" showSummary="true"/>-->
                         <div class="regPanel">
                             <p:panelGrid id="pgrid1" columns="3" style="margin: 50px;">
                                 <f:facet name="header">
@@ -68,14 +66,14 @@
                                               style="text-align: left; margin: 10px; margin-left: 10px; width: 200px;" styleClass="form-control"
                                               yearNavigator="true" monthNavigator="true" yearRange="1900:2023" />
 
-                                <p:message id="birthdateMessage" for="birthdate" style="margin-left: 20px;width: 200px;" styleClass="text-warning"/>
-
-                                <br/>
+                                <p:message id="birthdateMessage" for="birthdate" style="margin-left: 20px;width: 200px;" styleClass="text-warning"/><br/>
+                                
                                 <p:commandButton id="createCustomerBtn" value="Next Page" action="#{registerBean.createCustomer()}"
                                                  style="margin: 10px; margin-left: 10px;" styleClass="btn btn-success" ajax="false"
                                                  update="messages" oncomplete="window.location.href='register3.xhtml'" />
 
                                 <p:message id="customerDataMessage" for="createCustomerBtn" style="margin-left: 20px;" styleClass="text-warning"/>
+                            
                             </p:panelGrid>
                         </div>
                     </h:form>

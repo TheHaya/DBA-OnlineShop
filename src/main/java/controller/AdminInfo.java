@@ -4,10 +4,10 @@ import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+
 import java.io.Serializable;
 import java.util.List;
-import newModel.ProductInfo;
-import newModel.UserInfo;
+
 import util.sqlBean;
 
 @Named(value = "adminInfo")
@@ -26,7 +26,24 @@ public class AdminInfo implements Serializable {
         refreshData();  
     }
     
+    public void loadProductInfo() {
+        if (selectedDataType.equals("bestseller")) {
+            productInfo = sqlBean.findBestsellers();
+        } else if (selectedDataType.equals("lowSelling")) {
+            productInfo = sqlBean.findLeastSoldProducts();
+        }
+    }
     
+    public void loadUserInfo() {
+        if (selectedUserInfoType.equals("bestCustomers")) {
+            userInfo = sqlBean.findBestCustomers();
+        }
+        else if(selectedUserInfoType.equals("worstCustomers")) {
+            userInfo = sqlBean.findInactiveCustomers();
+        }
+    }
+    
+    // Getter and Setter
     public List<ProductInfo> getProductInfo() {
         return productInfo;
     }
@@ -56,28 +73,11 @@ public class AdminInfo implements Serializable {
         this.selectedDataType = selectedDataType;
     }
 
-    public void loadProductInfo() {
-        if (selectedDataType.equals("bestseller")) {
-            productInfo = sqlBean.findBestsellers();
-        } else if (selectedDataType.equals("lowSelling")) {
-            productInfo = sqlBean.findLeastSoldProducts();
-        }
-    }
-
     public String getSelectedUserInfoType() {
         return selectedUserInfoType;
     }
 
     public void setSelectedUserInfoType(String selectedUserInfoType) {
         this.selectedUserInfoType = selectedUserInfoType;
-    }
-
-    public void loadUserInfo() {
-        if (selectedUserInfoType.equals("bestCustomers")) {
-            userInfo = sqlBean.findBestCustomers();
-        }
-        else if(selectedUserInfoType.equals("worstCustomers")) {
-            userInfo = sqlBean.findInactiveCustomers();
-        }
     }
 }

@@ -15,10 +15,8 @@
             <ui:define name="content">
                 <h:form id="form">
                     <p:growl id="messages" showDetail="true" showSummary="true"/>
-
                     <div class="p-grid">
                         <div class="p-col">
-                            
 
                             <!-- DataTable for Top Sellers / Least Sold Products -->
                             <p:dataTable  id="dt-products" var="product" value="#{adminInfo.productInfo}"
@@ -48,9 +46,9 @@
                                 </p:column>
                             </p:dataTable>
                         </div>
-
+                        
                         <div class="p-col">
-                            
+
                             <!-- DataTable for Best Customers / Worst Customers -->
                             <p:dataTable id="dt-customers" var="customer" value="#{adminInfo.userInfo}"
                                          reflow="true" styleClass="tableHeader" rowStyleClass="adminTableRows2"
@@ -80,7 +78,6 @@
                             </p:dataTable>
                         </div>
                     </div>
-
                 </h:form>
             </ui:define>
         </ui:composition>

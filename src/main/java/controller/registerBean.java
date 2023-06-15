@@ -10,9 +10,11 @@ import jakarta.enterprise.context.SessionScoped;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
 import jakarta.inject.Inject;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+
 import newModel.Account;
 import newModel.Address;
 import newModel.Customer;
@@ -111,7 +113,7 @@ public class registerBean implements Serializable {
         return "index.xhtml";
     }
 
-    // Getter and Setter
+    // Getter und Setter
     public String getFirstname() {
         return firstname;
     }

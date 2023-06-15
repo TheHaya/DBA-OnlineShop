@@ -11,10 +11,11 @@ import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
 import jakarta.inject.Inject;
 import jakarta.servlet.http.HttpSession;
+
 import java.io.Serializable;
+
 import newModel.Customer;
 import util.sqlBean;
-
 
 /**
  *
@@ -37,11 +38,9 @@ public class loginBean implements Serializable {
     private boolean check;
     private HttpSession session;
     private boolean adminRights;
+    
     @Inject
     private sqlBean loginData;
-    
-
-
     
     @PostConstruct
     public void init(){
@@ -53,7 +52,6 @@ public class loginBean implements Serializable {
     
     public loginBean() {
     }
-    
     
     // Login Funktion, wird beim Login button in einem Modal Dialogfenster aufgerufen
     // Schaut ob die eingegebenen Daten (Benutzername und Passwort) im Userinput mit einem Eintrag
@@ -102,12 +100,6 @@ public class loginBean implements Serializable {
         loginCheck = false;
         return following;
     }
-    
-    // Leert das InputText-Feld wenn das Dialogfenster mit Input geschlossen wird
-    public void resetInput() {
-    loginName = "";
-    }
-    
     
     // Getter und Setter
     public String getLoginName() {
@@ -161,6 +153,4 @@ public class loginBean implements Serializable {
     public Customer getLoggedInCustomer() {
         return loggedInCustomer;
     }
-    
-    
 }

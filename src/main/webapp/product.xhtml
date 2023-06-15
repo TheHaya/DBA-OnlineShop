@@ -26,10 +26,9 @@
                             <p:ajax event="rowEdit" listener="#{productBean.saveCurrentProduct(product)}" update="messages"/>
                             <p:ajax event="rowEditCancel" listener="#{productBean.onRowCancel}" update="messages"/>
 
-                            <p:column rendered="#{loginBean.isAdminRights()}" headerText="ID" width="auto">
+                            <p:column rendered="#{loginBean.isAdminRights()}" headerText="ID" width="auto" style="text-align: center">
                                 <h:outputText value="#{product.prid}" />
                             </p:column>
-
 
                             <p:column headerText="Name" sortBy="#{product.prname}" filterBy="#{product.prname}"
                                       width="auto" style="text-align: center">
@@ -46,7 +45,6 @@
                             <p:column headerText="Image" exportable="false" width="auto" style="text-align: center">
                                 <p:graphicImage name="#{product.primagepath}" width="100px"/>
                             </p:column>
-
 
                             <p:column headerText="Description" width="auto" style="text-align: center">
                                 <p:cellEditor>
@@ -70,7 +68,6 @@
                                             <f:selectItems value="#{productBean.categoryList}" var="category"
                                                            itemValue="#{category.categoryName}" />
                                         </p:selectOneMenu>
-
                                     </f:facet>
                                 </p:cellEditor>
                             </p:column>
@@ -98,13 +95,6 @@
                                 <p:rowEditor styleClass="rounded-button ui-button-warning ui-button-outlined" 
                                              editTitle="Edit Row" cancelTitle="Cancel Edit" saveTitle="Save Row"/>
                             </p:column>
-
-<!--                            <p:column rendered="#{loginBean.isAdminRights()}" width="auto" style="text-align: center">        
-                                <p:commandButton value="Delete" icon="pi pi-trash" styleClass="ui-button-danger" 
-                                                 action="#{productBean.deleteProduct(product)}"
-                                                 update="prodTable">
-                                </p:commandButton>
-                            </p:column>-->
                         </p:dataTable>
                     </div>
                 </h:form>

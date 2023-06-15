@@ -6,7 +6,9 @@ package controller;
 
 import jakarta.inject.Named;
 import jakarta.enterprise.context.SessionScoped;
+
 import java.io.Serializable;
+
 import newModel.Product;
 
 /**
@@ -25,6 +27,7 @@ public class CartItem implements Serializable {
         this.quantity = quantity;
     }
 
+    // Getter and Setter
     public Product getProduct() {
         return product;
     }

@@ -10,18 +10,16 @@ import jakarta.enterprise.context.SessionScoped;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
 import jakarta.inject.Inject;
+
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.sql.Timestamp;
-import java.time.LocalDate;
-import java.util.Iterator;
 import java.util.List;
+
 import newModel.Customer;
-import newModel.Orderdetail;
 import newModel.Orders;
-import model.user;
 import newModel.Product;
 import util.sqlBean;
+
 /**
  *
  * @author Haya
@@ -37,19 +35,10 @@ import util.sqlBean;
 public class cartBean implements Serializable {         // Serialisierbar ermöglicht die Objektspeicherung und Verkehr im Netzwerk
 
     private List<CartItem> cart;
-//    private user curUser;
     private FacesContext context;
-//    private LocalDate delDate;
     private Customer customer;
-//    private String comment;
-//    private Timestamp changeDate;
-//    private Timestamp orderDate;
-//    private int amount;
-//    private Product product;
     private Orders order;
-//    private Orderdetail orderDetail;
-    
-    
+
     @Inject
     private loginBean cartLogin;
     
@@ -73,7 +62,7 @@ public class cartBean implements Serializable {         // Serialisierbar ermög
         if(!cart.isEmpty()){
             boolean match = false;          // match: Variable zum Abgleich von schon vorhandenen Artikeln
             for(CartItem item : cart) {         // for-Schleife geht jeden Artikel durch im Warenkorb und vergleicht die IDs
-                if(item.getProduct().getPrid() == product.getPrid()) {
+                if(item.getProduct().getPrid().equals(product.getPrid())) {
                     match = true;
                     item.setQuantity(item.getQuantity() + 1);
                     FacesContext.getCurrentInstance().addMessage(null, msg);    // Der User sieht die msg im Growl
@@ -132,8 +121,8 @@ public class cartBean implements Serializable {         // Serialisierbar ermög
         cartData.persistCheckout(order, customer, this);
         facesMessage = new FacesMessage(FacesMessage.SEVERITY_INFO, "Checkout successful", "Thanks for shopping!");
         context.addMessage(null, facesMessage);
-        cart = new ArrayList<>();
         
+        cart = new ArrayList<>();
         return "checkout.xhtml";
     }
     

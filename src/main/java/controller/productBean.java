@@ -5,21 +5,19 @@
 package controller;
 
 import jakarta.annotation.PostConstruct;
-import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.inject.Named;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
 import jakarta.inject.Inject;
-import jakarta.transaction.RollbackException;
+
 import java.io.Serializable;
-import java.util.Comparator;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.primefaces.event.RowEditEvent;
+
 import newModel.ProductCategory;
 import newModel.Product;
-import org.primefaces.event.RowEditEvent;
 import util.sqlBean;
 
 /**
@@ -34,7 +32,6 @@ import util.sqlBean;
 @SessionScoped
 public class productBean implements Serializable {
 
-    private static final Logger LOGGER = Logger.getLogger(sqlBean.class.getName());
     private List<Product> productDataList;
     private List<ProductCategory> categoryList;
     private String sortOrder = "idAsc";
@@ -48,12 +45,6 @@ public class productBean implements Serializable {
             categoryList = productData.findCategories();
     }
 
-    // Löschen eines Produkts mit einer Growl Bestätigung.
-//    public void deleteProduct(product selectedProduct){
-//	FacesMessage msg = new FacesMessage("Product Removed", selectedProduct.getProdName()+" has been removed");
-//        FacesContext.getCurrentInstance().addMessage(null, msg);
-//        productDataList.remove(selectedProduct);
-//    }
     // Gibt eine Growl Bestätigung wenn der Benutzer mit Adminrechten ein Produkt geändert hat
     public void onRowEdit(RowEditEvent<Product> event) {
         FacesMessage msg = new FacesMessage("Product Edited", "Product with ID: "
@@ -68,24 +59,10 @@ public class productBean implements Serializable {
     }
 
     public void saveCurrentProduct(Product currentProduct) {
-        try{
-            
-            LOGGER.log(Level.INFO, "currentProduct ID: " + currentProduct.getPrid());
-            LOGGER.log(Level.INFO, "currentProduct name: " + currentProduct.getPrname());
-            LOGGER.log(Level.INFO, "currentProduct price: " + currentProduct.getPrpricenetto());
-            LOGGER.log(Level.INFO, "currentProduct desc: " + currentProduct.getPrcomment());
-            LOGGER.log(Level.INFO, "currentProduct type: " + currentProduct.getPcatenum());
-            
-    
-            productData.updateProduct(currentProduct);
-            FacesMessage msg = new FacesMessage("Product Edited", currentProduct.getPrname() + " has been edited");
-            FacesContext.getCurrentInstance().addMessage(null, msg);
-        }
-        catch (Exception ex){
-            LOGGER.log(Level.SEVERE, "Error saving product", ex);
-        }
+        productData.updateProduct(currentProduct);
+        FacesMessage msg = new FacesMessage("Product Edited", currentProduct.getPrname() + " has been edited");
+        FacesContext.getCurrentInstance().addMessage(null, msg);
     }
-
 
     public ProductCategory getCategory(int id) {
         if (categoryList == null) {
