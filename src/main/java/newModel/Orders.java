@@ -22,6 +22,8 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
+import java.time.LocalDate;
+import java.time.ZoneId;
 
 /**
  *
@@ -88,9 +90,11 @@ public class Orders implements Serializable {
     }
 
     public Date getOdeldate() {
-        return odeldate;
+        LocalDate currentDate = LocalDate.now();
+        LocalDate delDate = currentDate.plusDays(7);
+        return Date.from(delDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
     }
-
+    
     public void setOdeldate(Date odeldate) {
         this.odeldate = odeldate;
     }

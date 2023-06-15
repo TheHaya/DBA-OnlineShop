@@ -63,7 +63,7 @@ public class cartBean implements Serializable {         // Serialisierbar ermög
     }
     
     public cartBean() {
-        cart = new ArrayList<>();
+        
     }
     
     // Fügt das Produkt zum Warenkorb hinzu
@@ -92,15 +92,10 @@ public class cartBean implements Serializable {         // Serialisierbar ermög
     }
     
     // Entfernt das alle Artikel (auch Duplikate) mit derselben ID aus dem Warenkorb
-    public void delItem(Product product){
-        FacesMessage msg = new FacesMessage("Product removed",product.getPrname() + " has been removed from your cart.");
+    public void delItem(CartItem item){
+        FacesMessage msg = new FacesMessage("Product removed", item.getProduct().getPrname() + " has been removed from your cart.");
         FacesContext.getCurrentInstance().addMessage(null, msg);
-	for (Iterator<CartItem> iterator = cart.iterator(); iterator.hasNext();) {
-            CartItem item = iterator.next();
-            if (item.getProduct().getPrid() == product.getPrid()) {
-                iterator.remove();
-            }
-        }
+	cart.remove(item);
     }
     
     // Berechnet und gibt den gesamten Warenwert im Warenkorb an
@@ -123,20 +118,18 @@ public class cartBean implements Serializable {         // Serialisierbar ermög
             cart.remove(item);
         }
     }
-
+    
     public String checkout(){
         context = FacesContext.getCurrentInstance();
         FacesMessage facesMessage;
         
         Customer curCustomer = cartLogin.getLoggedInCustomer();
-        Orders newOrder = new Orders();
+        customer = curCustomer;
         
-        for (CartItem item : cart) {
-            Product p = item.getProduct();
-            int quantity = item.getQuantity();
-            Orderdetail orderDetail = new Orderdetail();
-        }
-        cartData.insertCheckout(newOrder, curCustomer, this);
+        Orders newOrder = new Orders();
+        order = newOrder;
+
+        cartData.insertCheckout(order, customer, this);
         facesMessage = new FacesMessage(FacesMessage.SEVERITY_INFO, "Checkout successful", "Thanks for shopping!");
         context.addMessage(null, facesMessage);
         cart = new ArrayList<>();

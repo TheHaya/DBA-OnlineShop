@@ -74,6 +74,7 @@ public class Product implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "fkPrid")
     private Collection<Orderdetail> orderdetailCollection;
 
+    
     public Product() {
     }
 

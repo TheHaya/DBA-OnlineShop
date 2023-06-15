@@ -65,8 +65,6 @@ public class registerBean implements Serializable {
         Account newAccount = new Account();
         newAccount.setAccname(accountname);
         newAccount.setAccpwd(password);
-        account = newAccount;;
-
         account = newAccount;
 
         return "register2.xhtml";

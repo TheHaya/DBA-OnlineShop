@@ -81,6 +81,7 @@ public class sqlBean implements Serializable {
             Account account = new Account();
             account.setAccpwd(curCustomer.getFkAccid().getAccpwd());
             account.setAccname(curCustomer.getFkAccid().getAccname());
+            account.setAcctype(1);
             em.persist(account);
 
             // Insert in Customer table
@@ -125,15 +126,13 @@ public class sqlBean implements Serializable {
 
     public void insertCheckout(Orders curOrder, Customer customer, cartBean cart) {
         try {
+            ut.begin();
             // Insert into orders table
             Orders order = new Orders();
             order.setFkCid(customer);
             order.setOstatus("Pending");
             order.setOdeldate(curOrder.getOdeldate());
             order.setOcomment("Order #");
-
-            // Get the generated order ID
-            int orderID = order.getOid();
 
             for (CartItem item : cart.getCart()) {
                 Product p = item.getProduct();
@@ -145,7 +144,7 @@ public class sqlBean implements Serializable {
                 em.persist(orderDetail);
             }
 
-            ut.begin();
+            
             em.persist(order);
             ut.commit();
         } catch (Exception ex) {
