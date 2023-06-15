@@ -9,6 +9,8 @@ import jakarta.inject.Named;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.ValueChangeEvent;
+import jakarta.faces.validator.ValidatorException;
 import jakarta.inject.Inject;
 
 import java.io.Serializable;
@@ -72,7 +74,7 @@ public class registerBean implements Serializable {
         return "register2.xhtml";
     }
 
-    // Registrierungsfunktion zur Erstellung des Kunden und Abschluss der Registrierung
+    // Registrierungsfunktion zur Erstellung des Kunden
     public String createCustomer() {
         // Create new customer object
         Customer newCustomer = new Customer();
@@ -88,7 +90,8 @@ public class registerBean implements Serializable {
 
         return "register3.xhtml";
     }
-
+    
+    // Registrungsfunktion zur Erstellung des Customer und Abschliessen der Registrierung ueber SQL-Bean
     public String completeRegistration() {
         context = FacesContext.getCurrentInstance();
         FacesMessage facesMessage;
@@ -112,6 +115,7 @@ public class registerBean implements Serializable {
 
         return "index.xhtml";
     }
+
 
     // Getter und Setter
     public String getFirstname() {

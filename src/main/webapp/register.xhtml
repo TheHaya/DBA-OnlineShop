@@ -19,15 +19,17 @@
                                 <f:facet name="header">
                                     <span style="font-weight: bold">REGISTRATION</span>
                                 </f:facet>
-                                
+
                                 <p:outputLabel for="accName" value="Account Name:" style="margin: 10px; color: black; width: 150px;" styleClass="label label-primary"/> 
-                                <p:inputText id="accName" value="#{registerBean.accountname}" required="true" requiredMessage="Required field" validator="usernameValidator"
+                                <p:inputText id="accName" value="#{registerBean.accountname}" required="true" requiredMessage="Required field" 
                                              placeholder="Account Name..." style="text-align: left; margin: 10px; margin-left: 10px; width: 200px;"  
-                                             styleClass="form-control">
+                                             styleClass="form-control" validatorMessage="Username invalid" validator="usernameValidator">
+                                    <f:validateRegex pattern="^[a-zA-Z0-9_]{5,15}$" />
                                     <p:ajax event="blur" update="accNameMessage"/>           
                                 </p:inputText>
+
                                 <p:message id="accNameMessage" for="accName" style="margin-left: 20px;width: 200px;" styleClass="text-warning"/>
-                                
+
                                 <p:outputLabel for="password" value="Password:" style="margin: 10px; color: black; width: 150px;" styleClass="label label-primary"/> 
                                 <p:password id="password" value="#{registerBean.password}" required="true" requiredMessage="Required field"
                                             placeholder="Password..." validator="passValidator" 
@@ -36,11 +38,11 @@
                                     <p:ajax event="keyup" update="passwordMessage"/>           
                                 </p:password>
                                 <p:message id="passwordMessage" for="password" style="margin-left: 20px;width: 200px;" styleClass="text-warning"/> <br/>
-                                
+
                                 <p:commandButton id="cBtn" value="Next Page" action="#{registerBean.createAccount()}"
                                                  style="margin: 10px; margin-left: 10px;" styleClass="btn btn-success" ajax="false" />
                                 <p:message id="userDataMessage" for="cBtn" style="margin-left: 20px;" styleClass="text-warning"/>
-                                
+
                             </p:panelGrid>
                         </div>
                     </h:form>

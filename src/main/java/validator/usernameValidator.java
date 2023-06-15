@@ -11,7 +11,7 @@ import jakarta.inject.Inject;
 import util.sqlBean;
 
 @FacesValidator(value = "usernameValidator")
-public class usernameValidator implements Validator {
+public class usernameValidator implements Validator<String> {
 
     private sqlBean registerData;
 
@@ -21,20 +21,12 @@ public class usernameValidator implements Validator {
     }
 
     @Override
-    public void validate(FacesContext fc, UIComponent uic, Object obj) throws ValidatorException {
-        String username = obj.toString();
-        FacesMessage facesMessage;
-
-        if (!(username.length() >= 5 && username.length() <= 16)) {
-            facesMessage = new FacesMessage("Invalid Username", "Please input between 5-16 characters");
-            facesMessage.setSeverity(FacesMessage.SEVERITY_ERROR);
-            throw new ValidatorException(facesMessage);
-        }
-
-        boolean usernameExists = registerData.findAccName(username);
+    public void validate(FacesContext fc, UIComponent uic, String value) throws ValidatorException {
+        boolean usernameExists = registerData.findAccName(value);
         if (usernameExists) {
-            facesMessage = new FacesMessage(FacesMessage.SEVERITY_ERROR, "", "Username is already taken");
-            throw new ValidatorException(facesMessage);
+            FacesMessage msg = new FacesMessage("Username is already taken");
+            msg.setSeverity(FacesMessage.SEVERITY_ERROR);
+            throw new ValidatorException(msg);
         }
     }
 }

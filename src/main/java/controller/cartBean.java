@@ -4,6 +4,7 @@
  */
 package controller;
 
+import newModel.CartItem;
 import jakarta.annotation.PostConstruct;
 import jakarta.inject.Named;
 import jakarta.enterprise.context.SessionScoped;
@@ -108,6 +109,8 @@ public class cartBean implements Serializable {         // Serialisierbar ermög
         }
     }
     
+    // Ruft die PersistCheckout Funktion der SQL-Bean auf und uebergibt Warenkorbinformationen des Benutzers
+    // nach dem checkout wird der Warenkorb zurueckgesetzt
     public String checkout(){
         context = FacesContext.getCurrentInstance();
         FacesMessage facesMessage;

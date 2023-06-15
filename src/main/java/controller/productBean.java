@@ -38,7 +38,9 @@ public class productBean implements Serializable {
 
     @Inject
     private sqlBean productData;
-   
+    
+    
+    // Laden der Produkte sowie Produktkategorien
     @PostConstruct
     public void init(){
             productDataList = productData.findAllProducts();
@@ -57,13 +59,16 @@ public class productBean implements Serializable {
         FacesMessage msg = new FacesMessage("Editing Cancelled", null);
         FacesContext.getCurrentInstance().addMessage(null, msg);
     }
-
+    
+    // Das geanderte Produkt wird zum Speichern in der DB an die SQL-Bean weitergegen
+    // Gibt eine Growl Bestaetigung aus wenn der Benutzer ein Produkt aendert
     public void saveCurrentProduct(Product currentProduct) {
         productData.updateProduct(currentProduct);
         FacesMessage msg = new FacesMessage("Product Edited", currentProduct.getPrname() + " has been edited");
         FacesContext.getCurrentInstance().addMessage(null, msg);
     }
 
+    
     public ProductCategory getCategory(int id) {
         if (categoryList == null) {
             // Handle this error as you see fit, perhaps load the category list

@@ -1,5 +1,7 @@
 package controller;
 
+import newModel.UserInfo;
+import newModel.ProductInfo;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
@@ -20,12 +22,15 @@ public class AdminInfo implements Serializable {
     private sqlBean sqlBean;
     private String selectedDataType;
     private String selectedUserInfoType;
-
+    
+    
+    //Laden der ersten Listen zur Initialisierung
     @PostConstruct
     public void init() {
         refreshData();  
     }
     
+    //Laed die Produkt-Info Liste basierend auf Auswahl String von SelectOneMenu
     public void loadProductInfo() {
         if (selectedDataType.equals("bestseller")) {
             productInfo = sqlBean.findBestsellers();
@@ -34,6 +39,7 @@ public class AdminInfo implements Serializable {
         }
     }
     
+    //Laed die User-Info Liste basierend auf Auswahl String von SelectOneMenu
     public void loadUserInfo() {
         if (selectedUserInfoType.equals("bestCustomers")) {
             userInfo = sqlBean.findBestCustomers();

@@ -4,7 +4,6 @@
  */
 package util;
 
-
 import jakarta.annotation.Resource;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.persistence.EntityManager;
@@ -22,9 +21,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import controller.UserInfo;
-import controller.ProductInfo;
-import controller.CartItem;
+import newModel.UserInfo;
+import newModel.ProductInfo;
+import newModel.CartItem;
 import controller.cartBean;
 import newModel.*;
 
@@ -38,7 +37,7 @@ public class sqlBean implements Serializable {
 
     private static final Logger LOGGER = Logger.getLogger(sqlBean.class.getName());
     private List<Product> productList = new ArrayList<>();
-    
+
     @Resource
     private UserTransaction ut;
 
@@ -49,6 +48,10 @@ public class sqlBean implements Serializable {
 
     }
 
+    /*Funktion für die Registrieung
+      fügt neu angelegte Objekte Customer, Account, Address in DB ein
+      rollback im Fehlerfall
+     */
     public void persistCustomer(Customer curCustomer) {
         try {
             ut.begin(); // Begin transaction
@@ -95,11 +98,15 @@ public class sqlBean implements Serializable {
                     LOGGER.log(Level.SEVERE, "Failed to rollback transaction");
                 }
             }
-            LOGGER.log(Level.SEVERE, "Persist Error");
+            LOGGER.log(Level.SEVERE, "Persist Error in persist customer");
             ex.printStackTrace();
         }
     }
 
+    /*Funktion für den Checkout
+      erstellt für Product objekte in Warenkorb Orders und Orderdetail
+      rollback im Fehlerfall
+     */
     public void persistCheckout(Orders curOrder, Customer customer, cartBean cart) {
         try {
             ut.begin();
@@ -123,11 +130,21 @@ public class sqlBean implements Serializable {
             em.persist(order);
             ut.commit();
         } catch (Exception ex) {
-            LOGGER.log(Level.SEVERE, "Checkout Error");
+            if (ut != null) {
+                try {
+                    ut.rollback(); // Rollback transaction in case of error
+                } catch (Exception e) {
+                    LOGGER.log(Level.SEVERE, "Failed to rollback transaction");
+                }
+            }
+            LOGGER.log(Level.SEVERE, "Persist Error in Checkout");
             ex.printStackTrace();
         }
     }
 
+    /*
+    Füllt Produktliste für anzeige in Datatable auf Website
+     */
     public List<Product> findAllProducts() {
         try {
             TypedQuery<Product> query = em.createNamedQuery("Product.findAll", Product.class);
@@ -139,6 +156,10 @@ public class sqlBean implements Serializable {
         return productList;
     }
 
+    /*
+    Check ob AccName bereits vorhanden ist
+    Aufruf aus Validator-Klasse
+     */
     public boolean findAccName(String accountname) {
         try {
             String jpql = "SELECT COUNT(a) FROM Account a WHERE a.accname = :accname";
@@ -157,6 +178,10 @@ public class sqlBean implements Serializable {
         return false;
     }
 
+    /*
+    Check ob Email bereits vorhanden ist
+    Aufruf aus Validator-Klasse
+     */
     public boolean findEmail(String email) {
         try {
             TypedQuery<Customer> query = em.createNamedQuery("Customer.findByCemail", Customer.class);
@@ -169,6 +194,10 @@ public class sqlBean implements Serializable {
         return false;
     }
 
+    /*
+    Check ob Phone bereits vorhanden ist
+    Aufruf aus Validator-Klasse
+     */
     public boolean findPhone(String phone) {
         try {
             TypedQuery<Customer> query = em.createNamedQuery("Customer.findByCphone", Customer.class);
@@ -181,6 +210,11 @@ public class sqlBean implements Serializable {
         return false;
     }
 
+    /*
+    Funktion zur Anmeldung
+    Params: String Username, String Password
+    Return: Objekt Customer
+     */
     public Customer findCustomer(String username, String password) {
         try {
 
@@ -199,6 +233,9 @@ public class sqlBean implements Serializable {
         return null;
     }
 
+    /*
+    Funktion zu aenderung von Producten
+    */
     public void updateProduct(Product product) {
         try {
             ut.begin();
@@ -209,23 +246,27 @@ public class sqlBean implements Serializable {
             ex.printStackTrace();
         }
     }
-
+    
+    /*
+    Fuellt ProductInfo liste fuer Admin-Dashboard mit besten Produkten
+    */
     public List<ProductInfo> findBestsellers() {
         List<ProductInfo> leastSoldProducts = new ArrayList<>();
 
         try {
-            TypedQuery<Product> query 
+            TypedQuery<Product> query
                     = em.createQuery("SELECT p "
-                                   + "FROM Product p "
-                                   + "JOIN p.orderdetailCollection od "
-                                   + "GROUP BY p "
-                                   + "ORDER BY SUM(od.odamount) DESC", Product.class);
+                            + "FROM Product p "
+                            + "JOIN p.orderdetailCollection od "
+                            + "GROUP BY p "
+                            + "ORDER BY SUM(od.odamount) DESC", Product.class);
             query.setMaxResults(5);
 
             List<Product> products = query.getResultList();
-            for (Product product : products) {
+            
+            for (Product product : products) { //Iteration durch alle Produkte
                 int totalAmount = 0;
-                for (Orderdetail orderdetail : product.getOrderdetailCollection()) {
+                for (Orderdetail orderdetail : product.getOrderdetailCollection()) { //Iteration durch alle Orderdetails des aktuellen Produkts
                     totalAmount += orderdetail.getOdamount();
                 }
                 ProductInfo item = new ProductInfo(product.getPrname(), totalAmount, product.getPcatenum());
@@ -238,16 +279,19 @@ public class sqlBean implements Serializable {
         return leastSoldProducts;
     }
 
+    /*
+    Fuellt ProductInfo liste fuer Admin-Dashboard mit schlechtesten Produkten
+    */
     public List<ProductInfo> findLeastSoldProducts() {
         List<ProductInfo> leastSoldProducts = new ArrayList<>();
 
         try {
-            TypedQuery<Product> query 
+            TypedQuery<Product> query
                     = em.createQuery("SELECT p "
-                                   + "FROM Product p "
-                                   + "LEFT JOIN p.orderdetailCollection od "
-                                   + "GROUP BY p "
-                                   + "ORDER BY SUM(od.odamount) ASC", Product.class);
+                            + "FROM Product p "
+                            + "LEFT JOIN p.orderdetailCollection od "
+                            + "GROUP BY p "
+                            + "ORDER BY SUM(od.odamount) ASC", Product.class);
             query.setMaxResults(5);
             List<Product> products = query.getResultList();
             for (Product product : products) {
@@ -264,34 +308,40 @@ public class sqlBean implements Serializable {
 
         return leastSoldProducts;
     }
-
+    
+    //Fuellt UserInfo liste fuer Admin-Dashboard mit besten Kunden
     public List<UserInfo> findBestCustomers() {
         List<UserInfo> userInfoList = new ArrayList<>();
-        
+
         try {
-            TypedQuery<Customer> query 
+            TypedQuery<Customer> query
                     = em.createQuery("SELECT c "
-                                   + "FROM Customer c "
-                                   + "JOIN c.ordersCollection o "
-                                   + "JOIN o.orderdetailCollection od "
-                                   + "WHERE o.odeldate >= :twoMonthsAgo "
-                                   + "GROUP BY c "
-                                   + "ORDER BY SIZE(c.ordersCollection) DESC", Customer.class);
-            
+                            + "FROM Customer c "
+                            + "JOIN c.ordersCollection o "
+                            + "JOIN o.orderdetailCollection od "
+                            + "WHERE o.odeldate >= :twoMonthsAgo "
+                            + "GROUP BY c "
+                            + "ORDER BY SIZE(c.ordersCollection) DESC", Customer.class);
+
             // LocalDate in Date wandeln
             LocalDate currentLocalDate = LocalDate.now();
             LocalDate recentLocalDate = currentLocalDate.minusMonths(2);
             Date recentDate;
             recentDate = Date.from(recentLocalDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
             
+            //Parameter für Date setzen in query
             query.setParameter("twoMonthsAgo", recentDate);
             query.setMaxResults(5);
-            List<Customer> customers = query.getResultList();
             
+            List<Customer> customers = query.getResultList();
+
+            //Iteration durch alle Benutzer Obejekte
             for (Customer customer : customers) {
+                
                 int ordersAmount = customer.getOrdersCollection().size();
+                double revenue = findRevenue(customer.getCid()); // Methodenaufruf findRevenue
                 UserInfo userInfo = new UserInfo((customer.getCfirstname() + " " + customer.getCfamname()),
-                                                  ordersAmount, findRevenue(customer.getCid()));
+                        ordersAmount, revenue);
                 userInfoList.add(userInfo);
             }
         } catch (Exception ex) {
@@ -300,31 +350,34 @@ public class sqlBean implements Serializable {
         return userInfoList;
     }
 
+    //Fuellt UserInfo liste fuer Admin-Dashboard mit besten Kunden
     public List<UserInfo> findInactiveCustomers() {
         List<UserInfo> inactiveCustomers = new ArrayList<>();
 
         try {
-            TypedQuery<Customer> query 
+            TypedQuery<Customer> query
                     = em.createQuery("SELECT c "
-                                   + "FROM Customer c "
-                                   + "LEFT JOIN c.ordersCollection o "
-                                   + "LEFT JOIN o.orderdetailCollection od "
-                                   + "WHERE o.odeldate <= :oneYearAgo OR o.odeldate IS NULL "
-                                   + "GROUP BY c "
-                                   + "ORDER BY SIZE(c.ordersCollection) ASC", Customer.class);
-            
+                            + "FROM Customer c "
+                            + "LEFT JOIN c.ordersCollection o "
+                            + "LEFT JOIN o.orderdetailCollection od "
+                            + "WHERE o.odeldate <= :oneYearAgo OR o.odeldate IS NULL "
+                            + "GROUP BY c "
+                            + "ORDER BY SIZE(c.ordersCollection) ASC", Customer.class);
+
             // LocalDate in Date wandeln
             LocalDate currentLocalDate = LocalDate.now();
             LocalDate recentLocalDate = currentLocalDate.minusYears(1);
             Date recentDate;
             recentDate = Date.from(recentLocalDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
-            
+
             query.setParameter("oneYearAgo", recentDate);
             List<Customer> customers = query.getResultList();
             
+            //Iteration durch Benutzer Objekte
             for (Customer customer : customers) {
                 int ordersAmount = customer.getOrdersCollection().size();
-                UserInfo userInfo = new UserInfo((customer.getCfirstname() + " " + customer.getCfamname()), ordersAmount, findRevenue(customer.getCid()));
+                double revenue = findRevenue(customer.getCid()); //Methodenaufruf findRevenue
+                UserInfo userInfo = new UserInfo((customer.getCfirstname() + " " + customer.getCfamname()), ordersAmount, revenue);
                 inactiveCustomers.add(userInfo);
             }
         } catch (Exception ex) {
@@ -333,7 +386,8 @@ public class sqlBean implements Serializable {
 
         return inactiveCustomers;
     }
-
+    
+    //Findet den Gesamtumsatz eines Kunden
     public double findRevenue(int cid) {
         double totalRevenue = 0.0;
         try {
@@ -359,6 +413,7 @@ public class sqlBean implements Serializable {
         return totalRevenue;
     }
 
+    //Fuellt die KategorieListe
     public List<ProductCategory> findCategories() {
         List<ProductCategory> categories = new ArrayList<>();
         try {

@@ -6,7 +6,7 @@
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
-    
+
     <h:head>
         <link rel="stylesheet" type="text/css" href="resources/css/myStyles.css"/>
         <h:outputStylesheet name="css/myStyles.css"/>
@@ -32,17 +32,17 @@
                     <p:menuitem value="Contact Us" outcome="contact.xhtml"/>
                     <p:menuitem value="Admin Infos" outcome="adminInfos.xhtml" rendered="#{loginBean.isAdminRights()}"/>
                 </p:submenu>
-               
+
                 <f:facet name="options">                    
                     <p:commandButton value ="Login" styleClass="ui-button-flat ui-button-plain" 
                                      rendered="#{!loginBean.getLoginCheck()}" onclick="PF('login').show()"/>
-                    
+
                     <p:commandButton value ="Logout" styleClass="ui-button-flat ui-button-plain" 
                                      rendered="#{loginBean.getLoginCheck()}" action="#{loginBean.logout()}" ajax="false"/>
-                    
+
                     <p:button value ="Register" styleClass="ui-button-flat ui-button-plain" 
                               rendered="#{!loginBean.getLoginCheck()}" outcome="register.xhtml"/>
-                    
+
                     <p:button value="Cart" styleClass="ui-button-flat ui-button-plain" outcome="cart.xhtml"/>
                 </f:facet>
             </p:menubar>
@@ -53,22 +53,24 @@
                     id="pgrid1"  
                     columns="2"
                     style="margin: 20px;">
-                    
+
                     <f:facet name="header">
                         <span style="font-weight: bold">LOGIN</span>
                     </f:facet>
-                    
+
                     <p:outputLabel 
                         for="userName" 
                         value="Username: " 
                         style="margin: 10px; color: black; width: 150px;"
                         styleClass="label label-primary"/> 
-                    <p:inputText 
+                    <p:inputText
                         id="userName" 
                         value="#{loginBean.loginName}" 
                         p:placeholder="Username..."
                         style="text-align: left; margin: 10px; margin-left: 10px; width: 200px;"  
-                        styleClass="form-control"/>   
+                        styleClass="form-control">
+                        <f:validateRegex pattern="^[a-zA-Z0-9_]{5,15}$"/>
+                    </p:inputText>
 
                     <p:outputLabel 
                         for="password" 
@@ -82,7 +84,7 @@
                         style="text-align: left; margin: 10px; margin-left: 10px; width: 200px;"  
                         styleClass="form-control"/>
                     <br/>
-                 <p:commandButton
+                    <p:commandButton
                         id="cBtn" 
                         value="Login"  
                         action="#{loginBean.login2()}"   
